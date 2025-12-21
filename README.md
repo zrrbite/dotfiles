@@ -2,55 +2,47 @@
 
 Personal configuration files managed with [GNU Stow](https://www.gnu.org/software/stow/).
 
-## Requirements
+Nord-themed Hyprland setup for Arch Linux.
 
-- Arch Linux
-- GNU Stow
-- JetBrainsMono Nerd Font
-- Symbols Nerd Font (icon fallback)
+## Quick Install
 
-```bash
-sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp neovim ripgrep fd
-```
-
-## Fresh Install
-
-On a new Arch Linux system with Hyprland:
+On a fresh Arch Linux system:
 
 ```bash
-# 1. Install dependencies
-sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp neovim ripgrep fd hyprland hyprpaper waybar foot
-
-# 2. Clone dotfiles
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
-
-# 3. Remove any existing configs that would conflict
-rm -rf ~/.config/foot ~/.config/hypr ~/.config/waybar ~/.config/rofi ~/.config/mako ~/.config/starship.toml ~/.gitconfig ~/.clang-format ~/.clang-tidy
-
-# 4. Stow all packages
-cd ~/dotfiles
-stow */
-
-# 5. Add starship to your shell (add to ~/.bashrc or ~/.zshrc)
-echo 'eval "$(starship init bash)"' >> ~/.bashrc
-
-# 6. Log out and back in to start Hyprland
+cd ~/dotfiles && ./install.sh
 ```
 
-## Installation
+The install script will:
+- Install all required packages via pacman
+- Backup any existing configs to `~/.config-backup-TIMESTAMP/`
+- Stow all packages
+- Setup starship prompt
 
-If you already have configs and want to selectively install:
+Then log out and select Hyprland as your session.
+
+## Key Bindings
+
+| Binding | Action |
+|---------|--------|
+| `Super + Q` | Terminal (foot) |
+| `Super + R` | App launcher (rofi) |
+| `Super + C` | Close window |
+| `Super + L` | Lock screen |
+| `Super + Shift + V` | Clipboard history |
+| `Super + Shift + S` | Screenshot region |
+| `Super + F1` | Show all keybinds |
+
+## Manual Installation
+
+If you prefer to install selectively:
 
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow */  # stow all packages
-```
-
-Or stow individual packages:
-
-```bash
-stow foot
+stow foot      # just terminal
+stow hypr      # just hyprland
+stow */        # everything
 ```
 
 ## Packages
