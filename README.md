@@ -5,9 +5,13 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 ## Requirements
 
 - Arch Linux
-- GNU Stow (`sudo pacman -S stow`)
-- JetBrainsMono Nerd Font (`sudo pacman -S ttf-jetbrains-mono-nerd`)
-- Symbols Nerd Font - for icon fallback (`sudo pacman -S ttf-nerd-fonts-symbols`)
+- GNU Stow
+- JetBrainsMono Nerd Font
+- Symbols Nerd Font (icon fallback)
+
+```bash
+sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols
+```
 
 ## Installation
 
