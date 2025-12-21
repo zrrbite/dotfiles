@@ -28,6 +28,7 @@ stow foot
 | Package | Description |
 |---------|-------------|
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
+| `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 
 ## Usage
 

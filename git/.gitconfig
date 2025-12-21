@@ -1,0 +1,191 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+	name = Martin Kjeldsen
+	email = martin.kjeldsen@epicgames.com
+
+[alias]
+
+# Convenience - shorthands are nice. You could even go as far as to create system aliases (Linux).
+st = status -sb # Short status with tracking info
+ci = commit -v  # Verbose output of what you're committing (unified diff)
+co = checkout
+cob = checkout -b # Create and switch to branch
+br = branch -a    # list all branches (local + remote)
+cp = cherry-pick
+ec = !git config --global -e # Bring up configuration in standard editor
+la = "!git config -l | grep alias | cut -c 7-" # List all these alises!
+working = !git tag -f working
+compiling = !git tag -f compiling
+# Quickly add and commit things. --verbose for unified diff
+add-commit = !git add -A && git commit -v
+mod-commit = !git add -u && git commit -v
+
+# Regret. Take advantage of reset --mixed (default for reset).
+unstage = reset HEAD --
+undo = reset HEAD~1 --mixed
+
+# Diff - --compaction-heuristic
+dc = diff --cached # Diff with what's in your index. --cache is an outdated term for index, but the option remains.
+wdiff = diff --word-diff
+pdiff = "!f() { git diff HEAD~$1..HEAD; }; f" #Diff HEAD with its yth parent
+
+# Util For scripting
+me = config user.name
+branch-name = !git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`  # Get porcelain name of HEAD/current branch
+top = !git rev-parse --show-toplevel #Get top level directory name of repo.
+
+# Everything: Git fetch, pull, prune, update submodules
+up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+
+# Rewrite history
+amend = commit --amend --verbose #classic amend
+amendl = !git amend -C HEAD # Amend using last commit msg
+
+# Grep aliases
+g = grep --break --heading --line-number
+gra = "!f() { A=$(pwd) && TOPLEVEL=$(git rev-parse --show-toplevel) && cd $TOPLEVEL && git grep --full-name -In $1 | xargs -I{} echo $TOPLEVEL/{} && cd $A; }; f"
+todo = "!f() { STRING="//todo $1 mkj" && echo STRING && git g $STRING; }; f" #xargs sed -i 's/original_text//g'
+fixup = "!sh -c '(git diff-files --quiet || (echo Unstaged changes, please commit or stash with --keep-index; exit 1)) && COMMIT=$(git rev-parse $1) && git commit --fixup=$COMMIT && git rebase -i --autosquash $COMMIT~1' -" #The use of this is questionable. I think i'd rather just use reset --soft?
+
+# Merge aliases -- this is for file conflicts only - not necessary when using a graphical tool
+ours = "!f() { git co --ours $@ && git add $@; }; f"
+theirs = "!f() { git co --theirs $@ && git add $@; }; f"
+merge = merge --commit #Auto commit if succeeds (if using mergetool or others)
+
+# Tag aliases
+lasttag = describe --tags --abbrev=0
+lt = describe --tags --abbrev=0
+cf = clang-format --staged
+
+# Quickly store work
+#- Stash
+sshow = "!f() { git stash show stash^{/$*} -p; }; f"
+sapply = "!f() { git stash apply stash^{/$*}; }; f"
+
+#- Commit/Wipe
+save = !git add -A && git commit -m 'SAVEPOINT' #Saves everything. A way to dump stuff fast
+wip = !git add -u && git commit -m "WIP" #wip = commit -am "WIP" #Saves only modified
+wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard #Save and wipe (access to commit via reflog)
+
+# Logging - This should give you an overview of what you can do to customize "git log"
+# --graph gives you an ascii graph style
+# --all adds history for all refs, not just current
+# --decorate adds names of refs
+# ... etc!
+lg = log --graph --abbrev-commit --decorate --date=short --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n'' %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+lg7 = log --graph --decorate --date=relative --format=format:'%C(red)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(bold yellow)%d%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+today = !git ls --since='12am' --committer=\"`git me`\"
+hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+lf = log --date=relative --abbrev-commit --pretty=format:"%C(yellow)%h\\ %C(white)%ad%Cred%d\\ %Creset%s%Cgreen\\ [%cn]" --decorate
+ls = log --date=relative --format=format:'%C(bold blue)%h%C(reset)  %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --decorate
+
+ll = log --format=format:'%C(bold blue)%h%C(reset) %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --decorate --numstat --date=short
+dl = "!git ll -1"
+lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+last = log -1 HEAD --numstat # Overview of last entry
+what = !git whatchanged --since '$1' --oneline --name-only --pretty=format: | sort | uniq
+changes =log --follow -p -- $1
+new = !sh -c 'git log $1@{1}..$1@{0} "$@" --oneline' #
+
+# Find commits
+find = log --all -- '**/$1'
+
+# These two commands list what changed on the references in your .git folder
+recent = !git fetch && git for-each-ref --sort=committerdate --format='%(refname:short) | %(authorname) | %(committerdate:relative)' refs/remotes/# | columns -c3 -w100
+#recent_sed = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+
+# Create an empty commit (e.g. when starting a new repo)
+it = !git init && git commit -m "root" --allow-empty
+
+# Represent reflog in gitk gui
+ka = !gitk --all --date-order &
+orphank = !gitk --all --date-order `git reflog | cut -c1-7`&
+topref = reflog -30 --relative-date
+
+# Branches
+spawn = !sh -c 'git checkout -b $1 ${2-master} && git config branch.$1.localmerge ${2-master}' - # make new branch based on master no matter which branch is checked out
+nuke = !git co master && sh -c 'git br -D $1' - #`git nuke my-old-branch` (forced)
+unfuck = !git fsck && git fetch origin && git remote prune origin && git gc # Clean up
+clean-merged = !git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d
+done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f" #Prepend branch with done
+bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f" #&& git up &&
+mergetest = "!f(){ git merge --no-commit --no-ff \"$1\"; git merge --abort; echo \"Merge aborted\"; };f "
+
+##############################
+# General settings
+##############################
+[merge]
+tool = kdiff3
+
+[diff]
+tool = kdiff3
+
+[mergetool "kdiff3"]
+path = C:\\KDiff3\\kdiff3.exe
+trustExitCode = false
+keepBackup = false
+
+[difftool "kdiff3"]
+path = C:\\KDiff3\\kdiff3.exe
+trustExitCode = false
+keepBackup = false
+
+[difftool]
+   prompt = false
+
+[core]
+whitespace = cr-at-eol
+preloadindex = true
+fscache = true # https://github.com/msysgit/msysgit/wiki/Diagnosing-why-Git-is-so-slow
+
+[url "https://chipmaster2.qti.qualcomm.com/home/git/epic-games-inc/sa8295p-hqx-4-2-4-1_hlos_dev_la.git/"]
+	insteadof = "https://qpm-git.qualcomm.com/home2/git/epic-games-inc/sa8295p-hqx-4-2-4-1_hlos_dev_la.git"
+
+[http]
+postBuffer=524288000
+
+[diff]
+noprefix = true
+submodule = log
+algorithm = patience
+
+[grep]
+lineNumber = true
+
+[push]
+default = current
+
+[rebase]
+autosquash = true
+
+[mergetool]
+keepBackup = false
+
+[credential]
+#helper = wincred
+
+[pull]
+rebase = true
+
+[remote "origin"]
+prune = true #Always prune origin when fetching
+
+[rerere]
+enabled = true
+autoupdate = true
+
+[gc]
+auto = 256
+
+#Remove +- from diffs
+[pager]
+	log = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
+	show = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
+	diff = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
+
+[color]
+ui = auto
+[credential "https://chipmaster2.qti.qualcomm.com"]
+	provider = generic
