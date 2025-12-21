@@ -30,6 +30,7 @@ stow foot
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
+| `hypr`  | Hyprland compositor + hyprpaper wallpaper config |
 
 ## Usage
 
