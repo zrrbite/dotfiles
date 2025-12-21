@@ -60,6 +60,7 @@ PACKAGES=(
     # Development
     neovim
     git
+    openssh
     ripgrep
     fd
     clang
@@ -157,6 +158,30 @@ if [ -f ~/.zshrc ]; then
     if ! grep -q 'starship init zsh' ~/.zshrc; then
         info "Adding starship to ~/.zshrc"
         echo 'eval "$(starship init zsh)"' >> ~/.zshrc
+    fi
+fi
+
+# Setup ssh-agent for bash and zsh
+SSH_AGENT_SETUP='
+# SSH agent
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+fi
+if [ -f ~/.ssh/id_ed25519 ]; then
+    ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi'
+
+if [ -f ~/.bashrc ]; then
+    if ! grep -q 'SSH_AUTH_SOCK' ~/.bashrc; then
+        info "Adding ssh-agent to ~/.bashrc"
+        echo "$SSH_AGENT_SETUP" >> ~/.bashrc
+    fi
+fi
+
+if [ -f ~/.zshrc ]; then
+    if ! grep -q 'SSH_AUTH_SOCK' ~/.zshrc; then
+        info "Adding ssh-agent to ~/.zshrc"
+        echo "$SSH_AGENT_SETUP" >> ~/.zshrc
     fi
 fi
 
