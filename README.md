@@ -31,6 +31,7 @@ stow foot
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 | `hypr`  | Hyprland compositor + hyprpaper wallpaper config |
+| `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 
 ## Usage
 

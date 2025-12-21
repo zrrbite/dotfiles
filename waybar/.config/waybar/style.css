@@ -1,0 +1,148 @@
+* {
+    font-family: JetBrainsMono Nerd Font, FontAwesome, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 13px;
+}
+
+window#waybar {
+    background-color: rgba(46, 52, 64, 0.9);
+    border-bottom: 3px solid rgba(76, 86, 106, 0.5);
+    color: #d8dee9;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+button {
+    box-shadow: inset 0 -3px transparent;
+    border: none;
+    border-radius: 0;
+}
+
+button:hover {
+    background: inherit;
+    box-shadow: inset 0 -3px #88c0d0;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: #d8dee9;
+}
+
+#workspaces button:hover {
+    background: rgba(136, 192, 208, 0.2);
+}
+
+#workspaces button.active {
+    background-color: #5e81ac;
+    box-shadow: inset 0 -3px #88c0d0;
+}
+
+#workspaces button.urgent {
+    background-color: #bf616a;
+}
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#network,
+#pulseaudio,
+#tray,
+#idle_inhibitor,
+#language {
+    padding: 0 10px;
+    color: #d8dee9;
+}
+
+#window,
+#workspaces {
+    margin: 0 4px;
+}
+
+#clock {
+    background-color: #5e81ac;
+    border-radius: 4px;
+}
+
+#cpu {
+    background-color: #a3be8c;
+    color: #2e3440;
+    border-radius: 4px;
+}
+
+#memory {
+    background-color: #b48ead;
+    border-radius: 4px;
+}
+
+#network {
+    background-color: #81a1c1;
+    border-radius: 4px;
+}
+
+#network.disconnected {
+    background-color: #bf616a;
+}
+
+#pulseaudio {
+    background-color: #ebcb8b;
+    color: #2e3440;
+    border-radius: 4px;
+}
+
+#pulseaudio.muted {
+    background-color: #4c566a;
+    color: #d8dee9;
+}
+
+#temperature {
+    background-color: #d08770;
+    color: #2e3440;
+    border-radius: 4px;
+}
+
+#temperature.critical {
+    background-color: #bf616a;
+}
+
+#tray {
+    background-color: #4c566a;
+    border-radius: 4px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #bf616a;
+}
+
+#idle_inhibitor {
+    background-color: #4c566a;
+    border-radius: 4px;
+}
+
+#idle_inhibitor.activated {
+    background-color: #d8dee9;
+    color: #2e3440;
+}
+
+#language {
+    background: #88c0d0;
+    color: #2e3440;
+    padding: 0 8px;
+    border-radius: 4px;
+}
+
+#window {
+    color: #d8dee9;
+    font-weight: bold;
+}
