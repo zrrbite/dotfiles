@@ -61,25 +61,21 @@ return {
     end,
   },
 
-  -- LSP
+  -- LSP (using native Neovim 0.11+ API)
   {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "williamboman/mason.nvim",
-      "williamboman/mason-lspconfig.nvim",
-    },
+    "williamboman/mason.nvim",
     config = function()
       require("mason").setup()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls" },  -- clangd installed via system pacman
-      })
+    end,
+  },
 
-      local lspconfig = require("lspconfig")
+  {
+    "hrsh7th/cmp-nvim-lsp",
+    config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- Clangd for C++
-      lspconfig.clangd.setup({
-        capabilities = capabilities,
+      vim.lsp.config.clangd = {
         cmd = {
           "clangd",
           "--background-index",
@@ -89,10 +85,16 @@ return {
           "--function-arg-placeholders",
           "--fallback-style=llvm",
         },
-      })
+        filetypes = { "c", "cpp", "objc", "objcpp" },
+        root_markers = { ".clangd", "compile_commands.json", ".git" },
+        capabilities = capabilities,
+      }
 
       -- Lua LS
-      lspconfig.lua_ls.setup({
+      vim.lsp.config.lua_ls = {
+        cmd = { "lua-language-server" },
+        filetypes = { "lua" },
+        root_markers = { ".luarc.json", ".git" },
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -100,7 +102,10 @@ return {
             diagnostics = { globals = { "vim" } },
           },
         },
-      })
+      }
+
+      -- Enable LSPs
+      vim.lsp.enable({ "clangd", "lua_ls" })
 
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
