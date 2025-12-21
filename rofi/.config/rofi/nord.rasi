@@ -1,0 +1,88 @@
+* {
+    /* Nord colors */
+    nord0:  #2e3440;
+    nord1:  #3b4252;
+    nord2:  #434c5e;
+    nord3:  #4c566a;
+    nord4:  #d8dee9;
+    nord5:  #e5e9f0;
+    nord6:  #eceff4;
+    nord7:  #8fbcbb;
+    nord8:  #88c0d0;
+    nord9:  #81a1c1;
+    nord10: #5e81ac;
+    nord11: #bf616a;
+    nord12: #d08770;
+    nord13: #ebcb8b;
+    nord14: #a3be8c;
+    nord15: #b48ead;
+
+    background-color: transparent;
+    text-color: @nord4;
+    font: "JetBrainsMono Nerd Font 12";
+}
+
+window {
+    background-color: @nord0;
+    border: 2px;
+    border-color: @nord3;
+    border-radius: 8px;
+    padding: 20px;
+    width: 500px;
+}
+
+mainbox {
+    spacing: 10px;
+}
+
+inputbar {
+    background-color: @nord1;
+    border-radius: 6px;
+    padding: 10px;
+    spacing: 10px;
+    children: [prompt, entry];
+}
+
+prompt {
+    text-color: @nord8;
+}
+
+entry {
+    placeholder: "Search...";
+    placeholder-color: @nord3;
+}
+
+listview {
+    lines: 8;
+    scrollbar: false;
+    spacing: 5px;
+}
+
+element {
+    padding: 10px;
+    border-radius: 6px;
+}
+
+element normal.normal {
+    background-color: transparent;
+}
+
+element selected.normal {
+    background-color: @nord2;
+    text-color: @nord8;
+}
+
+element-icon {
+    size: 24px;
+    margin: 0 10px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+}
+
+message {
+    background-color: @nord1;
+    border-radius: 6px;
+    padding: 10px;
+}
