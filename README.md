@@ -10,7 +10,7 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 - Symbols Nerd Font (icon fallback)
 
 ```bash
-sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp
+sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp neovim ripgrep fd
 ```
 
 ## Fresh Install
@@ -19,7 +19,7 @@ On a new Arch Linux system with Hyprland:
 
 ```bash
 # 1. Install dependencies
-sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp hyprland hyprpaper waybar foot
+sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprlock btop grim slurp neovim ripgrep fd hyprland hyprpaper waybar foot
 
 # 2. Clone dotfiles
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
@@ -63,6 +63,7 @@ stow foot
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 | `hypr`  | Hyprland compositor + hyprpaper + hyprlock + cliphist |
 | `mako`  | Notification daemon (Nord theme) |
+| `nvim`  | Neovim IDE setup - LSP, treesitter, telescope (C++ focused) |
 | `rofi`  | App launcher with Nord theme |
 | `starship` | Minimal shell prompt with Nerd Font icons |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
