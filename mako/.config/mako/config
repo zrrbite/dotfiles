@@ -1,0 +1,28 @@
+# Nord themed mako config
+font=JetBrainsMono Nerd Font 11
+background-color=#2e3440
+text-color=#d8dee9
+border-color=#4c566a
+border-radius=8
+border-size=2
+padding=10
+margin=10
+width=350
+height=150
+max-visible=3
+default-timeout=5000
+layer=overlay
+
+[urgency=low]
+background-color=#3b4252
+border-color=#4c566a
+
+[urgency=normal]
+background-color=#2e3440
+border-color=#5e81ac
+
+[urgency=critical]
+background-color=#2e3440
+border-color=#bf616a
+text-color=#bf616a
+default-timeout=0
