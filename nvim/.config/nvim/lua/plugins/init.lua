@@ -47,16 +47,14 @@ return {
     end,
   },
 
-  -- Treesitter
+  -- Treesitter (Neovim 0.10+ has built-in treesitter, plugin is for parser management)
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      require("nvim-treesitter").setup({
         ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query", "json", "yaml", "markdown" },
         auto_install = true,
-        highlight = { enable = true },
-        indent = { enable = true },
       })
     end,
   },
@@ -156,6 +154,15 @@ return {
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-y>"] = cmp.mapping.confirm({ select = true }),
           ["<C-Space>"] = cmp.mapping.complete(),
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.confirm({ select = true })
+            elseif luasnip.expand_or_jumpable() then
+              luasnip.expand_or_jump()
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
         }),
         sources = {
           { name = "nvim_lsp" },
