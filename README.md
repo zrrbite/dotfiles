@@ -10,7 +10,7 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 - Symbols Nerd Font (icon fallback)
 
 ```bash
-sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols
+sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship
 ```
 
 ## Installation
@@ -35,6 +35,7 @@ stow foot
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 | `hypr`  | Hyprland compositor + hyprpaper wallpaper config |
+| `starship` | Minimal shell prompt with Nerd Font icons |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 
 ## Usage
