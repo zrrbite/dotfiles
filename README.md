@@ -18,14 +18,26 @@ The install script will:
 - Backup any existing configs to `~/.config-backup-TIMESTAMP/`
 - Stow all packages
 - Setup starship prompt
+- Enable audio (pipewire)
 
 Then log out and select Hyprland as your session.
+
+## What's Included
+
+- **Desktop**: Hyprland, waybar, rofi, mako notifications
+- **Terminal**: foot with Nord theme, starship prompt
+- **Audio**: pipewire + wireplumber, pavucontrol
+- **Media**: mpv (video), imv (images)
+- **Files**: thunar file manager
+- **Dev**: neovim, clang-format, clang-tidy
+- **Utils**: screenshots, clipboard history, screen lock
 
 ## Key Bindings
 
 | Binding | Action |
 |---------|--------|
 | `Super + Q` | Terminal (foot) |
+| `Super + E` | File manager (thunar) |
 | `Super + R` | App launcher (rofi) |
 | `Super + C` | Close window |
 | `Super + L` | Lock screen |

@@ -26,10 +26,25 @@ PACKAGES=(
     hyprlock
     waybar
     xorg-xwayland
+    xdg-desktop-portal-hyprland
+    polkit-gnome
 
     # Terminal & shell
     foot
     starship
+
+    # Audio
+    pipewire
+    pipewire-pulse
+    wireplumber
+    pavucontrol
+
+    # Media
+    mpv
+    imv
+
+    # File manager
+    thunar
 
     # Utilities
     stow
@@ -147,6 +162,10 @@ fi
 
 # Create wallpapers directory if it doesn't exist
 mkdir -p ~/.local/share/wallpapers
+
+# Enable pipewire audio
+info "Enabling audio services..."
+systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 
 echo ""
 info "Installation complete!"
