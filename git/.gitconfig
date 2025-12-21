@@ -136,6 +136,7 @@ keepBackup = false
    prompt = false
 
 [core]
+editor = nvim
 whitespace = cr-at-eol
 preloadindex = true
 fscache = true # https://github.com/msysgit/msysgit/wiki/Diagnosing-why-Git-is-so-slow
