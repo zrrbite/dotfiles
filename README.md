@@ -13,10 +13,36 @@ Personal configuration files managed with [GNU Stow](https://www.gnu.org/softwar
 sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify
 ```
 
-## Installation
+## Fresh Install
+
+On a new Arch Linux system with Hyprland:
 
 ```bash
-git clone git@github.com:YOUR_USER/dotfiles.git ~/dotfiles
+# 1. Install dependencies
+sudo pacman -S stow ttf-jetbrains-mono-nerd ttf-nerd-fonts-symbols starship rofi-wayland wl-clipboard cliphist mako libnotify hyprland hyprpaper waybar foot
+
+# 2. Clone dotfiles
+git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
+
+# 3. Remove any existing configs that would conflict
+rm -rf ~/.config/foot ~/.config/hypr ~/.config/waybar ~/.config/rofi ~/.config/mako ~/.config/starship.toml ~/.gitconfig ~/.clang-format ~/.clang-tidy
+
+# 4. Stow all packages
+cd ~/dotfiles
+stow */
+
+# 5. Add starship to your shell (add to ~/.bashrc or ~/.zshrc)
+echo 'eval "$(starship init bash)"' >> ~/.bashrc
+
+# 6. Log out and back in to start Hyprland
+```
+
+## Installation
+
+If you already have configs and want to selectively install:
+
+```bash
+git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 stow */  # stow all packages
 ```
