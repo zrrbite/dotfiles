@@ -30,7 +30,7 @@ Then log out and select Hyprland as your session.
 - **Media**: mpv (video), imv (images)
 - **Files**: thunar file manager
 - **Dev**: neovim, clang-format, clang-tidy
-- **Utils**: screenshots, clipboard history, screen lock
+- **Utils**: screenshots, clipboard history, screen lock, idle/screensaver (hypridle)
 
 ## Key Bindings
 
@@ -66,7 +66,7 @@ stow */        # everything
 | `discord` | Desktop entry override for native Wayland support |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
-| `hypr`  | Hyprland compositor + hyprpaper + hyprlock + cliphist |
+| `hypr`  | Hyprland compositor + hyprpaper + hyprlock + hypridle + cliphist |
 | `mako`  | Notification daemon (Nord theme) |
 | `nvim`  | Neovim IDE setup - LSP, treesitter, telescope (C++ focused) |
 | `rofi`  | App launcher with Nord theme |
