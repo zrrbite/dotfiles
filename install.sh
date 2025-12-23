@@ -46,6 +46,9 @@ PACKAGES=(
     # File manager
     thunar
 
+    # Bluetooth
+    blueman
+
     # Utilities
     stow
     rofi-wayland
