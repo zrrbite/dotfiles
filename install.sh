@@ -49,6 +49,9 @@ PACKAGES=(
     # Bluetooth
     blueman
 
+    # Communication
+    discord
+
     # Utilities
     stow
     rofi-wayland
@@ -67,6 +70,7 @@ PACKAGES=(
     ripgrep
     fd
     clang
+    code
 
     # Fonts
     ttf-jetbrains-mono-nerd
