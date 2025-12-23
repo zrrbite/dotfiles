@@ -1,8 +1,8 @@
 # This is Git's per-user configuration file.
 [user]
 # Update with your own name and email
-	name = Your Name
-	email = your@email.com
+	name = Martin Kjeldsen
+	email = kjeldsen@gmail.com
 
 [alias]
 
