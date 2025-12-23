@@ -80,6 +80,23 @@ PACKAGES=(
 info "Installing packages..."
 sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
 
+# AUR packages (requires yay)
+AUR_PACKAGES=(
+    google-chrome
+    slack-desktop
+)
+
+# Install yay if not present
+if ! command -v yay &> /dev/null; then
+    info "Installing yay (AUR helper)..."
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    cd /tmp/yay && makepkg -si --noconfirm
+    rm -rf /tmp/yay
+fi
+
+info "Installing AUR packages..."
+yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+
 # Determine dotfiles location
 DOTFILES_DIR="${HOME}/dotfiles"
 
