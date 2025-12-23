@@ -84,6 +84,8 @@ sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
 AUR_PACKAGES=(
     google-chrome
     slack-desktop
+    p4
+    p4v
 )
 
 # Install yay if not present
