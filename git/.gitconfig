@@ -175,3 +175,54 @@ auto = 256
 
 [color]
 ui = auto
+
+##############################
+# Alternative configurations
+# Uncomment/modify as needed
+##############################
+
+# Windows: Use KDiff3 for diff/merge
+# [merge]
+# tool = kdiff3
+# [diff]
+# tool = kdiff3
+# [mergetool "kdiff3"]
+# path = C:\\Program Files\\KDiff3\\kdiff3.exe
+# trustExitCode = false
+# [difftool "kdiff3"]
+# path = C:\\Program Files\\KDiff3\\kdiff3.exe
+# trustExitCode = false
+
+# Windows: Use VS Code for diff/merge
+# [merge]
+# tool = vscode
+# [diff]
+# tool = vscode
+# [mergetool "vscode"]
+# cmd = code --wait $MERGED
+# [difftool "vscode"]
+# cmd = code --wait --diff $LOCAL $REMOTE
+
+# Windows: Credential helper
+# [credential]
+# helper = wincred
+
+# macOS: Credential helper
+# [credential]
+# helper = osxkeychain
+
+# P4Merge (cross-platform)
+# [merge]
+# tool = p4merge
+# [mergetool "p4merge"]
+# path = /usr/bin/p4merge  # or C:\\Program Files\\Perforce\\p4merge.exe
+# [diff]
+# tool = p4merge
+# [difftool "p4merge"]
+# path = /usr/bin/p4merge
+
+# URL rewrites (example for private servers)
+# [url "git@github.com:"]
+# insteadOf = https://github.com/
+# [url "https://internal-git.company.com/"]
+# insteadOf = https://external-mirror.com/
