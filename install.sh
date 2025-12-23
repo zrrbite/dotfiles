@@ -24,6 +24,8 @@ PACKAGES=(
     hyprland
     hyprpaper
     hyprlock
+    hypridle
+    brightnessctl
     waybar
     xorg-xwayland
     xdg-desktop-portal-hyprland
