@@ -108,6 +108,8 @@ CONFIGS_TO_BACKUP=(
     ~/.gitconfig
     ~/.clang-format
     ~/.clang-tidy
+    ~/.bash_profile
+    ~/.local/share/wallpapers
 )
 
 backup_needed=false
@@ -185,9 +187,6 @@ if [ -f ~/.zshrc ]; then
     fi
 fi
 
-# Create wallpapers directory if it doesn't exist
-mkdir -p ~/.local/share/wallpapers
-
 # Enable pipewire audio
 info "Enabling audio services..."
 systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
@@ -196,8 +195,8 @@ echo ""
 info "Installation complete!"
 echo ""
 echo "Next steps:"
-echo "  1. Log out and select Hyprland as your session"
-echo "  2. Log back in"
+echo "  1. Reboot (or log out and back in)"
+echo "  2. Hyprland will auto-start on TTY1"
 echo ""
 echo "Key bindings:"
 echo "  Super + Q      - Open terminal (foot)"
