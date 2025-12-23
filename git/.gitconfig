@@ -1,8 +1,8 @@
 # This is Git's per-user configuration file.
 [user]
-# Please adapt and uncomment the following lines:
-	name = Martin Kjeldsen
-	email = martin.kjeldsen@epicgames.com
+# Update with your own name and email
+	name = Your Name
+	email = your@email.com
 
 [alias]
 
@@ -117,23 +117,13 @@ mergetest = "!f(){ git merge --no-commit --no-ff \"$1\"; git merge --abort; echo
 # General settings
 ##############################
 [merge]
-tool = kdiff3
+tool = meld
 
 [diff]
-tool = kdiff3
-
-[mergetool "kdiff3"]
-path = C:\\KDiff3\\kdiff3.exe
-trustExitCode = false
-keepBackup = false
-
-[difftool "kdiff3"]
-path = C:\\KDiff3\\kdiff3.exe
-trustExitCode = false
-keepBackup = false
+tool = meld
 
 [difftool]
-   prompt = false
+prompt = false
 
 [core]
 editor = nvim
@@ -141,11 +131,8 @@ whitespace = cr-at-eol
 preloadindex = true
 fscache = true # https://github.com/msysgit/msysgit/wiki/Diagnosing-why-Git-is-so-slow
 
-[url "https://chipmaster2.qti.qualcomm.com/home/git/epic-games-inc/sa8295p-hqx-4-2-4-1_hlos_dev_la.git/"]
-	insteadof = "https://qpm-git.qualcomm.com/home2/git/epic-games-inc/sa8295p-hqx-4-2-4-1_hlos_dev_la.git"
-
 [http]
-postBuffer=524288000
+postBuffer = 524288000
 
 [diff]
 noprefix = true
@@ -165,7 +152,7 @@ autosquash = true
 keepBackup = false
 
 [credential]
-#helper = wincred
+helper = store
 
 [pull]
 rebase = true
@@ -188,5 +175,3 @@ auto = 256
 
 [color]
 ui = auto
-[credential "https://chipmaster2.qti.qualcomm.com"]
-	provider = generic

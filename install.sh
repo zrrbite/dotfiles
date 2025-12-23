@@ -71,6 +71,7 @@ PACKAGES=(
     fd
     clang
     code
+    meld
 
     # Fonts
     ttf-jetbrains-mono-nerd
