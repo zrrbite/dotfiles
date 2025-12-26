@@ -30,7 +30,7 @@ Then log out and select Hyprland as your session.
 - **Media**: mpv (video), imv (images)
 - **Files**: thunar file manager
 - **Dev**: neovim, clang-format, clang-tidy
-- **Utils**: screenshots, clipboard history, screen lock, idle/screensaver (hypridle)
+- **Utils**: screenshots, clipboard history, screen lock, screensaver (asciiquarium)
 
 ## Key Bindings
 
