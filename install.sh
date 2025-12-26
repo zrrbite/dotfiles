@@ -26,6 +26,7 @@ PACKAGES=(
     hyprlock
     hypridle
     brightnessctl
+    asciiquarium
     waybar
     xorg-xwayland
     xdg-desktop-portal-hyprland
