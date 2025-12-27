@@ -76,6 +76,14 @@ PACKAGES=(
     code
     meld
 
+    # LaTeX (beamer for presentations)
+    texlive-basic
+    texlive-bin
+    texlive-latexrecommended
+    texlive-latexextra
+    texlive-fontsrecommended
+    texlive-pictures
+
     # Fonts
     ttf-jetbrains-mono-nerd
     ttf-nerd-fonts-symbols
