@@ -56,7 +56,7 @@ merge = merge --commit #Auto commit if succeeds (if using mergetool or others)
 # Tag aliases
 lasttag = describe --tags --abbrev=0
 lt = describe --tags --abbrev=0
-cf = clang-format --staged
+cf = !git diff --cached --name-only --diff-filter=ACMR | xargs -r clang-format -i
 
 # Quickly store work
 #- Stash
@@ -93,7 +93,7 @@ new = !sh -c 'git log $1@{1}..$1@{0} "$@" --oneline' #
 find = log --all -- '**/$1'
 
 # These two commands list what changed on the references in your .git folder
-recent = !git fetch && git for-each-ref --sort=committerdate --format='%(refname:short) | %(authorname) | %(committerdate:relative)' refs/remotes/# | columns -c3 -w100
+recent = !git fetch && git for-each-ref --sort=committerdate --format='%(refname:short) | %(authorname) | %(committerdate:relative)' refs/remotes/ | column -t -s'|'
 #recent_sed = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
 
 # Create an empty commit (e.g. when starting a new repo)
@@ -105,19 +105,26 @@ orphank = !gitk --all --date-order `git reflog | cut -c1-7`&
 topref = reflog -30 --relative-date
 
 # Branches
-spawn = !sh -c 'git checkout -b $1 ${2-master} && git config branch.$1.localmerge ${2-master}' - # make new branch based on master no matter which branch is checked out
-nuke = !git co master && sh -c 'git br -D $1' - #`git nuke my-old-branch` (forced)
+spawn = !sh -c 'git checkout -b $1 ${2-main} && git config branch.$1.localmerge ${2-main}' - # make new branch based on main no matter which branch is checked out
+nuke = !sh -c 'git co main && git br -D $1' - #`git nuke my-old-branch` (forced)
 unfuck = !git fsck && git fetch origin && git remote prune origin && git gc # Clean up
 clean-merged = !git branch --merged | grep -v \"\\*\" | xargs -n 1 git branch -d
 done = "!f() { git branch | grep "$1" | cut -c 3- | grep -v done | xargs -I{} git branch -m {} done-{}; }; f" #Prepend branch with done
-bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f" #&& git up &&
+bdone = "!f() { git checkout ${1-main} && git up && git clean-merged; }; f" # checkout main, update, clean merged branches
 mergetest = "!f(){ git merge --no-commit --no-ff \"$1\"; git merge --abort; echo \"Merge aborted\"; };f "
 
 ##############################
 # General settings
 ##############################
+[init]
+defaultBranch = main
+
+[fetch]
+prune = true
+
 [merge]
 tool = meld
+conflictStyle = zdiff3
 
 [diff]
 tool = meld
@@ -138,6 +145,7 @@ postBuffer = 524288000
 noprefix = true
 submodule = log
 algorithm = patience
+colorMoved = default
 
 [grep]
 lineNumber = true
@@ -147,6 +155,10 @@ default = current
 
 [rebase]
 autosquash = true
+autoStash = true
+
+[branch]
+sort = -committerdate
 
 [mergetool]
 keepBackup = false
@@ -157,8 +169,7 @@ helper = store
 [pull]
 rebase = true
 
-[remote "origin"]
-prune = true #Always prune origin when fetching
+# Note: prune is now global via [fetch] prune = true
 
 [rerere]
 enabled = true
