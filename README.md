@@ -29,8 +29,10 @@ Then log out and select Hyprland as your session.
 - **Audio**: pipewire + wireplumber, pavucontrol
 - **Media**: mpv (video), imv (images)
 - **Files**: thunar file manager
-- **Dev**: neovim, clang-format, clang-tidy
-- **Utils**: screenshots, clipboard history, screen lock, screensaver (asciiquarium)
+- **Dev**: neovim, clang-format, clang-tidy, TeX Live (beamer)
+- **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
+- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock
+- **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
 ## Key Bindings
 
