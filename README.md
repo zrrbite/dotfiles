@@ -43,6 +43,8 @@ Then log out and select Hyprland as your session.
 | `Super + L` | Lock screen |
 | `Super + Shift + V` | Clipboard history |
 | `Super + Shift + S` | Screenshot region |
+| `Super + Shift + R` | Toggle screen recording |
+| `Super + Ctrl + R` | Toggle region recording |
 | `Super + F1` | Show all keybinds |
 
 ## Manual Installation

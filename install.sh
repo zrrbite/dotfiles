@@ -64,6 +64,7 @@ PACKAGES=(
     libnotify
     grim
     slurp
+    wf-recorder
     btop
 
     # Development
