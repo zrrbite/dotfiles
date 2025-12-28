@@ -88,6 +88,7 @@ PACKAGES=(
     # Fonts
     ttf-jetbrains-mono-nerd
     ttf-nerd-fonts-symbols
+    noto-fonts-cjk
 )
 
 info "Installing packages..."
