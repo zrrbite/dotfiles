@@ -74,6 +74,7 @@ PACKAGES=(
     ripgrep
     fd
     clang
+    clangd
     gdb
     gdb-dashboard
     code
