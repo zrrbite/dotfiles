@@ -1,5 +1,5 @@
 BasedOnStyle: LLVM
-Standard: c++17
+Standard: c++20
 ColumnLimit: 120
 IndentWidth: 4
 TabWidth: 4
