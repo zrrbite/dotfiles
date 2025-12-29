@@ -74,6 +74,7 @@ PACKAGES=(
     ripgrep
     fd
     clang
+    gdb
     code
     meld
 
@@ -149,6 +150,7 @@ CONFIGS_TO_BACKUP=(
     ~/.gitconfig
     ~/.clang-format
     ~/.clang-tidy
+    ~/.gdbinit
     ~/.bash_profile
     ~/.local/share/wallpapers
 )

@@ -70,6 +70,7 @@ stow */        # everything
 |---------|-------------|
 | `btop`  | System monitor (Nord theme) |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
+| `gdb`   | GDB debugger config - pretty printing, UE printers, custom commands |
 | `discord` | Desktop entry override for native Wayland support |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
