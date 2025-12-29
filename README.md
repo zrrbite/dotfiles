@@ -29,7 +29,7 @@ Then log out and select Hyprland as your session.
 - **Audio**: pipewire + wireplumber, pavucontrol
 - **Media**: mpv (video), imv (images)
 - **Files**: thunar file manager
-- **Dev**: neovim, clang-format, clang-tidy, TeX Live (beamer)
+- **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
@@ -70,7 +70,7 @@ stow */        # everything
 |---------|-------------|
 | `btop`  | System monitor (Nord theme) |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
-| `gdb`   | GDB debugger config - pretty printing, UE printers, custom commands |
+| `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |
 | `discord` | Desktop entry override for native Wayland support |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
@@ -80,6 +80,33 @@ stow */        # everything
 | `rofi`  | App launcher with Nord theme |
 | `starship` | Minimal shell prompt with Nerd Font icons |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
+
+## GDB Debugging
+
+The gdb config includes [gdb-dashboard](https://github.com/cyrus-and/gdb-dashboard) for a visual debugging interface showing source, assembly, variables, stack, and registers.
+
+### Dashboard Commands
+
+```bash
+dashboard                          # Show current layout
+dashboard -enabled off             # Disable (vanilla gdb)
+dashboard -layout source stack     # Customize panels
+dashboard source -style height 30  # Resize a panel
+```
+
+### Custom GDB Commands
+
+| Command | Description |
+|---------|-------------|
+| `pa <arr> <len>` | Print raw array |
+| `pv <vector>` | Print std::vector contents |
+| `pm <map>` | Print std::map contents |
+| `pl <head>` | Print linked list |
+| `btall` | Backtrace all threads |
+| `bpl` / `bpc` | List / clear breakpoints |
+| `ctx` | Show source context at PC |
+
+Project-local `.gdbinit` files are auto-loaded from `~/dev/`.
 
 ## Usage
 
