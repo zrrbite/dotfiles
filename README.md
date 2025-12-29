@@ -108,6 +108,65 @@ dashboard source -style height 30  # Resize a panel
 
 Project-local `.gdbinit` files are auto-loaded from `~/dev/`.
 
+## Clang Tools
+
+The `clang` package provides `.clang-format` (LLVM-based, C++20) and `.clang-tidy` (modernize, bugprone, performance checks) configs in your home directory. Tools automatically find these when run from any subdirectory.
+
+### Command Line
+
+```bash
+# Format a single file (in-place)
+clang-format -i src/main.cpp
+
+# Format all C++ files in a directory
+find src -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i
+
+# Check formatting without modifying (CI/pre-commit)
+clang-format --dry-run --Werror src/*.cpp
+
+# Run clang-tidy on a file (needs compile_commands.json)
+clang-tidy src/main.cpp
+
+# Run clang-tidy and apply fixes
+clang-tidy -fix src/main.cpp
+
+# Run on entire project
+find src -name '*.cpp' | xargs clang-tidy
+```
+
+### Generate compile_commands.json
+
+clang-tidy needs a compilation database:
+
+```bash
+# CMake (recommended)
+cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+ln -s build/compile_commands.json .
+
+# Bear (wrap any build system)
+bear -- make
+```
+
+### VS Code with clangd
+
+Install the [clangd extension](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd) (disable Microsoft C/C++ IntelliSense).
+
+clangd automatically uses your `.clang-format` and `.clang-tidy` configs. Add to `.vscode/settings.json`:
+
+```json
+{
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=iwyu"
+    ],
+    "editor.formatOnSave": true,
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+    }
+}
+```
+
 ## Usage
 
 ```bash
