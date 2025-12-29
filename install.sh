@@ -75,6 +75,7 @@ PACKAGES=(
     fd
     clang
     gdb
+    gdb-dashboard
     code
     meld
 

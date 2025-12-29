@@ -140,3 +140,9 @@ end
 document ctx
 Show source context around current PC
 end
+
+# Load gdb-dashboard for visual debugging interface
+# Shows: source, assembly, variables, stack, threads, registers
+# Toggle with: dashboard -enabled on/off
+# Customize layout: dashboard -layout source assembly stack
+source /usr/share/gdb-dashboard/.gdbinit
