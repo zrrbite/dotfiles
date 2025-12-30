@@ -45,6 +45,8 @@ PACKAGES=(
     # Media
     mpv
     imv
+    zathura
+    zathura-pdf-mupdf
 
     # File manager
     thunar

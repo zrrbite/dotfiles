@@ -17,3 +17,4 @@ video/x-msvideo=mpv.desktop
 video/quicktime=mpv.desktop
 video/x-flv=mpv.desktop
 video/mpeg=mpv.desktop
+application/pdf=org.pwmt.zathura.desktop
