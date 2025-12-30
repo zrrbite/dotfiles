@@ -5,22 +5,22 @@ IndentWidth: 4
 TabWidth: 4
 UseTab: Never
 
-# Braces - function definitions on new line, others attached
+# Braces - Allman style (braces on new line)
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterCaseLabel: false
-  AfterClass: false
-  AfterControlStatement: Never
-  AfterEnum: false
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
   AfterFunction: true
   AfterNamespace: false
-  AfterStruct: false
-  AfterUnion: false
+  AfterStruct: true
+  AfterUnion: true
   AfterExternBlock: false
-  BeforeCatch: false
-  BeforeElse: false
+  BeforeCatch: true
+  BeforeElse: true
   BeforeLambdaBody: false
-  BeforeWhile: false
+  BeforeWhile: true
   IndentBraces: false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
