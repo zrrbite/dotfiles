@@ -54,6 +54,7 @@ PACKAGES=(
 
     # Communication
     discord
+    deltachat-desktop
 
     # Utilities
     stow
