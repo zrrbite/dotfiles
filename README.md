@@ -29,6 +29,7 @@ Then log out and select Hyprland as your session.
 - **Audio**: pipewire + wireplumber, pavucontrol
 - **Media**: mpv (video), imv (images)
 - **Files**: thunar file manager
+- **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock
