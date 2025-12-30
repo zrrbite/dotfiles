@@ -111,7 +111,15 @@ Project-local `.gdbinit` files are auto-loaded from `~/dev/`.
 
 ## Clang Tools
 
-The `clang` package provides `.clang-format` (LLVM-based, C++20) and `.clang-tidy` (modernize, bugprone, performance checks) configs in your home directory. Tools automatically find these when run from any subdirectory.
+The `clang` package provides `.clang-format` and `.clang-tidy` configs in your home directory. Tools automatically find these when run from any subdirectory.
+
+**clang-format style:**
+- C++20, 120 column limit, 4-space indent
+- Allman brace style (braces on new line)
+- Left-aligned pointers (`int* ptr`)
+- Sorted includes with grouping
+
+**clang-tidy checks:** modernize, bugprone, performance, readability, cppcoreguidelines
 
 ### Command Line
 
