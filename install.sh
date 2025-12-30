@@ -150,6 +150,7 @@ CONFIGS_TO_BACKUP=(
     ~/.config/btop
     ~/.config/nvim
     ~/.config/starship.toml
+    ~/.config/mimeapps.list
     ~/.gitconfig
     ~/.clang-format
     ~/.clang-tidy
