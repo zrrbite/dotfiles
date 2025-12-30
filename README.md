@@ -27,13 +27,24 @@ Then log out and select Hyprland as your session.
 - **Desktop**: Hyprland, waybar, rofi, mako notifications
 - **Terminal**: foot with Nord theme, starship prompt
 - **Audio**: pipewire + wireplumber, pavucontrol
-- **Media**: mpv (video), imv (images)
+- **Media**: mpv (video), imv (images), zathura (PDF)
 - **Files**: thunar file manager
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
+
+## Default Applications
+
+The `mimeapps` package sets default applications:
+
+| Type | Application |
+|------|-------------|
+| Browser | Google Chrome |
+| Images | imv |
+| Video | mpv |
+| PDF | zathura |
 
 ## Key Bindings
 
