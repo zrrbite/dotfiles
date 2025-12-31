@@ -88,6 +88,7 @@ stow */        # everything
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 | `hypr`  | Hyprland compositor + hyprpaper + hyprlock + hypridle + cliphist |
 | `mako`  | Notification daemon (Nord theme) |
+| `mimeapps` | Default applications (Chrome, imv, mpv, zathura) |
 | `nvim`  | Neovim IDE setup - LSP, treesitter, telescope (C++ focused) |
 | `rofi`  | App launcher with Nord theme |
 | `starship` | Minimal shell prompt with Nerd Font icons |
