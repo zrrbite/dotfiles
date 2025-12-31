@@ -28,7 +28,7 @@ Then log out and select Hyprland as your session.
 - **Terminal**: foot with Nord theme, starship prompt
 - **Audio**: pipewire + wireplumber, pavucontrol
 - **Media**: mpv (video), imv (images), zathura (PDF)
-- **Files**: thunar file manager
+- **Files**: thunar, mc (Midnight Commander)
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
