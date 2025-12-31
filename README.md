@@ -52,6 +52,7 @@ The `mimeapps` package sets default applications:
 |---------|--------|
 | `Super + Q` | Terminal (foot) |
 | `Super + E` | File manager (thunar) |
+| `Super + Shift + E` | Midnight Commander |
 | `Super + R` | App launcher (rofi) |
 | `Super + C` | Close window |
 | `Super + L` | Lock screen |
