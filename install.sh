@@ -50,6 +50,7 @@ PACKAGES=(
 
     # File manager
     thunar
+    mc
 
     # Bluetooth
     blueman
