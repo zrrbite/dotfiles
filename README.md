@@ -32,7 +32,7 @@ Then log out and select Hyprland as your session.
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
-- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock
+- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
 ## Default Applications
