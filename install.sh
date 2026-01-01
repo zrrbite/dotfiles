@@ -62,6 +62,7 @@ PACKAGES=(
     # Utilities
     stow
     rofi-wayland
+    chafa
     wl-clipboard
     cliphist
     mako
