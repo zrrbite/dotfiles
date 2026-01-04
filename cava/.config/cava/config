@@ -1,0 +1,45 @@
+## Configuration file for CAVA.
+
+[general]
+framerate = 60
+bars = 0
+bar_width = 2
+bar_spacing = 1
+
+[input]
+method = pulse
+source = auto
+
+[output]
+method = ncurses
+channels = stereo
+mono_option = average
+
+[color]
+# Nord color scheme
+gradient = 1
+gradient_count = 8
+
+# Nord frost and aurora colors (cyan -> blue -> purple -> pink)
+gradient_color_1 = '#8FBCBB'  # Nord7 - Frost cyan
+gradient_color_2 = '#88C0D0'  # Nord8 - Frost blue
+gradient_color_3 = '#81A1C1'  # Nord9 - Frost blue 2
+gradient_color_4 = '#5E81AC'  # Nord10 - Frost dark blue
+gradient_color_5 = '#B48EAD'  # Nord15 - Aurora purple
+gradient_color_6 = '#D08770'  # Nord12 - Aurora orange
+gradient_color_7 = '#EBCB8B'  # Nord13 - Aurora yellow
+gradient_color_8 = '#A3BE8C'  # Nord14 - Aurora green
+
+[smoothing]
+integral = 77
+monstercat = 0
+waves = 0
+gravity = 100
+ignore = 0
+
+[eq]
+1 = 1
+2 = 1
+3 = 1
+4 = 1
+5 = 1

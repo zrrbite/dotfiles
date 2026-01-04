@@ -41,6 +41,7 @@ PACKAGES=(
     pipewire-pulse
     wireplumber
     pavucontrol
+    cava
 
     # Media
     mpv
@@ -152,6 +153,7 @@ CONFIGS_TO_BACKUP=(
     ~/.config/rofi
     ~/.config/mako
     ~/.config/btop
+    ~/.config/cava
     ~/.config/nvim
     ~/.config/starship.toml
     ~/.config/mimeapps.list
