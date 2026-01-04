@@ -32,7 +32,7 @@ Then log out and select Hyprland as your session.
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
-- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images)
+- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
 ## Default Applications
@@ -188,6 +188,38 @@ clangd automatically uses your `.clang-format` and `.clang-tidy` configs. Add to
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
     }
 }
+```
+
+## Productivity Tools
+
+### fzf - Fuzzy Finder
+
+Interactive fuzzy search for command history, files, and more:
+
+- `Ctrl+R` - Search command history
+- `Ctrl+T` - Search files in current directory
+- `Alt+C` - cd into a directory
+
+### zoxide - Smart Directory Jumper
+
+Tracks your most-used directories and jumps to them with partial matches:
+
+```bash
+z dot        # jumps to ~/dotfiles
+z dev osm    # jumps to ~/dev/osm-raylib
+zi           # interactive selection with fzf
+```
+
+Learns your habits over time - the more you `cd` somewhere, the higher it ranks.
+
+### bat - Better cat
+
+Syntax highlighting, line numbers, and git integration:
+
+```bash
+bat file.cpp           # view with syntax highlighting
+bat -p file.cpp        # plain output (no line numbers)
+bat file.cpp file.h    # view multiple files
 ```
 
 ## Usage
