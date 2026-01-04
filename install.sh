@@ -115,7 +115,6 @@ AUR_PACKAGES=(
     slack-desktop
     p4
     p4v
-    yewtube
 )
 
 # Install yay if not present
