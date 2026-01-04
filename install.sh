@@ -25,7 +25,6 @@ PACKAGES=(
     hyprpaper
     hyprlock
     hypridle
-    wlogout
     brightnessctl
     asciiquarium
     waybar
@@ -118,6 +117,7 @@ AUR_PACKAGES=(
     slack-desktop
     p4
     p4v
+    wlogout
 )
 
 # Install yay if not present
