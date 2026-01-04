@@ -10,10 +10,10 @@ Personal Arch Linux dotfiles with a Nord-themed Hyprland setup, managed with GNU
 > Personal Arch Linux dotfiles with a Nord-themed Hyprland setup, managed with GNU Stow for easy deployment and version control.
 
 **Short (elevator pitch):**
-> A comprehensive dotfiles repository for Arch Linux featuring a beautiful Nord-themed Hyprland desktop environment. Everything is managed with GNU Stow and includes an automated install script. It's optimized for C++ development with neovim, clang tools, and gdb-dashboard, plus tons of productivity tools like fzf, zoxide, and lazygit. The whole setup is designed to be reproducible - clone the repo, run one script, and you're up and running.
+> A comprehensive dotfiles repository for Arch Linux featuring a beautiful Nord-themed Hyprland desktop environment. Everything is managed with GNU Stow and includes an automated install script. It's optimized for C++ development with neovim, clang tools, and gdb-dashboard, plus tons of productivity tools like fzf, zoxide, bat, and yazi. The whole setup is designed to be reproducible - clone the repo, run one script, and you're up and running.
 
 **Detailed:**
-> My personal Arch Linux configuration managed as a dotfiles repository using GNU Stow. It features a Nord-themed Hyprland compositor setup with waybar, rofi, and mako notifications. The repository includes configs for development tools (neovim with LSP, gdb-dashboard, clang-format/tidy), productivity utilities (fzf, zoxide, bat, eza, lazygit, yazi), and visual enhancements (cava audio visualizer, wlogout menu, fastfetch system info). Everything is automated with an install script that handles package installation, config deployment, and shell integration. It's designed to be completely reproducible - perfect for quickly setting up a new machine or sharing configurations across systems.
+> My personal Arch Linux configuration managed as a dotfiles repository using GNU Stow. It features a Nord-themed Hyprland compositor setup with waybar, rofi, and mako notifications. The repository includes configs for development tools (neovim with LSP, gdb-dashboard, clang-format/tidy), productivity utilities (fzf, zoxide, bat, eza, yazi), and visual enhancements (cava audio visualizer, wlogout menu, fastfetch system info). Everything is automated with an install script that handles package installation, config deployment, and shell integration. It's designed to be completely reproducible - perfect for quickly setting up a new machine or sharing configurations across systems.
 
 ## Quick Install
 
@@ -41,7 +41,7 @@ Then log out and select Hyprland as your session.
 - **Media**: mpv (video), imv (images), zathura (PDF)
 - **Files**: thunar, mc (Midnight Commander), yazi (modern file manager)
 - **Communication**: Discord, Delta Chat
-- **Dev**: neovim, lazygit (git TUI), gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
+- **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
@@ -256,22 +256,6 @@ tldr tar        # shows common tar examples
 tldr git-log    # git log usage examples
 tldr -u         # update cache (run once after install)
 ```
-
-### lazygit - Git TUI
-
-Beautiful terminal interface for git operations:
-
-```bash
-lazygit         # launch in any git repo
-```
-
-**Key bindings:**
-- `1-5` - Switch panels (Status, Files, Branches, Commits, Stash)
-- `space` - Stage/unstage files
-- `c` - Commit
-- `P` - Push
-- `p` - Pull
-- `?` - Help
 
 ### yazi - Modern File Manager
 

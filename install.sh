@@ -83,7 +83,6 @@ PACKAGES=(
     # Development
     neovim
     git
-    lazygit
     openssh
     ripgrep
     fd
