@@ -26,7 +26,7 @@ Then log out and select Hyprland as your session.
 
 - **Desktop**: Hyprland, waybar, rofi, mako notifications
 - **Terminal**: foot with Nord theme, starship prompt
-- **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
+- **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer), yewtube (YouTube Music CLI)
 - **Media**: mpv (video), imv (images), zathura (PDF)
 - **Files**: thunar, mc (Midnight Commander)
 - **Communication**: Discord, Delta Chat
