@@ -26,7 +26,6 @@ if [ -f ~/.ssh/id_ed25519 ]; then
 fi
 
 # Terminal greeting
-pokemon-colorscripts -r --no-title
 fastfetch
 
 # fzf - fuzzy finder

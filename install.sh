@@ -119,7 +119,6 @@ AUR_PACKAGES=(
     p4
     p4v
     wlogout
-    pokemon-colorscripts-git
 )
 
 # Install yay if not present
