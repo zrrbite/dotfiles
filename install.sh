@@ -106,6 +106,9 @@ PACKAGES=(
     ttf-nerd-fonts-symbols
     noto-fonts-cjk
     noto-fonts-emoji
+
+    # Themes
+    papirus-icon-theme
 )
 
 info "Installing packages..."
@@ -118,6 +121,7 @@ AUR_PACKAGES=(
     p4
     p4v
     wlogout
+    nordic-theme-git
 )
 
 # Install yay if not present
@@ -164,6 +168,9 @@ CONFIGS_TO_BACKUP=(
     ~/.config/cava
     ~/.config/wlogout
     ~/.config/fastfetch
+    ~/.config/gtk-3.0
+    ~/.config/gtk-4.0
+    ~/.gtkrc-2.0
     ~/.config/nvim
     ~/.config/starship.toml
     ~/.config/mimeapps.list

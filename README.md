@@ -35,7 +35,7 @@ Then log out and select Hyprland as your session.
 
 ## What's Included
 
-- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu)
+- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons
 - **Terminal**: foot with Nord theme, starship prompt, fastfetch (system info)
 - **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
@@ -101,6 +101,7 @@ stow */        # everything
 | `fastfetch` | System info display with Nord colors (Arch logo, system stats) |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
+| `gtk`   | GTK theme config - Nordic theme with Papirus-Dark icons for all GUI apps |
 | `hypr`  | Hyprland compositor + hyprpaper + hyprlock + hypridle + cliphist |
 | `mako`  | Notification daemon (Nord theme) |
 | `mimeapps` | Default applications (Chrome, imv, mpv, zathura) |
