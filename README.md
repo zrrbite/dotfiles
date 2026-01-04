@@ -26,7 +26,7 @@ Then log out and select Hyprland as your session.
 
 - **Desktop**: Hyprland, waybar, rofi, mako notifications
 - **Terminal**: foot with Nord theme, starship prompt
-- **Audio**: pipewire + wireplumber, pavucontrol
+- **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
 - **Files**: thunar, mc (Midnight Commander)
 - **Communication**: Discord, Delta Chat
@@ -82,6 +82,7 @@ stow */        # everything
 | Package | Description |
 |---------|-------------|
 | `btop`  | System monitor (Nord theme) |
+| `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |
 | `discord` | Desktop entry override for native Wayland support |
