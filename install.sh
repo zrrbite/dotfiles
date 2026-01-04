@@ -78,6 +78,7 @@ PACKAGES=(
     bat
     eza
     tldr
+    fastfetch
 
     # Development
     neovim
@@ -164,6 +165,7 @@ CONFIGS_TO_BACKUP=(
     ~/.config/btop
     ~/.config/cava
     ~/.config/wlogout
+    ~/.config/fastfetch
     ~/.config/nvim
     ~/.config/starship.toml
     ~/.config/mimeapps.list

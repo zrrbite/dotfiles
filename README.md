@@ -25,7 +25,7 @@ Then log out and select Hyprland as your session.
 ## What's Included
 
 - **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu)
-- **Terminal**: foot with Nord theme, starship prompt
+- **Terminal**: foot with Nord theme, starship prompt, fastfetch (system info)
 - **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
 - **Files**: thunar, mc (Midnight Commander), yazi (modern file manager)
@@ -87,6 +87,7 @@ stow */        # everything
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |
 | `discord` | Desktop entry override for native Wayland support |
+| `fastfetch` | System info display with Nord colors (Arch logo, system stats) |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases for status, logging, branching, stashing |
 | `hypr`  | Hyprland compositor + hyprpaper + hyprlock + hypridle + cliphist |

@@ -25,8 +25,9 @@ if [ -f ~/.ssh/id_ed25519 ]; then
     ssh-add ~/.ssh/id_ed25519 2>/dev/null
 fi
 
-# Pokemon greeting
+# Terminal greeting
 pokemon-colorscripts -r --no-title
+fastfetch
 
 # fzf - fuzzy finder
 eval "$(fzf --bash)"
