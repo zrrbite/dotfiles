@@ -56,6 +56,7 @@ The `mimeapps` package sets default applications:
 | `Super + R` | App launcher (rofi) |
 | `Super + C` | Close window |
 | `Super + L` | Lock screen |
+| `Super + Escape` | Logout menu (wlogout) |
 | `Super + Shift + V` | Clipboard history |
 | `Super + Shift + S` | Screenshot region |
 | `Super + Shift + R` | Toggle screen recording |
