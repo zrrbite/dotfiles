@@ -24,13 +24,13 @@ Then log out and select Hyprland as your session.
 
 ## What's Included
 
-- **Desktop**: Hyprland, waybar, rofi, mako notifications
+- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu)
 - **Terminal**: foot with Nord theme, starship prompt
 - **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
-- **Files**: thunar, mc (Midnight Commander)
+- **Files**: thunar, mc (Midnight Commander), yazi (modern file manager)
 - **Communication**: Discord, Delta Chat
-- **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
+- **Dev**: neovim, lazygit (git TUI), gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
@@ -95,6 +95,7 @@ stow */        # everything
 | `rofi`  | App launcher with Nord theme |
 | `starship` | Minimal shell prompt with Nerd Font icons |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
+| `wlogout` | Logout menu with Nord theme (lock, logout, shutdown, reboot, suspend) |
 
 ## GDB Debugging
 
@@ -242,6 +243,48 @@ tldr tar        # shows common tar examples
 tldr git-log    # git log usage examples
 tldr -u         # update cache (run once after install)
 ```
+
+### lazygit - Git TUI
+
+Beautiful terminal interface for git operations:
+
+```bash
+lazygit         # launch in any git repo
+```
+
+**Key bindings:**
+- `1-5` - Switch panels (Status, Files, Branches, Commits, Stash)
+- `space` - Stage/unstage files
+- `c` - Commit
+- `P` - Push
+- `p` - Pull
+- `?` - Help
+
+### yazi - Modern File Manager
+
+Fast file manager with image previews and vim-like navigation:
+
+```bash
+yazi            # launch in current directory
+```
+
+**Key bindings:**
+- `hjkl` - Navigate (vim-style)
+- `space` - Select files
+- `y` - Copy
+- `d` - Cut
+- `p` - Paste
+- `q` - Quit
+
+### wlogout - Logout Menu
+
+Graphical logout menu. Bind it in Hyprland:
+
+```bash
+wlogout         # show logout menu
+```
+
+Provides options for lock, logout, shutdown, reboot, and suspend.
 
 ## Usage
 

@@ -25,6 +25,7 @@ PACKAGES=(
     hyprpaper
     hyprlock
     hypridle
+    wlogout
     brightnessctl
     asciiquarium
     waybar
@@ -52,6 +53,7 @@ PACKAGES=(
     # File manager
     thunar
     mc
+    yazi
 
     # Bluetooth
     blueman
@@ -81,6 +83,7 @@ PACKAGES=(
     # Development
     neovim
     git
+    lazygit
     openssh
     ripgrep
     fd
@@ -159,6 +162,7 @@ CONFIGS_TO_BACKUP=(
     ~/.config/mako
     ~/.config/btop
     ~/.config/cava
+    ~/.config/wlogout
     ~/.config/nvim
     ~/.config/starship.toml
     ~/.config/mimeapps.list
