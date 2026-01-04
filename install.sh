@@ -122,6 +122,7 @@ AUR_PACKAGES=(
     p4v
     wlogout
     nordic-theme-git
+    nordzy-cursors
 )
 
 # Install yay if not present

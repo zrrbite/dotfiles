@@ -35,7 +35,7 @@ Then log out and select Hyprland as your session.
 
 ## What's Included
 
-- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons
+- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons, Nordzy cursors
 - **Terminal**: foot with Nord theme, starship prompt, fastfetch (system info)
 - **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
