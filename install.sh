@@ -72,6 +72,9 @@ PACKAGES=(
     slurp
     wf-recorder
     btop
+    fzf
+    zoxide
+    bat
 
     # Development
     neovim
@@ -237,6 +240,36 @@ if [ -f ~/.zshrc ]; then
     if ! grep -q 'SSH_AUTH_SOCK' ~/.zshrc; then
         info "Adding ssh-agent to ~/.zshrc"
         echo "$SSH_AGENT_SETUP" >> ~/.zshrc
+    fi
+fi
+
+# Setup fzf for bash and zsh
+if [ -f ~/.bashrc ]; then
+    if ! grep -q 'fzf --bash' ~/.bashrc; then
+        info "Adding fzf to ~/.bashrc"
+        echo 'eval "$(fzf --bash)"' >> ~/.bashrc
+    fi
+fi
+
+if [ -f ~/.zshrc ]; then
+    if ! grep -q 'fzf --zsh' ~/.zshrc; then
+        info "Adding fzf to ~/.zshrc"
+        echo 'eval "$(fzf --zsh)"' >> ~/.zshrc
+    fi
+fi
+
+# Setup zoxide for bash and zsh
+if [ -f ~/.bashrc ]; then
+    if ! grep -q 'zoxide init bash' ~/.bashrc; then
+        info "Adding zoxide to ~/.bashrc"
+        echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+    fi
+fi
+
+if [ -f ~/.zshrc ]; then
+    if ! grep -q 'zoxide init zsh' ~/.zshrc; then
+        info "Adding zoxide to ~/.zshrc"
+        echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
     fi
 fi
 

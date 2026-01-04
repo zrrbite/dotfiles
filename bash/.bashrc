@@ -22,3 +22,9 @@ fi
 
 toilet -f mono12 "Arch" --metal
 
+# fzf - fuzzy finder
+eval "$(fzf --bash)"
+
+# zoxide - smarter cd
+eval "$(zoxide init bash)"
+
