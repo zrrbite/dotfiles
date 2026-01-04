@@ -33,6 +33,21 @@ The install script will:
 
 Then log out and select Hyprland as your session.
 
+## Updating Your Config
+
+Pull the latest changes and reload everything:
+
+```bash
+cd ~/dotfiles && ./reload.sh
+```
+
+This will:
+- Pull latest changes from git
+- Re-stow all packages (picks up new files)
+- Reload Hyprland config
+- Reload waybar
+- Source bashrc for current terminal
+
 ## What's Included
 
 - **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons, Nordzy cursors
