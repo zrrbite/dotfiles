@@ -32,7 +32,7 @@ Then log out and select Hyprland as your session.
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
-- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting)
+- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
 ## Default Applications
@@ -220,6 +220,27 @@ Syntax highlighting, line numbers, and git integration:
 bat file.cpp           # view with syntax highlighting
 bat -p file.cpp        # plain output (no line numbers)
 bat file.cpp file.h    # view multiple files
+```
+
+### eza - Modern ls
+
+Enhanced `ls` with colors, icons, and git status:
+
+```bash
+ll              # detailed list with icons and git status
+la              # list all files with icons
+lt              # tree view (respects .gitignore)
+eza -T -L 2     # tree view, 2 levels deep
+```
+
+### tldr - Simplified Man Pages
+
+Quick examples instead of full documentation:
+
+```bash
+tldr tar        # shows common tar examples
+tldr git-log    # git log usage examples
+tldr -u         # update cache (run once after install)
 ```
 
 ## Usage

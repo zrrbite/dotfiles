@@ -75,6 +75,8 @@ PACKAGES=(
     fzf
     zoxide
     bat
+    eza
+    tldr
 
     # Development
     neovim

@@ -9,6 +9,11 @@ alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias chafa-ascii='chafa --format symbols --symbols ascii --colors none -s 60x20'
 alias chafa-block='chafa --format symbols --symbols block -s 60x20'
+
+# eza aliases (modern ls replacement)
+alias ll='eza -la --icons --git'
+alias lt='eza -T --icons --git-ignore'
+alias la='eza -a --icons'
 PS1='[\u@\h \W]\$ '
 eval "$(starship init bash)"
 
