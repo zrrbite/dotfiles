@@ -160,6 +160,22 @@ return {
                   vim.cmd("edit " .. vim.uri_to_fname(result))
                 end)
             end, "Switch [H]eader/Source")
+
+            -- Batch fix with clang-tidy
+            map("<leader>cf", function()
+              local file = vim.fn.expand("%:p")
+              vim.notify("Running clang-tidy --fix on " .. vim.fn.expand("%"), vim.log.levels.INFO)
+              vim.fn.jobstart({ "clang-tidy", "-fix", file }, {
+                on_exit = function(_, exit_code)
+                  if exit_code == 0 then
+                    vim.cmd("checktime") -- Reload file if changed
+                    vim.notify("clang-tidy fixes applied", vim.log.levels.INFO)
+                  else
+                    vim.notify("clang-tidy failed with exit code " .. exit_code, vim.log.levels.ERROR)
+                  end
+                end,
+              })
+            end, "[C]lang-tidy [F]ix")
           end
         end,
       })
