@@ -29,6 +29,7 @@ KEYBINDS=(
     "Space + h • Switch header/source (C++)"
     "Space + rn • Rename symbol (LSP)"
     "Space + ca • Code actions (LSP)"
+    "Space + f • Format code (clang-format)"
     "Space + D • Type definition (LSP)"
     "---"
     ":w • Save file"
