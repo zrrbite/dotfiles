@@ -80,6 +80,9 @@ return {
     config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+      -- Fix for clangd offset encoding
+      capabilities.offsetEncoding = { "utf-16" }
+
       -- Clangd for C++
       vim.lsp.config.clangd = {
         cmd = {
