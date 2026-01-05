@@ -61,6 +61,11 @@ This will:
 - **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
+## Screenshots
+
+### Terminal with Fastfetch
+![Terminal](screenshots/terminal.png)
+
 ## Default Applications
 
 The `mimeapps` package sets default applications:
