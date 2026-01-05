@@ -76,14 +76,12 @@ return {
   },
 
   {
-    "neovim/nvim-lspconfig",
-    dependencies = { "hrsh7th/cmp-nvim-lsp" },
+    "hrsh7th/cmp-nvim-lsp",
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- Clangd for C++
-      lspconfig.clangd.setup({
+      -- Clangd for C++ - use new vim.lsp.config API
+      vim.lsp.config("clangd", {
         cmd = {
           "clangd",
           "--background-index",
@@ -94,13 +92,16 @@ return {
           "--fallback-style=llvm",
           "--offset-encoding=utf-16",
         },
-        capabilities = vim.tbl_deep_extend("force", capabilities, {
-          offsetEncoding = { "utf-16" },
-        }),
+        filetypes = { "c", "cpp", "objc", "objcpp" },
+        root_dir = vim.fs.root(0, { ".clangd", "compile_commands.json", ".git" }),
+        capabilities = capabilities,
       })
 
       -- Lua LS
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
+        cmd = { "lua-language-server" },
+        filetypes = { "lua" },
+        root_dir = vim.fs.root(0, { ".luarc.json", ".git" }),
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -109,6 +110,10 @@ return {
           },
         },
       })
+
+      -- Enable LSPs
+      vim.lsp.enable("clangd")
+      vim.lsp.enable("lua_ls")
 
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
