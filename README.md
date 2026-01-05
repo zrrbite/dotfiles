@@ -391,6 +391,50 @@ Space + ca              # Code actions - shows available fixes
 - `Space + cf` runs standalone clang-tidy for batch fixes
 - `Space + ca` uses clangd code actions (can fix more than just clang-tidy warnings)
 
+**C++ Debugging with DAP:**
+
+Neovim includes full debugging support via DAP (Debug Adapter Protocol) with codelldb.
+
+```bash
+# Debug Controls
+F5                      # Start debugging / Continue execution
+F10                     # Step over (execute current line)
+F11                     # Step into (enter function)
+F12                     # Step out (exit function)
+Space + b               # Toggle breakpoint on current line
+Space + B               # Set conditional breakpoint
+Space + du              # Toggle debug UI (shows variables, stack, etc.)
+Space + dr              # Open debug REPL (evaluate expressions)
+```
+
+**Debugging workflow:**
+1. Compile your program with debug symbols (`-g` flag)
+2. Open source file in nvim
+3. Set breakpoints with `Space + b`
+4. Press `F5` to start debugging
+5. Enter path to executable when prompted
+6. Debug UI opens automatically showing:
+   - Variables and their values (updates as you step)
+   - Call stack
+   - Breakpoints list
+   - Watch expressions
+7. Step through code with F10/F11/F12
+8. Hover over variables to see values
+9. Use debug REPL (`Space + dr`) to evaluate expressions
+
+**Debug configurations:**
+- Launch: Run executable from nvim
+- Attach: Attach to running process (pick from list)
+- Works with C, C++, and Rust
+
+**Unreal Engine debugging:**
+Neovim debugging works with Unreal Engine C++ projects:
+- Compile UE project with debug symbols
+- Attach to running UE Editor process, or
+- Launch UE Editor executable from nvim
+- Set breakpoints in your game code
+- Step through game logic during play
+
 Press `Super + F3` for a quick reference of all Neovim keybindings.
 
 ## Productivity Tools
