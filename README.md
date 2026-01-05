@@ -183,6 +183,9 @@ The `clang` package provides `.clang-format` and `.clang-tidy` configs in your h
 
 **clang-tidy checks:** modernize, bugprone, performance, readability, cppcoreguidelines
 
+**Automatic formatting enforcement:**
+A global pre-commit hook automatically checks C++ code formatting before every commit. If staged C++ files don't comply with `.clang-format`, the commit is blocked with clear instructions to fix.
+
 ### Command Line
 
 ```bash
@@ -217,6 +220,32 @@ ln -s build/compile_commands.json .
 # Bear (wrap any build system)
 bear -- make
 ```
+
+### Pre-commit Hook (Automatic Formatting Enforcement)
+
+A global pre-commit hook runs `git-clang-format` on all staged C++ files before every commit. If code doesn't comply with `.clang-format`, the commit fails with a clear diff showing what needs fixing.
+
+**What happens on commit:**
+1. Hook automatically checks all staged `.cpp`, `.hpp`, `.h`, `.cc`, `.cxx` files
+2. If formatting is correct → commit succeeds ✓
+3. If formatting issues found → commit blocked, shows exact diff ✗
+
+**When commit is blocked:**
+```bash
+# Option 1: Auto-fix and recommit (recommended)
+git clang-format --staged
+git add -u
+git commit
+
+# Option 2: Bypass hook (not recommended)
+git commit --no-verify
+```
+
+**Configuration:**
+- Hook location: `~/.git-hooks/pre-commit`
+- Git config: `core.hooksPath = ~/.git-hooks`
+- Applies to all your git repositories globally
+- Uses your `~/.clang-format` configuration
 
 ### VS Code with clangd
 
