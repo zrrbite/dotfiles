@@ -384,29 +384,30 @@ Provides options for lock, logout, shutdown, reboot, and suspend.
 
 ### CLI Tools Quick Reference
 
+**Pro Tip Aliases - Power user shortcuts:**
+```bash
+fcpp                    # Find and view C++ files (fd + fzf + bat)
+ftodo                   # Find and edit TODOs (rg + fzf + nvim)
+fmd                     # Find markdown files (fd + fzf)
+ffunc                   # Find function definitions (rg + fzf + bat)
+fimg                    # Find and preview images (fd + fzf + chafa)
+```
+
 **Search & Navigation:**
 ```bash
 z dot                   # Jump to frequently used directory
-fd -e cpp | fzf         # Find and fuzzy-select C++ files
-rg -l "TODO"            # Find files containing "TODO"
+zi                      # Jump with fzf picker
+fd <pattern>            # Find files (better than find)
+fd -H <pattern>         # Include hidden files
+rg <pattern>            # Search file contents (better grep)
+rg -l <pattern>         # List files containing pattern
 ```
 
-**Pro Tips - Chain commands together:**
+**Keyboard Shortcuts:**
 ```bash
-# Find, pick, and view a C++ file
-fd -e cpp | fzf | xargs bat
-
-# Search for TODOs, pick one, and edit
-rg -l "TODO" | fzf | xargs nvim
-
-# Jump to project and find markdown files
-z dev && fd -e md | fzf
-
-# Find images and preview them
-fd -e png -e jpg | fzf --preview 'chafa {}'
-
-# Search for function definitions and view with context
-rg "^function" | fzf | cut -d: -f1 | xargs bat
+Ctrl+R                  # Search command history with fzf
+Ctrl+T                  # Fuzzy find files
+Alt+C                   # Fuzzy cd into directory
 ```
 
 ## Usage
