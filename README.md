@@ -278,6 +278,38 @@ Ctrl + h/j/k/l          # Navigate between splits
 3. LSP activates automatically when you open `.cpp` or `.hpp` files
 4. Use `Space + fw` to fuzzy search any symbol in your project!
 
+**Diagnostics & Auto-fix Workflow:**
+
+Clangd shows errors and warnings in the sign column (left side) with E/W markers.
+
+```bash
+# View diagnostics:
+Space + q               # List all diagnostics with full text
+Space + d               # Show diagnostic at cursor in popup
+K                       # Hover on line - shows diagnostic
+
+# Navigate diagnostics:
+]d                      # Jump to next diagnostic
+[d                      # Jump to previous diagnostic
+
+# Auto-fix issues:
+Space + ca              # Code actions - shows available fixes
+                        # Select fix and press Enter to apply
+```
+
+**Common auto-fixes:**
+- Remove unused variables
+- Add missing includes
+- Apply clang-tidy suggestions
+- Modernize C++ code (use auto, range-for, etc.)
+
+**Workflow for fixing multiple issues:**
+1. `Space + q` - See all diagnostics
+2. Navigate to one with "Fix available"
+3. Press `Enter` to jump to line
+4. `Space + ca` - View and apply fix
+5. Repeat for other issues
+
 Press `Super + F3` for a quick reference of all Neovim keybindings.
 
 ## Productivity Tools
