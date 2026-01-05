@@ -11,6 +11,7 @@ Checks: >
   -readability-identifier-length,
   -readability-magic-numbers,
   -readability-function-cognitive-complexity,
+  -readability-make-member-function-const,
   cppcoreguidelines-*,
   -cppcoreguidelines-avoid-magic-numbers,
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
@@ -21,6 +22,7 @@ Checks: >
   -cppcoreguidelines-pro-type-vararg,
   misc-*,
   -misc-non-private-member-variables-in-classes,
+  -misc-const-correctness,
   clang-analyzer-*,
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling
 
