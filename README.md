@@ -56,7 +56,7 @@ This will:
 
 ## What's Included
 
-- **Desktop**: Hyprland, waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons, Nordzy cursors
+- **Desktop**: Hyprland (gaps preserved even with single windows), waybar, rofi, mako notifications, wlogout (logout menu), Nordic GTK theme, Papirus-Dark icons, Nordzy cursors
 - **Terminal**: foot with Nord theme, starship prompt, fastfetch (system info)
 - **Audio**: pipewire + wireplumber, pavucontrol, cava (audio visualizer)
 - **Media**: mpv (video), imv (images), zathura (PDF)
