@@ -52,6 +52,9 @@ return {
       vim.keymap.set("n", "<leader>fd", builtin.diagnostics, { desc = "[F]ind [D]iagnostics" })
       vim.keymap.set("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "[F]ind [S]ymbols (document)" })
       vim.keymap.set("n", "<leader>fw", builtin.lsp_workspace_symbols, { desc = "[F]ind [W]orkspace symbols" })
+      vim.keymap.set("n", "<leader>fm", function()
+        builtin.grep_string({ search = "#define" })
+      end, { desc = "[F]ind [M]acros (#define)" })
     end,
   },
 

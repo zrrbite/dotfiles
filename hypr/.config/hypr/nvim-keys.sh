@@ -12,6 +12,7 @@ KEYBINDS=(
     "Space + fd • Find diagnostics (Telescope)"
     "Space + fs • Find symbols in file (Telescope)"
     "Space + fw • Find symbols in workspace (Telescope)"
+    "Space + fm • Find macros (#define)"
     "Space + mp • Markdown preview (toggle)"
     "Space + q • Show all diagnostics (full text)"
     "Space + d • Show diagnostic at cursor"
