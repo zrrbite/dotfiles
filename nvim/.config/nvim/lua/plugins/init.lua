@@ -115,6 +115,15 @@ return {
       vim.lsp.enable("clangd")
       vim.lsp.enable("lua_ls")
 
+      -- Suppress encoding warnings (functionality works despite warnings)
+      local notify = vim.notify
+      vim.notify = function(msg, ...)
+        if msg:match("symbols_to_items") and msg:match("position encoding") then
+          return
+        end
+        notify(msg, ...)
+      end
+
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
