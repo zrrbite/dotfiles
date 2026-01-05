@@ -103,6 +103,7 @@ The `mimeapps` package sets default applications:
 | `Super + B` | Next window below (vertical) |
 | `Super + N` | Next window right (horizontal) |
 | `Super + J` | Toggle split direction |
+| `Super + =` | Resize window to 1:1 aspect ratio (square) |
 | `Super + F1` | Show all keybinds |
 
 ## Manual Installation
