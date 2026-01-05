@@ -125,6 +125,7 @@ AUR_PACKAGES=(
     wlogout
     nordic-theme-git
     nordzy-cursors
+    codelldb  # C++ debugger for nvim-dap
 )
 
 # Install yay if not present
