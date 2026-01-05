@@ -19,6 +19,8 @@ Personal Arch Linux dotfiles with a Nord-themed Hyprland setup, managed with GNU
 
 **Note:** If you prefer a pre-configured Hyprland distro over building your own, check out [Omarchy](https://omarchy.org/) - an opinionated Linux distribution by DHH (Rails creator) that's also built on Hyprland. This dotfiles approach gives you more control and customization, while Omarchy provides an out-of-the-box experience.
 
+Want to try Omarchy? See `./install_omarchy.sh` for installation guidance and instructions on layering these dotfiles on top.
+
 ---
 
 ## Quick Install
