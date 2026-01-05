@@ -248,9 +248,11 @@ Space + fs              # Find symbols in current file
 Space + fw              # Find symbols in entire workspace
 Space + fg              # Search text across all files (grep)
 gd                      # Go to definition
+gD                      # Go to declaration
 gr                      # Go to references (find all usages)
 gI                      # Go to implementation
 K                       # Show documentation/hover info
+Space + h               # Switch between header/source (.h <-> .cpp)
 ```
 
 **Code Intelligence:**

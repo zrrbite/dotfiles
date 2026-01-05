@@ -115,6 +115,7 @@ return {
           end
 
           map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
+          map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
           map("gr", vim.lsp.buf.references, "[G]oto [R]eferences")
           map("gI", vim.lsp.buf.implementation, "[G]oto [I]mplementation")
           map("K", vim.lsp.buf.hover, "Hover Documentation")
@@ -122,6 +123,11 @@ return {
           map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
           map("<leader>D", vim.lsp.buf.type_definition, "Type [D]efinition")
           map("<leader>sh", vim.lsp.buf.signature_help, "[S]ignature [H]elp")
+
+          -- C++ specific: Switch between header and source
+          if vim.bo.filetype == "cpp" or vim.bo.filetype == "c" then
+            map("<leader>h", "<cmd>ClangdSwitchSourceHeader<cr>", "Switch [H]eader/Source")
+          end
         end,
       })
     end,
