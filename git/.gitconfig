@@ -137,6 +137,7 @@ editor = nvim
 whitespace = cr-at-eol
 preloadindex = true
 fscache = true # https://github.com/msysgit/msysgit/wiki/Diagnosing-why-Git-is-so-slow
+hooksPath = ~/.git-hooks
 
 [http]
 postBuffer = 524288000
