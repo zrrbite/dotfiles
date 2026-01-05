@@ -134,8 +134,14 @@ return {
           map("<leader>sh", vim.lsp.buf.signature_help, "[S]ignature [H]elp")
 
           -- C++ specific: Switch between header and source
-          if vim.bo.filetype == "cpp" or vim.bo.filetype == "c" then
-            map("<leader>h", "<cmd>ClangdSwitchSourceHeader<cr>", "Switch [H]eader/Source")
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client.name == "clangd" then
+            map("<leader>h", function()
+              vim.lsp.buf.execute_command({
+                command = "clangd.switchheadersource",
+                arguments = { vim.uri_from_bufnr(0) },
+              })
+            end, "Switch [H]eader/Source")
           end
         end,
       })
