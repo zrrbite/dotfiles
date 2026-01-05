@@ -15,6 +15,12 @@ Personal Arch Linux dotfiles with a Nord-themed Hyprland setup, managed with GNU
 **Detailed:**
 > My personal Arch Linux configuration managed as a dotfiles repository using GNU Stow. It features a Nord-themed Hyprland compositor setup with waybar, rofi, and mako notifications. The repository includes configs for development tools (neovim with LSP, gdb-dashboard, clang-format/tidy), productivity utilities (fzf, zoxide, bat, eza, yazi), and visual enhancements (cava audio visualizer, wlogout menu, fastfetch system info). Everything is automated with an install script that handles package installation, config deployment, and shell integration. It's designed to be completely reproducible - perfect for quickly setting up a new machine or sharing configurations across systems.
 
+---
+
+**Note:** If you prefer a pre-configured Hyprland distro over building your own, check out [Omarchy](https://omarchy.org/) - an opinionated Linux distribution by DHH (Rails creator) that's also built on Hyprland. This dotfiles approach gives you more control and customization, while Omarchy provides an out-of-the-box experience.
+
+---
+
 ## Quick Install
 
 On a fresh Arch Linux system:
