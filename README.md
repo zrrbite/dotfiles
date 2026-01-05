@@ -275,6 +275,17 @@ Space + fb              # Find open buffers
 Ctrl + h/j/k/l          # Navigate between splits
 ```
 
+**Git Integration:**
+```bash
+Space + gb              # Toggle inline git blame (shows author/date for each line)
+Space + hb              # Show full blame for current line
+Space + hp              # Preview git hunk (shows diff in popup)
+Space + hs              # Stage hunk (add changes to git)
+Space + hr              # Reset hunk (discard changes)
+Space + hd              # Show diff for current file
+]c / [c                 # Jump to next/previous changed hunk
+```
+
 **Setup for C++ projects:**
 1. Open project: `nvim .`
 2. Generate `compile_commands.json` for best results (see above)
