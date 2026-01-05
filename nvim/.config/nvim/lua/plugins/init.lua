@@ -80,8 +80,11 @@ return {
     config = function()
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- Fix for clangd offset encoding
-      capabilities.offsetEncoding = { "utf-16" }
+      -- Fix for clangd offset encoding - multiple approaches for compatibility
+      capabilities.offsetEncoding = "utf-16"
+      if capabilities.general then
+        capabilities.general.positionEncodings = { "utf-16" }
+      end
 
       -- Clangd for C++
       vim.lsp.config.clangd = {
@@ -93,6 +96,7 @@ return {
           "--completion-style=detailed",
           "--function-arg-placeholders",
           "--fallback-style=llvm",
+          "--offset-encoding=utf-16",  -- Explicitly tell clangd to use utf-16
         },
         filetypes = { "c", "cpp", "objc", "objcpp" },
         root_markers = { ".clangd", "compile_commands.json", ".git" },
