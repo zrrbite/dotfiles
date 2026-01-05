@@ -137,10 +137,18 @@ return {
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client.name == "clangd" then
             map("<leader>h", function()
-              vim.lsp.buf.execute_command({
-                command = "clangd.switchheadersource",
-                arguments = { vim.uri_from_bufnr(0) },
-              })
+              vim.lsp.buf_request(0, "textDocument/switchSourceHeader",
+                vim.lsp.util.make_text_document_params(), function(err, result)
+                  if err then
+                    vim.notify("Error switching source/header: " .. err.message, vim.log.levels.ERROR)
+                    return
+                  end
+                  if not result then
+                    vim.notify("Corresponding file not found", vim.log.levels.WARN)
+                    return
+                  end
+                  vim.cmd("edit " .. vim.uri_to_fname(result))
+                end)
             end, "Switch [H]eader/Source")
           end
         end,
