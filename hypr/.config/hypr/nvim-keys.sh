@@ -12,6 +12,7 @@ KEYBINDS=(
     "Space + fd • Find diagnostics (Telescope)"
     "Space + fs • Find symbols in file (Telescope)"
     "Space + fw • Find symbols in workspace (Telescope)"
+    "Space + mp • Markdown preview (toggle)"
     "---"
     "Ctrl + h/j/k/l • Navigate between windows"
     "Ctrl + w + v • Split window vertically"
