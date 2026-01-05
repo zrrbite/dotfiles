@@ -223,23 +223,30 @@ bear -- make
 
 ### Pre-commit Hook (Automatic Formatting Enforcement)
 
-A global pre-commit hook runs `git-clang-format` on all staged C++ files before every commit. If code doesn't comply with `.clang-format`, the commit fails with a clear diff showing what needs fixing.
+A global pre-commit hook runs `git-clang-format` on all staged C++ files before every commit. If code doesn't comply with `.clang-format`, the commit fails with fun ASCII art (`(╯°□°)╯︵ ┻━┻`), a clear diff, and helpful instructions.
 
 **What happens on commit:**
 1. Hook automatically checks all staged `.cpp`, `.hpp`, `.h`, `.cc`, `.cxx` files
 2. If formatting is correct → commit succeeds ✓
-3. If formatting issues found → commit blocked, shows exact diff ✗
+3. If formatting issues found → commit blocked with table-flipping ASCII art and exact diff ✗
 
 **When commit is blocked:**
 ```bash
-# Option 1: Auto-fix and recommit (recommended)
+# Option 1: Auto-fix with git cf alias (fastest)
+git cf        # Formats all staged C++ files
+git commit    # Try again
+
+# Option 2: Auto-fix manually
 git clang-format --staged
 git add -u
 git commit
 
-# Option 2: Bypass hook (not recommended)
+# Option 3: Bypass hook (not recommended)
 git commit --no-verify
 ```
+
+**Git alias available:**
+- `git cf` - Formats all staged C++ files (defined in `.gitconfig`)
 
 **Configuration:**
 - Hook location: `~/.git-hooks/pre-commit`
