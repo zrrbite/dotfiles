@@ -37,6 +37,6 @@ export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE
 --color=marker:#88C0D0,fg+:#ECEFF4,prompt:#88C0D0,hl+:#A3BE8C \
 --color=border:#4C566A"
 
-# zoxide - smarter cd
-eval "$(zoxide init bash)"
+# zoxide - smarter cd (replaces cd command)
+eval "$(zoxide init bash --cmd cd)"
 
