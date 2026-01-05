@@ -67,7 +67,7 @@ return {
     end,
   },
 
-  -- LSP (using native Neovim 0.11+ API)
+  -- LSP
   {
     "williamboman/mason.nvim",
     config = function()
@@ -76,18 +76,14 @@ return {
   },
 
   {
-    "hrsh7th/cmp-nvim-lsp",
+    "neovim/nvim-lspconfig",
+    dependencies = { "hrsh7th/cmp-nvim-lsp" },
     config = function()
+      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- Fix for clangd offset encoding - multiple approaches for compatibility
-      capabilities.offsetEncoding = "utf-16"
-      if capabilities.general then
-        capabilities.general.positionEncodings = { "utf-16" }
-      end
-
       -- Clangd for C++
-      vim.lsp.config.clangd = {
+      lspconfig.clangd.setup({
         cmd = {
           "clangd",
           "--background-index",
@@ -96,18 +92,15 @@ return {
           "--completion-style=detailed",
           "--function-arg-placeholders",
           "--fallback-style=llvm",
-          "--offset-encoding=utf-16",  -- Explicitly tell clangd to use utf-16
+          "--offset-encoding=utf-16",
         },
-        filetypes = { "c", "cpp", "objc", "objcpp" },
-        root_markers = { ".clangd", "compile_commands.json", ".git" },
-        capabilities = capabilities,
-      }
+        capabilities = vim.tbl_deep_extend("force", capabilities, {
+          offsetEncoding = { "utf-16" },
+        }),
+      })
 
       -- Lua LS
-      vim.lsp.config.lua_ls = {
-        cmd = { "lua-language-server" },
-        filetypes = { "lua" },
-        root_markers = { ".luarc.json", ".git" },
+      lspconfig.lua_ls.setup({
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -115,21 +108,12 @@ return {
             diagnostics = { globals = { "vim" } },
           },
         },
-      }
-
-      -- Enable LSPs
-      vim.lsp.enable({ "clangd", "lua_ls" })
+      })
 
       -- LSP keymaps
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("lsp-attach", { clear = true }),
         callback = function(event)
-          -- Force UTF-16 encoding for clangd after attach
-          local client = vim.lsp.get_client_by_id(event.data.client_id)
-          if client and client.name == "clangd" then
-            client.offset_encoding = "utf-16"
-          end
-
           local map = function(keys, func, desc)
             vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
           end
