@@ -427,13 +427,60 @@ Space + dr              # Open debug REPL (evaluate expressions)
 - Attach: Attach to running process (pick from list)
 - Works with C, C++, and Rust
 
-**Unreal Engine debugging:**
-Neovim debugging works with Unreal Engine C++ projects:
-- Compile UE project with debug symbols
-- Attach to running UE Editor process, or
-- Launch UE Editor executable from nvim
-- Set breakpoints in your game code
-- Step through game logic during play
+**Unreal Engine C++ Development Workflow:**
+
+Neovim works excellently for UE C++ development with this hybrid workflow:
+
+*Setup (one-time):*
+1. **Generate compile_commands.json** for LSP support:
+   ```bash
+   # Option 1: Via UnrealBuildTool (recommended)
+   UnrealBuildTool.exe -Mode=GenerateClangDatabase -Project="C:/Path/To/YourProject.uproject" -Game -Engine
+
+   # Option 2: Via RunUAT
+   <UERoot>/Engine/Build/BatchFiles/RunUAT.bat -ScriptsForProject=<YourProject>.uproject Turnkey -command=VerifySdk -platform=Win64
+   ```
+
+2. **Create `.clangd` file** in project root to help with UE macros:
+   ```yaml
+   CompileFlags:
+     Add:
+       - -ferror-limit=0
+       - -Wno-unknown-attributes
+     Remove:
+       - -W*
+       - /W*
+   ```
+
+*Daily workflow:*
+1. **C++ coding** → Neovim (LSP, refactoring, navigation, formatting)
+2. **Compilation** → Visual Studio on Windows or UE Editor
+3. **Blueprints/Assets** → Unreal Editor
+4. **Debugging** → Neovim DAP (attach to UE Editor) or Visual Studio
+
+*Debugging UE in Neovim:*
+```bash
+# Method 1: Attach to running Editor (recommended for iteration)
+1. Start UE Editor normally
+2. In nvim: Press F5 → "Attach to process"
+3. Select UE4Editor.exe or UE5Editor.exe
+4. Set breakpoints (Space+b) in your game code
+5. Play in editor - breakpoints hit automatically
+6. Step through with F10/F11
+
+# Method 2: Launch game build
+1. Build project in Development mode
+2. In nvim: Press F5 → "Launch file"
+3. Point to YourGame.exe
+4. Breakpoints work in game code
+```
+
+*Why this workflow works:*
+- ✅ Fast C++ editing with full IDE features (Neovim)
+- ✅ Reliable compilation (VS/UE Build System)
+- ✅ Visual tooling for Blueprints/Assets (UE Editor)
+- ✅ Powerful debugging (Neovim DAP or VS)
+- ✅ Best of all worlds - use the right tool for each job
 
 Press `Super + F3` for a quick reference of all Neovim keybindings.
 
