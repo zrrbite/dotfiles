@@ -12,6 +12,12 @@ alias chafa-block='chafa --format symbols --symbols block -s 60x20'
 # Image preview with fzf and chafa
 alias fimg='fd -e png -e jpg -e jpeg -e gif -e webp -e bmp | fzf --preview "chafa {}"'
 
+# Pro tip aliases - chain commands together
+alias fcpp='fd -e cpp -e hpp | fzf | xargs bat'           # Find and view C++ files
+alias ftodo='rg -l "TODO" | fzf | xargs nvim'              # Find and edit TODOs
+alias fmd='fd -e md | fzf'                                 # Find markdown files
+alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'  # Find function definitions
+
 # eza aliases (modern ls replacement)
 alias ls='eza --icons'
 alias ll='eza -la --icons --git'

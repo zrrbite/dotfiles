@@ -4,6 +4,10 @@
 # Shows useful CLI commands and aliases
 
 COMMANDS=(
+    "fcpp • Find and view C++ files"
+    "ftodo • Find and edit TODOs"
+    "fmd • Find markdown files"
+    "ffunc • Find function definitions"
     "fimg • Find and preview images interactively"
     "z <dir> • Jump to frequently used directory"
     "zi • Jump to directory with fzf picker"
@@ -23,8 +27,6 @@ COMMANDS=(
     "Ctrl+R • Search command history with fzf"
     "Ctrl+T • Fuzzy find files"
     "Alt+C • Fuzzy cd into directory"
-    "fd -e cpp | fzf | xargs bat • Find, pick, view C++ file"
-    "rg -l TODO | fzf | xargs nvim • Find TODOs and edit"
 )
 
 # Join array with newlines
