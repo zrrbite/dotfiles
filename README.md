@@ -259,13 +259,17 @@ bat file.cpp file.h    # view multiple files
 
 ### eza - Modern ls
 
-Enhanced `ls` with colors, icons, and git status:
+Replaces `ls` with a modern alternative featuring colors, icons, and git status:
 
 ```bash
+ls              # eza with icons (replaces standard ls)
 ll              # detailed list with icons and git status
 la              # list all files with icons
 lt              # tree view (respects .gitignore)
 eza -T -L 2     # tree view, 2 levels deep
+
+# Use original ls if needed:
+/bin/ls         # standard ls command
 ```
 
 ### tldr - Simplified Man Pages
