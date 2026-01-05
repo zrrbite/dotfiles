@@ -25,7 +25,7 @@ require("lazy").setup("plugins")
 
 -- Basic settings
 vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false  -- Use absolute line numbers
 vim.opt.mouse = "a"
 vim.opt.showmode = false
 vim.opt.clipboard = "unnamedplus"
