@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Cool commands menu for rofi
+# Useful commands menu for rofi
 # Shows useful CLI commands and aliases
 
 COMMANDS=(
@@ -31,7 +31,7 @@ COMMANDS=(
 MENU=$(printf '%s\n' "${COMMANDS[@]}")
 
 # Show menu in rofi
-SELECTED=$(echo "$MENU" | rofi -dmenu -i -p "Cool Commands" -theme-str 'window {width: 50%;}' -theme-str 'listview {lines: 15;}')
+SELECTED=$(echo "$MENU" | rofi -dmenu -i -p "Useful Commands" -theme-str 'window {width: 50%;}' -theme-str 'listview {lines: 15;}')
 
 # If something was selected, copy the command part to clipboard
 if [ -n "$SELECTED" ]; then

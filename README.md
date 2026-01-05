@@ -107,7 +107,7 @@ The `mimeapps` package sets default applications:
 | `Super + J` | Toggle split direction |
 | `Super + =` | Resize window to 1:1 aspect ratio (square) |
 | `Super + F1` | Show all keybinds |
-| `Super + F2` | Cool commands menu |
+| `Super + F2` | Useful commands menu |
 
 ## Manual Installation
 
