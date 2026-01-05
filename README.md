@@ -64,7 +64,7 @@ This will:
 - **Communication**: Discord, Delta Chat
 - **Dev**: neovim, gdb + gdb-dashboard, clang-format, clang-tidy, TeX Live (beamer)
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
-- **Utils**: screenshots, screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
+- **Utils**: screenshots (grim + slurp + satty), screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 
 ## Screenshots
@@ -96,6 +96,8 @@ The `mimeapps` package sets default applications:
 | `Super + Escape` | Logout menu (wlogout) |
 | `Super + Shift + V` | Clipboard history |
 | `Super + Shift + S` | Screenshot region |
+| `Super + Shift + A` | Screenshot with annotation (satty) |
+| `Super + Shift + C` | Screenshot to clipboard |
 | `Super + Shift + R` | Toggle screen recording |
 | `Super + Ctrl + R` | Toggle region recording |
 | `Super + B` | Next window below (vertical) |

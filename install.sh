@@ -71,6 +71,7 @@ PACKAGES=(
     libnotify
     grim
     slurp
+    satty
     wf-recorder
     btop
     fzf
