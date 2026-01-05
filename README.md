@@ -309,6 +309,67 @@ yazi            # launch in current directory
 - `p` - Paste
 - `q` - Quit
 
+### fd - Better Find
+
+Modern, user-friendly alternative to `find` with intuitive syntax:
+
+```bash
+fd pattern              # Find files/dirs matching pattern
+fd -H bashrc            # Include hidden files
+fd -e cpp               # Find by extension
+fd -t f pattern         # Only files (-t d for dirs)
+fd '^install'           # Files starting with "install" (regex)
+```
+
+Fast, respects `.gitignore` by default, and has colored output.
+
+### ripgrep (rg) - Better Grep
+
+Blazing fast search tool for file contents:
+
+```bash
+rg "pattern"            # Search recursively from current dir
+rg -i "PATTERN"         # Case insensitive
+rg -l "term"            # Just list filenames with matches
+rg -C 3 "pattern"       # Show 3 lines of context
+rg -t sh "function"     # Only search .sh files
+rg --hidden "config"    # Include hidden files
+```
+
+Much faster than grep, respects `.gitignore`, and has smart case sensitivity.
+
+### chafa - Terminal Image Viewer
+
+View images directly in the terminal:
+
+```bash
+chafa-ascii image.jpg   # ASCII art mode (alias)
+chafa-block image.jpg   # Block characters (alias)
+chafa image.png         # Full color mode
+```
+
+Perfect for quickly previewing images without leaving the terminal.
+
+### btop - System Monitor
+
+Beautiful system monitor with Nord theme:
+
+```bash
+btop                    # Launch interactive monitor
+```
+
+Shows CPU, memory, disk, network, and processes with a gorgeous TUI.
+
+### fastfetch - System Info
+
+Fast system information display (runs on terminal startup):
+
+```bash
+fastfetch               # Show system info with Arch logo
+```
+
+Displays OS, kernel, packages, shell, DE/WM, and more.
+
 ### wlogout - Logout Menu
 
 Graphical logout menu. Bind it in Hyprland:
@@ -318,6 +379,33 @@ wlogout         # show logout menu
 ```
 
 Provides options for lock, logout, shutdown, reboot, and suspend.
+
+### CLI Tools Quick Reference
+
+**Search & Navigation:**
+```bash
+z dot                   # Jump to frequently used directory
+fd -e cpp | fzf         # Find and fuzzy-select C++ files
+rg -l "TODO"            # Find files containing "TODO"
+```
+
+**Pro Tips - Chain commands together:**
+```bash
+# Find, pick, and view a C++ file
+fd -e cpp | fzf | xargs bat
+
+# Search for TODOs, pick one, and edit
+rg -l "TODO" | fzf | xargs nvim
+
+# Jump to project and find markdown files
+z dev && fd -e md | fzf
+
+# Find images and preview them
+fd -e png -e jpg | fzf --preview 'chafa {}'
+
+# Search for function definitions and view with context
+rg "^function" | fzf | cut -d: -f1 | xargs bat
+```
 
 ## Usage
 
