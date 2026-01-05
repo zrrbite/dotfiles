@@ -245,7 +245,8 @@ The `nvim` package includes a full C++ IDE setup with clangd LSP, Telescope, and
 **Symbol Navigation:**
 ```bash
 Space + fs              # Find symbols in current file
-Space + fw              # Find symbols in entire workspace
+Space + fw              # Find symbols in entire workspace (functions, classes, variables)
+Space + fm              # Find macros (#define statements)
 Space + fg              # Search text across all files (grep)
 gd                      # Go to definition
 gD                      # Go to declaration
@@ -258,7 +259,9 @@ Space + h               # Switch between header/source (.h <-> .cpp)
 **Code Intelligence:**
 ```bash
 Space + rn              # Rename symbol across project
-Space + ca              # Code actions (suggestions/fixes)
+Space + ca              # Code actions (suggestions/fixes/generate definition)
+Space + cf              # Batch fix with clang-tidy (auto-fix all warnings)
+Space + F               # Format code with clang-format
 Space + D               # Go to type definition
 Space + sh              # Signature help
 Space + fd              # Show diagnostics (errors/warnings)
@@ -304,11 +307,42 @@ Space + ca              # Code actions - shows available fixes
 - Modernize C++ code (use auto, range-for, etc.)
 
 **Workflow for fixing multiple issues:**
+
+*Option 1: Batch fix (fastest)*
+1. `Space + cf` - Run clang-tidy --fix on current file
+2. Wait for notification "clang-tidy fixes applied"
+3. File auto-reloads with all auto-fixable warnings resolved
+
+*Option 2: Manual fix (more control)*
 1. `Space + q` - See all diagnostics
 2. Navigate to one with "Fix available"
 3. Press `Enter` to jump to line
 4. `Space + ca` - View and apply fix
 5. Repeat for other issues
+
+**C++ Tips & Tricks:**
+
+*Generate function implementation:*
+1. In `.h` file, write function declaration: `void myFunction(int x);`
+2. Put cursor on function name
+3. `Space + ca` → Select "Define in..." or "Generate definition"
+4. Implementation automatically created in `.cpp` file
+
+*Find macros:*
+- Use `Space + fm` to search for all `#define` macros
+- Macros don't show in `Space + fw` (LSP symbols) because they're preprocessor directives
+
+*Reduce warning noise:*
+- Edit `~/.clang-tidy` to disable specific checks
+- Add `-check-name,` to the Checks list
+- Example: `-readability-make-member-function-const,` to disable const suggestions
+- Restart nvim after changing `.clang-tidy`
+
+*clangd vs clang-tidy:*
+- **clangd** = LSP server providing IDE features (the main tool)
+- **clang-tidy** = Static analysis tool (runs inside clangd via `--clang-tidy` flag)
+- `Space + cf` runs standalone clang-tidy for batch fixes
+- `Space + ca` uses clangd code actions (can fix more than just clang-tidy warnings)
 
 Press `Super + F3` for a quick reference of all Neovim keybindings.
 
