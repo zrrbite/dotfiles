@@ -213,14 +213,14 @@ return {
     end,
   },
 
-  -- Markdown preview
+  -- Markdown preview with glow
   {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    "ellisonleao/glow.nvim",
+    cmd = "Glow",
     ft = { "markdown" },
-    build = "cd app && npx --yes yarn install",
+    config = true,
     keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "[M]arkdown [P]review" },
+      { "<leader>mp", "<cmd>Glow<cr>", desc = "[M]arkdown [P]review (glow)" },
     },
   },
 

@@ -65,6 +65,7 @@ PACKAGES=(
     stow
     rofi-wayland
     chafa
+    glow
     wl-clipboard
     cliphist
     mako
