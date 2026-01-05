@@ -9,6 +9,9 @@ alias grep='grep --color=auto'
 alias chafa-ascii='chafa --format symbols --symbols ascii --colors none -s 60x20'
 alias chafa-block='chafa --format symbols --symbols block -s 60x20'
 
+# Image preview with fzf and chafa
+alias fimg='fd -e png -e jpg -e jpeg -e gif -e webp -e bmp | fzf --preview "chafa {}"'
+
 # eza aliases (modern ls replacement)
 alias ls='eza --icons'
 alias ll='eza -la --icons --git'

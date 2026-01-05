@@ -346,9 +346,10 @@ View images directly in the terminal:
 chafa-ascii image.jpg   # ASCII art mode (alias)
 chafa-block image.jpg   # Block characters (alias)
 chafa image.png         # Full color mode
+fimg                    # Find and preview images with fzf (alias)
 ```
 
-Perfect for quickly previewing images without leaving the terminal.
+Perfect for quickly previewing images without leaving the terminal. The `fimg` alias combines fd, fzf, and chafa for an interactive image browser.
 
 ### btop - System Monitor
 
