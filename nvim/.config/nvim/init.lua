@@ -48,6 +48,16 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.termguicolors = true
 
+-- Enable project-local configuration files
+vim.opt.exrc = true
+vim.opt.secure = true  -- Restrict dangerous commands in local configs
+
+-- Auto-load .nvim.lua from project root
+local config_file = vim.fn.getcwd() .. '/.nvim.lua'
+if vim.fn.filereadable(config_file) == 1 then
+  dofile(config_file)
+end
+
 -- Keymaps
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
