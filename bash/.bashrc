@@ -5,12 +5,12 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias chafa-ascii='chafa --format symbols --symbols ascii --colors none -s 60x20'
 alias chafa-block='chafa --format symbols --symbols block -s 60x20'
 
 # eza aliases (modern ls replacement)
+alias ls='eza --icons'
 alias ll='eza -la --icons --git'
 alias lt='eza -T --icons --git-ignore'
 alias la='eza -a --icons'
