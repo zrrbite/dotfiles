@@ -238,6 +238,46 @@ clangd automatically uses your `.clang-format` and `.clang-tidy` configs. Add to
 }
 ```
 
+### Neovim with clangd
+
+The `nvim` package includes a full C++ IDE setup with clangd LSP, Telescope, and Treesitter.
+
+**Symbol Navigation:**
+```bash
+Space + fs              # Find symbols in current file
+Space + fw              # Find symbols in entire workspace
+Space + fg              # Search text across all files (grep)
+gd                      # Go to definition
+gr                      # Go to references (find all usages)
+gI                      # Go to implementation
+K                       # Show documentation/hover info
+```
+
+**Code Intelligence:**
+```bash
+Space + rn              # Rename symbol across project
+Space + ca              # Code actions (suggestions/fixes)
+Space + D               # Go to type definition
+Space + sh              # Signature help
+Space + fd              # Show diagnostics (errors/warnings)
+```
+
+**File Navigation:**
+```bash
+Space + e               # Toggle file tree (neo-tree)
+Space + ff              # Find files (Telescope)
+Space + fb              # Find open buffers
+Ctrl + h/j/k/l          # Navigate between splits
+```
+
+**Setup for C++ projects:**
+1. Open project: `nvim .`
+2. Generate `compile_commands.json` for best results (see above)
+3. LSP activates automatically when you open `.cpp` or `.hpp` files
+4. Use `Space + fw` to fuzzy search any symbol in your project!
+
+Press `Super + F3` for a quick reference of all Neovim keybindings.
+
 ## Productivity Tools
 
 ### fzf - Fuzzy Finder
