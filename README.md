@@ -108,6 +108,7 @@ The `mimeapps` package sets default applications:
 | `Super + =` | Resize window to 1:1 aspect ratio (square) |
 | `Super + F1` | Show all keybinds |
 | `Super + F2` | Useful commands menu |
+| `Super + F3` | Neovim keybindings |
 
 ## Manual Installation
 
