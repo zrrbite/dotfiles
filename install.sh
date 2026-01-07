@@ -35,6 +35,7 @@ PACKAGES=(
     # Terminal & shell
     foot
     starship
+    bash-completion
 
     # Audio
     pipewire

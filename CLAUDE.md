@@ -34,6 +34,9 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - Files in `<package>/.filename` symlink to `~/.filename`
 
 ### Key Packages
+- **bash**: Shell configuration with bash-completion, aliases, fzf/zoxide integration
+  - Requires `bash-completion` package for git branch/tag autocomplete
+  - Loads completion from `/usr/share/bash-completion/bash_completion`
 - **hypr**: Hyprland compositor, hyprpaper, hyprlock, wallpapers, cliphist setup
 - **nvim**: Neovim config with lazy.nvim, LSP (clangd), treesitter, DAP debugging, gitsigns (C++ focused)
   - Full IDE features: completion, diagnostics, refactoring, debugging

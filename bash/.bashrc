@@ -5,6 +5,13 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Enable bash completion
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+fi
+
 alias grep='grep --color=auto'
 alias chafa-ascii='chafa --format symbols --symbols ascii --colors none -s 60x20'
 alias chafa-block='chafa --format symbols --symbols block -s 60x20'
