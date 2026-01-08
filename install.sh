@@ -121,6 +121,7 @@ sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
 AUR_PACKAGES=(
     google-chrome
     slack-desktop
+    zoom
     p4
     p4v
     wlogout
