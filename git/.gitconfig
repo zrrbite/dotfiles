@@ -138,6 +138,7 @@ whitespace = cr-at-eol
 preloadindex = true
 fscache = true # https://github.com/msysgit/msysgit/wiki/Diagnosing-why-Git-is-so-slow
 hooksPath = ~/.git-hooks
+pager = delta
 
 [http]
 postBuffer = 524288000
@@ -179,11 +180,16 @@ autoupdate = true
 [gc]
 auto = 256
 
-#Remove +- from diffs
-[pager]
-	log = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
-	show = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
-	diff = sed \"s/^\\([^-+ ]*\\)[-+ ]/\\\\1/\"
+# git-delta configuration
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true    # use n and N to move between diff sections
+	light = false      # set to true if you're in a terminal w/ a light background color
+	line-numbers = true
+	side-by-side = false
+	syntax-theme = Nord
 
 [color]
 ui = auto
