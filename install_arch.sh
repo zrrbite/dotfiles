@@ -82,6 +82,9 @@ PACKAGES=(
     eza
     tldr
     fastfetch
+    duf
+    git-delta
+    procs
 
     # Development
     neovim
@@ -214,6 +217,13 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
+# Create platform-specific bash symlinks
+info "Creating Arch-specific bash config symlinks..."
+cd "$DOTFILES_DIR/bash"
+ln -sf .bashrc-arch .bashrc
+ln -sf .bash_profile-arch .bash_profile
+cd "$DOTFILES_DIR"
+
 # Stow all packages
 info "Stowing all packages..."
 for dir in */; do
@@ -223,75 +233,6 @@ for dir in */; do
         stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
     fi
 done
-
-# Setup starship for bash and zsh
-if [ -f ~/.bashrc ]; then
-    if ! grep -q 'starship init bash' ~/.bashrc; then
-        info "Adding starship to ~/.bashrc"
-        echo 'eval "$(starship init bash)"' >> ~/.bashrc
-    fi
-fi
-
-if [ -f ~/.zshrc ]; then
-    if ! grep -q 'starship init zsh' ~/.zshrc; then
-        info "Adding starship to ~/.zshrc"
-        echo 'eval "$(starship init zsh)"' >> ~/.zshrc
-    fi
-fi
-
-# Setup ssh-agent for bash and zsh
-SSH_AGENT_SETUP='
-# SSH agent
-if [ -z "$SSH_AUTH_SOCK" ]; then
-    eval "$(ssh-agent -s)" > /dev/null
-fi
-if [ -f ~/.ssh/id_ed25519 ]; then
-    ssh-add ~/.ssh/id_ed25519 2>/dev/null
-fi'
-
-if [ -f ~/.bashrc ]; then
-    if ! grep -q 'SSH_AUTH_SOCK' ~/.bashrc; then
-        info "Adding ssh-agent to ~/.bashrc"
-        echo "$SSH_AGENT_SETUP" >> ~/.bashrc
-    fi
-fi
-
-if [ -f ~/.zshrc ]; then
-    if ! grep -q 'SSH_AUTH_SOCK' ~/.zshrc; then
-        info "Adding ssh-agent to ~/.zshrc"
-        echo "$SSH_AGENT_SETUP" >> ~/.zshrc
-    fi
-fi
-
-# Setup fzf for bash and zsh
-if [ -f ~/.bashrc ]; then
-    if ! grep -q 'fzf --bash' ~/.bashrc; then
-        info "Adding fzf to ~/.bashrc"
-        echo 'eval "$(fzf --bash)"' >> ~/.bashrc
-    fi
-fi
-
-if [ -f ~/.zshrc ]; then
-    if ! grep -q 'fzf --zsh' ~/.zshrc; then
-        info "Adding fzf to ~/.zshrc"
-        echo 'eval "$(fzf --zsh)"' >> ~/.zshrc
-    fi
-fi
-
-# Setup zoxide for bash and zsh
-if [ -f ~/.bashrc ]; then
-    if ! grep -q 'zoxide init bash' ~/.bashrc; then
-        info "Adding zoxide to ~/.bashrc"
-        echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
-    fi
-fi
-
-if [ -f ~/.zshrc ]; then
-    if ! grep -q 'zoxide init zsh' ~/.zshrc; then
-        info "Adding zoxide to ~/.zshrc"
-        echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
-    fi
-fi
 
 # Enable pipewire audio
 info "Enabling audio services..."

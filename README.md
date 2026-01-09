@@ -1,8 +1,8 @@
 # Dotfiles
 
-🎨 Nord-themed Hyprland dotfiles for Arch Linux • Developer-focused • Stow-managed • One-command setup
+🎨 Cross-platform Nord-themed dotfiles • Arch Linux + WSL + macOS • Developer-focused • Stow-managed
 
-Personal Arch Linux dotfiles with a Nord-themed Hyprland setup, managed with GNU Stow for easy deployment and version control.
+Personal dotfiles supporting Arch Linux (with Hyprland), WSL (CLI-only), and macOS, managed with GNU Stow for easy deployment and version control.
 
 ## About
 
@@ -25,21 +25,45 @@ Want to try Omarchy? See `./install_omarchy.sh` for installation guidance and in
 
 ## Quick Install
 
-On a fresh Arch Linux system:
+### Arch Linux (native with Hyprland)
 
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./install.sh
+cd ~/dotfiles && ./install_arch.sh
 ```
 
 The install script will:
-- Install all required packages via pacman
+- Install all packages via pacman and AUR
 - Backup any existing configs to `~/.config-backup-TIMESTAMP/`
 - Stow all packages
-- Setup starship prompt
+- Setup Hyprland compositor
 - Enable audio (pipewire)
 
 Then log out and select Hyprland as your session.
+
+### WSL (Ubuntu/Debian) - CLI Only
+
+```bash
+git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
+cd ~/dotfiles && ./install_wsl.sh
+```
+
+Installs CLI development tools only (no GUI/Wayland):
+- Modern CLI utilities (fzf, bat, ripgrep, fd, eza, zoxide, duf, git-delta, procs)
+- Dev tools (neovim, git, clang, gdb)
+- Starship prompt
+
+### macOS (M1/M2/Intel)
+
+```bash
+git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
+cd ~/dotfiles && ./install_darwin.sh
+```
+
+Installs via Homebrew:
+- All CLI tools from WSL setup
+- Alacritty terminal with Nord theme
+- Platform-specific tools (lldb instead of gdb)
 
 ## Updating Your Config
 

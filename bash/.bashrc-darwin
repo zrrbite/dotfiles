@@ -1,0 +1,51 @@
+#
+# ~/.bashrc - macOS Configuration
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+# Enable bash completion (Homebrew M2 path)
+if [ -f /opt/homebrew/etc/profile.d/bash_completion.sh ]; then
+    . /opt/homebrew/etc/profile.d/bash_completion.sh
+fi
+
+# Homebrew environment (M2 ARM Mac)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+alias grep='grep --color=auto'
+
+# Pro tip aliases - chain commands together
+alias fcpp='fd -e cpp -e hpp | fzf | xargs bat'           # Find and view C++ files
+alias ftodo='rg -l "TODO" | fzf | xargs nvim'              # Find and edit TODOs
+alias fmd='fd -e md | fzf'                                 # Find markdown files
+alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'  # Find function definitions
+
+# eza aliases (modern ls replacement)
+alias ls='eza --icons'
+alias ll='eza -la --icons --git'
+alias lt='eza -T --icons --git-ignore'
+alias la='eza -a --icons'
+
+PS1='[\u@\h \W]\$ '
+eval "$(starship init bash)"
+
+# SSH agent
+if [ -z "$SSH_AUTH_SOCK" ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+fi
+if [ -f ~/.ssh/id_ed25519 ]; then
+    ssh-add ~/.ssh/id_ed25519 2>/dev/null
+fi
+
+# fzf - fuzzy finder
+eval "$(fzf --bash)"
+
+# fzf Nord theme
+export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C \
+--color=fg:#D8DEE9,header:#A3BE8C,info:#EBCB8B,pointer:#88C0D0 \
+--color=marker:#88C0D0,fg+:#ECEFF4,prompt:#88C0D0,hl+:#A3BE8C \
+--color=border:#4C566A"
+
+# zoxide - smarter cd (replaces cd command)
+eval "$(zoxide init bash --cmd cd)"

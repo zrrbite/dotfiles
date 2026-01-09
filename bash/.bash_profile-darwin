@@ -1,0 +1,6 @@
+#
+# ~/.bash_profile - macOS Configuration
+#
+
+# Load .bashrc if it exists
+[[ -f ~/.bashrc ]] && . ~/.bashrc

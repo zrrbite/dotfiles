@@ -1,0 +1,6 @@
+#
+# ~/.bash_profile - WSL Configuration
+#
+
+# Load .bashrc if it exists
+[[ -f ~/.bashrc ]] && . ~/.bashrc
