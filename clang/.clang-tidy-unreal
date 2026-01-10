@@ -1,5 +1,5 @@
 # clang-tidy configuration for Unreal Engine projects
-# Global default configuration - matches UE coding standards
+# Copy this to your UE project root as .clang-tidy
 #
 # Unreal Engine Coding Standard:
 # https://dev.epicgames.com/documentation/en-us/unreal-engine/epic-cplusplus-coding-standard-for-unreal-engine

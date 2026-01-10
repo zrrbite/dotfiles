@@ -1,0 +1,127 @@
+#!/bin/bash
+#
+# Pre-push hook to run clang-tidy on C++ files
+# Runs on files changed in commits being pushed
+# Less frequent than pre-commit, catches issues before sharing code
+
+# Colors
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Skip if pushing to remote other than origin (less strict for personal repos)
+remote="$1"
+url="$2"
+
+# Get the range of commits being pushed
+# Format: <local ref> <local sha> <remote ref> <remote sha>
+while read local_ref local_sha remote_ref remote_sha; do
+    # If remote_sha is all zeros, it's a new branch - check all commits
+    if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+        # New branch - check last 10 commits (or specify a base branch)
+        range="HEAD~10..HEAD"
+    else
+        # Existing branch - check commits since last push
+        range="$remote_sha..$local_sha"
+    fi
+
+    # Get C++ files modified in this range
+    CHANGED_FILES=$(git diff --name-only --diff-filter=ACM $range | grep -E '\.(cpp|hpp|h|cc|cxx|c)$' | sort -u)
+
+    if [ -z "$CHANGED_FILES" ]; then
+        # No C++ files changed
+        continue
+    fi
+
+    echo -e "${BLUE}Running clang-tidy on changed C++ files...${NC}"
+    echo ""
+
+    # Check if compile_commands.json exists
+    if [ ! -f "compile_commands.json" ] && [ ! -f "build/compile_commands.json" ]; then
+        echo -e "${YELLOW}⚠️  Warning: No compile_commands.json found${NC}"
+        echo -e "${YELLOW}   clang-tidy works best with a compilation database${NC}"
+        echo -e "${YELLOW}   Run: cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON${NC}"
+        echo ""
+    fi
+
+    # Run clang-tidy on each changed file
+    ERRORS_FOUND=0
+    WARNINGS_FOUND=0
+
+    for file in $CHANGED_FILES; do
+        # Skip if file doesn't exist (e.g., deleted)
+        if [ ! -f "$file" ]; then
+            continue
+        fi
+
+        # Run clang-tidy and capture output
+        OUTPUT=$(clang-tidy "$file" 2>&1)
+
+        # Check for errors and warnings
+        if echo "$OUTPUT" | grep -q "error:"; then
+            ERRORS_FOUND=1
+            echo -e "${RED}✗ $file${NC}"
+            echo "$OUTPUT" | grep "error:" | head -3
+            echo ""
+        elif echo "$OUTPUT" | grep -q "warning:"; then
+            WARNINGS_FOUND=1
+            echo -e "${YELLOW}⚠ $file${NC}"
+            echo "$OUTPUT" | grep "warning:" | head -2
+            echo ""
+        else
+            echo -e "${GREEN}✓ $file${NC}"
+        fi
+    done
+
+    # Summary and exit
+    echo ""
+    if [ $ERRORS_FOUND -eq 1 ]; then
+        echo -e "${RED}"
+        cat << 'EOF'
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                                                               ║
+    ║   ⚠️  CLANG-TIDY ERRORS DETECTED!  ⚠️                        ║
+    ║                                                               ║
+    ║        ლ(ಠ益ಠლ)                                              ║
+    ║                                                               ║
+    ║   Your code has issues that need fixing!                     ║
+    ║                                                               ║
+    ╚═══════════════════════════════════════════════════════════════╝
+EOF
+        echo -e "${NC}"
+        echo ""
+        echo -e "${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${GREEN}║  How to fix:                                               ║${NC}"
+        echo -e "${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
+        echo ""
+        echo -e "${YELLOW}  1. Fix the issues:${NC}"
+        echo -e "     ${GREEN}clang-tidy <file> --fix${NC}  ${YELLOW}# Auto-fix (when possible)${NC}"
+        echo -e "     ${GREEN}nvim <file>${NC}              ${YELLOW}# Manual fix${NC}"
+        echo ""
+        echo -e "${YELLOW}  2. Review in nvim:${NC}"
+        echo -e "     ${GREEN}nvim <file>${NC}              ${YELLOW}# clangd shows inline warnings${NC}"
+        echo -e "     ${GREEN}<Space>cf${NC}               ${YELLOW}# Batch fix issues${NC}"
+        echo ""
+        echo -e "${YELLOW}  3. Bypass hook (if urgent):${NC}"
+        echo -e "     ${GREEN}git push --no-verify${NC}"
+        echo ""
+        echo -e "${YELLOW}  4. Tune .clang-tidy:${NC}"
+        echo -e "     ${YELLOW}If a check is too noisy, disable it in .clang-tidy${NC}"
+        echo ""
+        exit 1
+
+    elif [ $WARNINGS_FOUND -eq 1 ]; then
+        echo -e "${YELLOW}⚠️  clang-tidy warnings found (not blocking push)${NC}"
+        echo -e "${YELLOW}   Consider fixing these before merge/review${NC}"
+        echo ""
+        exit 0
+    else
+        echo -e "${GREEN}✓ All changed C++ files passed clang-tidy checks${NC}"
+        exit 0
+    fi
+done
+
+# No C++ files changed across all refs
+exit 0

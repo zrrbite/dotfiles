@@ -87,12 +87,15 @@ Each top-level directory is a stow package that mirrors the home directory struc
   - Telescope fuzzy finder for symbols, files, macros
   - Batch clang-tidy fixes (`Space+cf`)
 
-- **git**: Extensive git aliases (`git cf` for formatting), global pre-commit hook for clang-format enforcement
+- **git**: Extensive git aliases (`git cf` for formatting), global hooks for code quality
   - Uses meld for diff/merge (Arch/WSL) or built-in tools (macOS)
-  - Global hooks at `~/.git-hooks/` (applies to all repos)
+  - Global hooks at `~/.git-hooks/` (automatically symlinked via stow, applies to all repos)
+  - **Pre-commit hook**: Enforces clang-format on C++ files
+  - **Pre-push hook**: Runs clang-tidy on changed files before push
 
-- **clang**: clang-format (LLVM/Allman style) and clang-tidy config
-  - Pre-commit hook validates formatting with fun ASCII art
+- **clang**: clang-format (LLVM/Allman style) and clang-tidy config (Unreal Engine standards)
+  - Two configs: `.clang-tidy` (default UE style), `.clang-tidy-unreal` (reference copy)
+  - Hooks validate code quality with fun ASCII art on violations
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
   - macOS primary terminal
@@ -149,19 +152,62 @@ Use the bootstrap script to create new projects with optimal Claude Code workflo
 - **Macros**: `Space+fm` to find #define macros (not visible in LSP symbols)
 - **Generate impl**: `Space+ca` on function declaration to generate implementation
 
-### Git Pre-commit Hook
-- Global hook at `~/.git-hooks/pre-commit` enforces clang-format on all C++ commits
-- Shows fun ASCII art `(╯°□°)╯︵ ┻━┻` when formatting violations detected
-- Fix with `git cf` (formats staged files) or `git clang-format --staged`
-- Bypass with `git commit --no-verify` (not recommended)
+### Git Hooks (Automatic Code Quality)
 
-### Clang-tidy Configuration
-- Disabled checks: const-correctness warnings (can be noisy)
-- Edit `~/.clang-tidy` to disable specific warnings: add `-check-name,` to Checks list
-- Restart nvim after changing `.clang-tidy`
+Global hooks automatically installed via stow to `~/.git-hooks/` (applies to all repos).
+
+**Pre-commit Hook** (`git/.git-hooks/pre-commit`):
+- Enforces clang-format on all C++ files being committed
+- Shows fun ASCII art `(╯°□°)╯︵ ┻━┻` when formatting violations detected
+- **Fix with**: `git cf` (formats staged files) or `git clang-format --staged`
+- **Bypass**: `git commit --no-verify` (not recommended)
+- **Fast**: Only checks staged files, runs on every commit
+
+**Pre-push Hook** (`git/.git-hooks/pre-push`):
+- Runs clang-tidy static analysis on changed C++ files before push
+- Shows ASCII art `ლ(ಠ益ಠლ)` when errors detected
+- **Errors block push**, warnings are non-blocking
+- **Fix with**: `clang-tidy <file> --fix` or `nvim <file>` then `Space+cf`
+- **Bypass**: `git push --no-verify` (not recommended)
+- **Smart**: Only checks files changed in commits being pushed
+- Warns if `compile_commands.json` missing (needed for best results)
+
+### Clang-tidy Configuration (Unreal Engine Standards)
+
+**Default config** (`clang/.clang-tidy`):
+- Configured for **Unreal Engine coding standards** by default
+- **PascalCase** for all types, functions, variables (not snake_case)
+- **No private member suffix** (UE doesn't use trailing `_`)
+- **Prefixes**: `k` for constants, `T` for template parameters
+- **Always-braces** policy for if statements (UE standard)
+- **Type prefixes documented**: U/A/F/E/I/T/b (manually enforced)
+- Less aggressive modernization (matches UE idioms)
+
+**Reference copy** (`clang/.clang-tidy-unreal`):
+- Identical to default, for project-specific use
+- Copy to UE projects that need local `.clang-tidy`
+
+**Tuning**:
+- Edit `~/.clang-tidy` to disable specific checks: add `-check-name,` to Checks list
+- Restart nvim after changing `.clang-tidy` (clangd reads on startup)
+- Pre-push hook uses whatever `.clang-tidy` exists (project-local or global)
 
 ### Unreal Engine Development
+
 Neovim works well for UE C++ coding (7/10 feasibility):
-- ✅ LSP, debugging, formatting all work with UE projects
-- ⚠️ Generate `compile_commands.json` from UE project for best LSP results
-- ❌ Use Unreal Editor for Blueprints, levels, assets (hybrid workflow recommended)
+- ✅ **LSP**: clangd with full C++ support (completion, go-to-definition, refactoring)
+- ✅ **Debugging**: nvim-dap with codelldb (breakpoints, stepping, variable inspection)
+- ✅ **Formatting**: clang-format with Allman braces (matches UE style)
+- ✅ **Static analysis**: clang-tidy configured for UE coding standards (PascalCase, prefixes)
+- ✅ **Git hooks**: Pre-commit (format) + pre-push (tidy) enforce quality automatically
+- ⚠️ **Compilation database**: Generate `compile_commands.json` from UE project for best LSP results
+  - Run: `UnrealBuildTool -mode=GenerateClangDatabase` or use UE's CMake export
+- ❌ **Blueprints/Assets**: Use Unreal Editor (hybrid workflow recommended)
+
+**UE-specific workflow**:
+1. Generate `compile_commands.json` for your UE project
+2. Open project in nvim: LSP shows UE types, macros, includes
+3. Write C++ with full IDE support (UPROPERTY, UFUNCTION completions via macros)
+4. Pre-commit hook formats on commit (Allman braces, tabs)
+5. Pre-push hook validates naming (catches PascalCase violations)
+6. Use UE Editor for Blueprints, levels, materials
