@@ -104,6 +104,38 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **install_wsl.sh**: apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs), CLI only
 - **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support
 
+## Starting New C++ Projects
+
+Use the bootstrap script to create new projects with optimal Claude Code workflow:
+
+```bash
+~/dotfiles/scripts/bootstrap-cpp-project.sh my-project-name
+# Or specify custom location:
+~/dotfiles/scripts/bootstrap-cpp-project.sh my-project ~/custom/path
+```
+
+**What it creates:**
+- **CLAUDE.md** - Project context for Claude Code (architecture, build commands, common tasks)
+- **.clangd** - LSP configuration for IDE features
+- **CMakeLists.txt** - With `CMAKE_EXPORT_COMPILE_COMMANDS=ON` for LSP
+- **.nvim.lua** - Project-specific debug configurations (DAP)
+- **Directory structure** - src/, include/, tests/, doc/, build/
+- **Git repository** - Initialized with first commit
+- **README.md** - Basic project documentation
+- **.gitignore** - Standard C++ ignores
+
+**After creating a project:**
+1. `cd ~/dev/my-project`
+2. Edit `CLAUDE.md` with your project specifics
+3. `cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`
+4. `cmake --build build`
+5. `ln -s build/compile_commands.json .` (for LSP)
+6. `nvim .` (opens with debug configs ready)
+
+**Templates are located at:** `~/dotfiles/templates/cpp-project/`
+- Customize templates to match your preferred project structure
+- Templates use `PROJECT_NAME` placeholder (auto-replaced by script)
+
 ## Recent Features & Important Notes
 
 ### Neovim C++ IDE Setup

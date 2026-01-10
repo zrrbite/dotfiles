@@ -1,0 +1,144 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code when working with this project.
+
+## Overview
+
+[One paragraph: What does this project do? What problem does it solve?]
+
+Example: "A lightweight tile-based map renderer using Skia. Converts OpenStreetMap data (MVT format) into GPU-optimized polygon meshes for real-time rendering."
+
+## Architecture
+
+[Key components and how they fit together]
+
+### Key Files
+
+- `src/main.cpp` - [What it does]
+- `src/renderer.cpp` - [What it does]
+- `include/foo.h` - [What it does]
+
+### Design Patterns
+
+[Any important patterns to know about]
+- Custom memory allocators?
+- Threading model?
+- Plugin architecture?
+
+## Build Commands
+
+```bash
+# Configure
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+# Build
+cmake --build build -j8
+
+# Install (optional)
+cmake --install build --prefix ~/.local
+```
+
+## Testing
+
+```bash
+# Unit tests
+./build/tests/unit-tests
+
+# Integration tests
+./build/tests/integration-tests
+
+# Visual/golden tests (if applicable)
+./scripts/test-visual.sh
+```
+
+## Common Tasks
+
+### Adding a New Feature
+
+[Step-by-step for common operations]
+
+Example:
+1. Add header to `include/features/`
+2. Implement in `src/features/`
+3. Register in `src/feature_registry.cpp`
+4. Add tests in `tests/`
+
+### Debugging Tips
+
+- Use `./build/my-app --debug` for verbose logging
+- Check `~/.cache/myapp/logs/` for debug output
+- Breakpoints work best at [specific locations]
+
+### Performance Profiling
+
+```bash
+# Build with profiling
+cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+# Run with profiler
+perf record ./build/my-app
+perf report
+```
+
+## Dependencies
+
+### Required
+
+- CMake 3.20+
+- C++17 compiler (GCC 10+, Clang 12+)
+- [Library name] >= [version]
+
+### Optional
+
+- [Library] for [feature]
+
+### Installing on Arch
+
+```bash
+sudo pacman -S cmake gcc pkgconf [other packages]
+```
+
+### Installing on WSL/Ubuntu
+
+```bash
+sudo apt install cmake build-essential [other packages]
+```
+
+## Common Issues
+
+### Issue: CMake can't find X
+
+**Solution:** Install X-dev package or set X_DIR environment variable
+
+### Issue: Linker errors about Y
+
+**Solution:** [Explanation and fix]
+
+## Recent Changes
+
+[Document major architectural changes so Claude understands context]
+
+- **Jan 2026**: Switched from gzip to zstd compression (5x faster)
+- **Dec 2025**: Refactored renderer to use GPU batching instead of per-feature draws
+- **Nov 2025**: Added custom allocator for tile data (reduced memory by 40%)
+
+## Coding Conventions
+
+- Use snake_case for functions and variables
+- Use PascalCase for classes
+- Max line length: 100 characters
+- Prefer `std::unique_ptr` over raw pointers
+- Document public APIs with Doxygen comments
+
+## Git Workflow
+
+- Main branch: `main` or `master`
+- Feature branches: `feature/description`
+- Commit messages: Follow Conventional Commits (feat:, fix:, refactor:)
+- Pre-commit hook runs clang-format automatically
+
+## Resources
+
+- [API Documentation](https://example.com/docs)
+- [Architecture Diagrams](./doc/architecture/)
+- [Performance Benchmarks](./doc/benchmarks/)

@@ -1,0 +1,75 @@
+-- Project-specific Neovim configuration
+-- This file is automatically loaded when you open this project in Neovim
+-- See: ~/.config/nvim/init.lua (exrc setting)
+
+-- Wait for plugins to load before configuring DAP
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  callback = function()
+    local dap = require('dap')
+
+    -- Helper to get workspace folder
+    local function get_workspace()
+      return vim.fn.getcwd()
+    end
+
+    -- Debug configuration: Main executable
+    table.insert(dap.configurations.cpp, {
+      name = "Debug: Main Executable",
+      type = "codelldb",
+      request = "launch",
+      program = get_workspace() .. "/build/bin/PROJECT_NAME",
+      cwd = get_workspace(),
+      stopOnEntry = false,
+      args = {},
+    })
+
+    -- Debug configuration: Unit Tests
+    table.insert(dap.configurations.cpp, {
+      name = "Debug: Unit Tests",
+      type = "codelldb",
+      request = "launch",
+      program = get_workspace() .. "/build/bin/unit-tests",
+      cwd = get_workspace(),
+      stopOnEntry = false,
+      args = {},
+    })
+
+    -- Debug configuration: With command-line arguments
+    table.insert(dap.configurations.cpp, {
+      name = "Debug: With Args",
+      type = "codelldb",
+      request = "launch",
+      program = get_workspace() .. "/build/bin/PROJECT_NAME",
+      cwd = get_workspace(),
+      stopOnEntry = false,
+      args = function()
+        local args_string = vim.fn.input("Arguments: ")
+        return vim.split(args_string, " ")
+      end,
+    })
+
+    -- Debug configuration: Attach to process
+    table.insert(dap.configurations.cpp, {
+      name = "Attach: Running Process",
+      type = "codelldb",
+      request = "attach",
+      pid = require("dap.utils").pick_process,
+      cwd = get_workspace(),
+    })
+
+    -- C files use same configs as C++
+    dap.configurations.c = dap.configurations.cpp
+
+    print("PROJECT_NAME debug configurations loaded!")
+  end,
+})
+
+-- Project-specific keymaps (optional)
+-- vim.keymap.set('n', '<leader>pb', ':!cmake --build build -j8<CR>', { desc = 'Project: Build' })
+-- vim.keymap.set('n', '<leader>pt', ':!./build/bin/unit-tests<CR>', { desc = 'Project: Test' })
+
+-- Project-specific settings (optional)
+-- vim.opt.colorcolumn = "100"  -- Line length guide
+-- vim.opt.tabstop = 4
+-- vim.opt.shiftwidth = 4

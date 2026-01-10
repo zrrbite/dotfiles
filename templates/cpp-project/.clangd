@@ -1,0 +1,43 @@
+# .clangd configuration for this project
+# See: https://clangd.llvm.org/config
+
+CompileFlags:
+  # Add extra flags that might be missing from compile_commands.json
+  Add:
+    - -std=c++17
+    - -Wall
+    - -Wextra
+
+  # Remove noisy warnings (uncomment as needed)
+  # Remove:
+  #   - -Wpedantic
+  #   - -Wunused-parameter
+
+# Uncomment if you need to specify include paths manually
+# (Usually not needed if compile_commands.json is present)
+# CompileFlags:
+#   Add:
+#     - -I/path/to/includes
+#     - -I/opt/custom/library/include
+
+# Diagnostics configuration
+Diagnostics:
+  # Suppress specific warnings (add clang-tidy check names here)
+  Suppress:
+    # - modernize-use-trailing-return-type
+    # - readability-identifier-length
+
+  # Enable all clang-tidy checks by default
+  ClangTidy:
+    Add: '*'
+    Remove:
+      # Disable overly pedantic checks
+      - modernize-use-trailing-return-type
+      - readability-identifier-length
+      - llvmlibc-*
+      - fuchsia-*
+      - altera-*
+
+# Index settings (helps with code navigation)
+Index:
+  Background: Build  # Build index in background for better performance
