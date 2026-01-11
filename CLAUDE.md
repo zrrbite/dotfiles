@@ -8,8 +8,9 @@ Cross-platform personal dotfiles supporting:
 - **Arch Linux**: Full Hyprland desktop environment
 - **WSL (Ubuntu/Debian)**: CLI development tools only
 - **macOS (M1/M2/Intel)**: CLI tools + Alacritty terminal
+- **Windows 10/11**: CLI tools + Windows Terminal (via Scoop, no Stow needed)
 
-All managed with [GNU Stow](https://www.gnu.org/software/stow/).
+Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows uses native PowerShell symlinks.
 
 ## Commands
 
@@ -18,6 +19,11 @@ All managed with [GNU Stow](https://www.gnu.org/software/stow/).
 ./install_arch.sh     # Arch Linux (full Hyprland + all tools)
 ./install_wsl.sh      # WSL (CLI only, no GUI)
 ./install_darwin.sh   # macOS (Homebrew + Alacritty)
+```
+
+```powershell
+# Windows (PowerShell as Administrator or with Developer Mode)
+.\install_windows.ps1
 ```
 
 ### Managing Configs with Stow
@@ -54,6 +60,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **bash/.bashrc-arch** - Arch Linux with all tools
 - **bash/.bashrc-wsl** - WSL with CLI tools only
 - **bash/.bashrc-darwin** - macOS with Homebrew paths
+- **bash/.bashrc-windows** - Windows Git Bash with Scoop tools
 - Install scripts create symlinks to the appropriate variant
 
 **Linux-only (Arch + optionally WSL):**
@@ -74,12 +81,19 @@ Each top-level directory is a stow package that mirrors the home directory struc
 **macOS/Optional:**
 - **alacritty**: Cross-platform terminal with Nord theme
 
+**Windows 10/11:**
+- **Git, Neovim, Clang, Starship**: All work identically to Linux/macOS
+- **bash/.bashrc-windows**: Git Bash configuration (Scoop tools)
+- **Windows Terminal**: Recommended terminal emulator (replaces Alacritty/Foot)
+- **No Hyprland/Wayland**: Windows doesn't support Linux desktop environment configs
+
 ### Key Packages
 
 - **bash**: Platform-specific shell configuration
   - Arch: Full setup with Hyprland auto-start, all aliases, bash-completion from `/usr/share`
   - WSL: CLI tools only, bash-completion from `/etc` or `/usr/share`, aliases for batcat/fdfind
   - macOS: Homebrew paths (`/opt/homebrew`), bash-completion from Homebrew location
+  - Windows: Git Bash with Scoop tools, bash-completion from Git for Windows
 
 - **nvim**: Neovim config with lazy.nvim, LSP (clangd), treesitter, DAP debugging, gitsigns (C++ focused)
   - Full IDE features: completion, diagnostics, refactoring, debugging
@@ -106,6 +120,10 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **install_arch.sh**: Pacman + AUR packages, full Hyprland setup, systemd services
 - **install_wsl.sh**: apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs), CLI only
 - **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support
+- **install_windows.ps1**: Scoop packages, Windows Terminal, native PowerShell symlinks (no Stow)
+  - Requires: Windows 10 (Developer Mode) or Windows 11
+  - Installs: Git, Neovim, LLVM, modern CLI tools via Scoop
+  - Symlinks: Git hooks, clang configs, nvim (to %LOCALAPPDATA%), starship, bashrc
 
 ## Starting New C++ Projects
 
