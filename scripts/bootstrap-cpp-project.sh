@@ -62,7 +62,8 @@ fi
 
 # Copy CMakeLists.txt template
 if [ -f "$TEMPLATE_DIR/CMakeLists.txt.template" ]; then
-    sed "s/PROJECT_NAME/$PROJECT_NAME/g" "$TEMPLATE_DIR/CMakeLists.txt.template" > "$PROJECT_DIR/CMakeLists.txt"
+    # Only replace PROJECT_NAME in project() command, not in ${PROJECT_NAME} variables
+    sed "s/^project(PROJECT_NAME/project($PROJECT_NAME/" "$TEMPLATE_DIR/CMakeLists.txt.template" > "$PROJECT_DIR/CMakeLists.txt"
     info "  ✓ CMakeLists.txt"
 fi
 

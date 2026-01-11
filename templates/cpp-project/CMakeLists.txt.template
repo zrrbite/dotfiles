@@ -42,8 +42,8 @@ set(SOURCES
 )
 
 set(HEADERS
-    include/my_header.h
     # Add more headers here
+    # include/foo.h
 )
 
 # Main executable
@@ -55,8 +55,8 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 # Enable testing
 enable_testing()
 
-# Add tests subdirectory if it exists
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+# Add tests subdirectory if it has CMakeLists.txt
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
     add_subdirectory(tests)
 endif()
 
