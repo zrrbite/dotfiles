@@ -6,6 +6,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{graphicx}
 
 % Unicode symbols for icons (no fontawesome5 needed)
 \newcommand{\faIcon}[1]{%
@@ -40,9 +41,9 @@
 % Title page
 \title{Supercharging C++ Development with Claude Code}
 \subtitle{How AI-Powered Workflow Automation Transformed My Development Process}
-\author{Your Name}
+\author{Martin Kjeldsen}
 \date{\today}
-\institute{Your Institution/Company}
+\institute{}
 
 \begin{document}
 
@@ -215,40 +216,163 @@ Claude: *reads CLAUDE.md* "I see you're using Skia for
   \textbf{Zero back-and-forth. Pure productivity.}
 \end{frame}
 
+\begin{frame}{It's Not Just C++}
+  \textbf{The same workflow works for TypeScript!}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{C++ Bootstrap:}
+    \begin{itemize}
+      \item clang-format
+      \item clang-tidy
+      \item CMakeLists.txt
+      \item .clangd LSP config
+      \item codelldb debugger
+      \item Git hooks
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{TypeScript Bootstrap:}
+    \begin{itemize}
+      \item Prettier
+      \item ESLint
+      \item tsconfig.json
+      \item ts\_ls LSP config
+      \item Node.js debugger
+      \item Git hooks
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{alertblock}{Multi-Language Support}
+    Same philosophy, different tools. One workflow for all your projects.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{TypeScript Workflow in Action}
+  \textbf{Creating a React + TypeScript app:}
+
+  \begin{lstlisting}[language=bash]
+$ ~/dotfiles/scripts/bootstrap-ts-project.sh \
+    my-app --framework=react
+
+[INFO] Creating TypeScript project: my-app
+[INFO] Framework: react
+[INFO]   OK tsconfig.json
+[INFO]   OK .eslintrc.json
+[INFO]   OK .prettierrc
+[INFO]   OK package.json
+[INFO]   OK CLAUDE.md
+[INFO]   OK Git hooks installed
+
+$ cd my-app && npm install && npm run dev
+  VITE ready in 191 ms
+  Local: http://localhost:5173/
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{From zero to hot-reload dev server in under 60 seconds.}
+\end{frame}
+
+\begin{frame}{Real Example: We Just Did This}
+  \textbf{10 minutes ago, we built a complete TypeScript workflow from scratch:}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{What we created:}
+    \begin{itemize}
+      \item TypeScript stow package
+      \item Bootstrap script (4 frameworks)
+      \item Neovim LSP + DAP config
+      \item Git hooks (pre-commit/push)
+      \item Demo React app
+      \item Full documentation
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{Time breakdown:}
+    \begin{itemize}
+      \item tsconfig/ESLint/Prettier: 2 min
+      \item Neovim TypeScript support: 1 min
+      \item Bootstrap script: 3 min
+      \item Git hooks: 2 min
+      \item Testing demo project: 2 min
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{alertblock}{Total: 10 Minutes}
+    From "I don't have TypeScript support" to "Working React app with full quality gates"
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{TypeScript Framework Support}
+  \textbf{One script, four frameworks:}
+
+  \vspace{1em}
+  \begin{description}
+    \item[--framework=node] Simple Node.js CLI apps with tsx
+    \item[--framework=express] REST APIs with Express + TypeScript
+    \item[--framework=react] React apps with Vite + HMR
+    \item[--framework=next] Next.js 14+ with App Router
+  \end{description}
+
+  \vspace{2em}
+  \textbf{All include:}
+  \begin{itemize}
+    \item Strict TypeScript config (no implicit any)
+    \item ESLint + Prettier pre-configured
+    \item Git hooks (pre-commit format, pre-push type-check)
+    \item Neovim LSP + DAP debugging ready
+    \item CLAUDE.md with framework-specific guidance
+  \end{itemize}
+\end{frame}
+
 % ============================================================================
 \section{Automated Code Quality}
 % ============================================================================
 
 \begin{frame}{Git Hooks: Quality Gates on Autopilot}
-  \textbf{Two-layer quality enforcement:}
+  \textbf{Automatic enforcement for all languages:}
 
   \vspace{1em}
   \begin{columns}
     \column{0.5\textwidth}
-    \textbf{Pre-commit Hook:}
+    \textbf{C++ Projects:}
     \begin{itemize}
-      \item Runs on every commit
-      \item Enforces clang-format
-      \item Fast (staged files only)
-      \item Shows fun ASCII art on fail
-      \item Prevents style violations
+      \item Pre-commit: clang-format
+      \item Pre-push: clang-tidy
+      \item Fix: \texttt{git cf}
+      \item ASCII art on violations
+    \end{itemize}
+
+    \vspace{1em}
+    \textbf{TypeScript Projects:}
+    \begin{itemize}
+      \item Pre-commit: Prettier
+      \item Pre-push: tsc + ESLint
+      \item Fix: \texttt{npm run format}
+      \item Type errors blocked
     \end{itemize}
 
     \column{0.5\textwidth}
-    \textbf{Pre-push Hook:}
+    \textbf{How It Works:}
     \begin{itemize}
-      \item Runs before push
-      \item Runs clang-tidy analysis
-      \item Smart (changed files only)
-      \item Catches bugs early
-      \item Blocks push on errors
+      \item Bootstrap script installs hooks
+      \item Runs on every commit/push
+      \item Fast (staged files only)
+      \item Catches issues before review
+      \item Bypass: \texttt{--no-verify}
     \end{itemize}
-  \end{columns}
 
-  \vspace{2em}
-  \begin{exampleblock}{Result}
-    Clean, consistent, bug-free code without thinking about it
-  \end{exampleblock}
+    \vspace{1em}
+    \begin{alertblock}{Philosophy}
+      Make the right thing automatic
+    \end{alertblock}
+  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Pre-commit Hook in Action}
@@ -410,12 +534,14 @@ CheckOptions:
       \toprule
       \textbf{Task} & \textbf{Before CC} & \textbf{With CC} \\
       \midrule
-      New project setup & 30-60 min & 5 sec \\
+      New C++ project setup & 30-60 min & 5 sec \\
+      New TS/React project & 20-40 min & 5 sec \\
       Configure LSP/DAP & 20-30 min & 0 min (automatic) \\
       Setup git hooks & 15-20 min & 0 min (automatic) \\
+      TSConfig + ESLint + Prettier & 15-25 min & 0 min (automatic) \\
       Cross-platform config & Hours/days & 1 session \\
       Format code & Manual & Automatic (pre-commit) \\
-      Static analysis & Manual & Automatic (pre-push) \\
+      Type/lint checking & Manual & Automatic (pre-push) \\
       Find project docs & N/A & Instant (CLAUDE.md) \\
       \bottomrule
     \end{tabular}
@@ -424,6 +550,17 @@ CheckOptions:
   \vspace{1em}
   \begin{alertblock}{Time Saved}
     \textbf{2+ hours per project} in setup and configuration alone
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{GitHub Activity: The Proof}
+  \begin{center}
+    \includegraphics[width=0.85\textwidth]{github-activity.png}
+  \end{center}
+
+  \vspace{1em}
+  \begin{alertblock}{754 Contributions in the Last Year}
+    The activity surge shows consistent productivity with Claude Code — more commits, better workflow, cleaner code.
   \end{alertblock}
 \end{frame}
 
@@ -487,6 +624,122 @@ CheckOptions:
 % ============================================================================
 \section{Live Demo}
 % ============================================================================
+
+\begin{frame}{Live Demo: The Three Quality Gates}
+  \textbf{Let's write some bad code and watch the gates catch it!}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{What we'll break:}
+    \begin{itemize}
+      \item Double quotes (Prettier)
+      \item Missing spaces (Prettier)
+      \item Implicit \texttt{any} types (TypeScript)
+      \item Missing return types (ESLint)
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{What will catch it:}
+    \begin{itemize}
+      \item Gate 1: Prettier
+      \item Gate 2: TypeScript
+      \item Gate 3: ESLint
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{alertblock}{The Goal}
+    Show that you literally cannot push broken code
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Gate 1: Prettier Catches Formatting}
+  \textbf{Writing code with bad formatting:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+// Bad formatting - inconsistent quotes and spacing
+import React, { useState } from "react";
+
+const Counter = () => {
+  const [count,setCount]=useState(0);  // No spaces!
+  ...
+};
+  \end{lstlisting}
+
+  \vspace{1em}
+  \textbf{Run formatter:}
+  \begin{lstlisting}[language=bash,basicstyle=\ttfamily\tiny]
+$ npm run format
+src/Counter.tsx 17ms
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \textbf{Result:}
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+import React, { useState } from 'react';  // Single quotes!
+
+const Counter = () => {
+  const [count, setCount] = useState(0);  // Proper spacing!
+  ...
+};
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Gate 2: TypeScript Catches Type Errors}
+  \textbf{Type checker finds implicit any:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+$ npm run type-check
+
+src/Counter.tsx(11,24): error TS7006:
+  Parameter 'e' implicitly has an 'any' type.
+
+const handleClick = (e) => {  // <-- No type!
+  setCount(count + 1);
+};
+  \end{lstlisting}
+
+  \vspace{1em}
+  \textbf{Fix by adding explicit types:}
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+const handleClick = (): void => {  // <-- Explicit return type
+  setCount(count + 1);
+};
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{Strict mode prevents implicit any — no shortcuts allowed!}
+\end{frame}
+
+\begin{frame}[fragile]{Gate 3: ESLint Enforces Best Practices}
+  \textbf{ESLint catches missing return types:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+$ npm run lint
+
+src/Counter.tsx
+  8:20  warning  Missing return type on function
+        @typescript-eslint/explicit-function-return-type
+
+const Counter = () => {  // <-- No return type!
+  ...
+};
+  \end{lstlisting}
+
+  \vspace{1em}
+  \textbf{Fix by adding JSX.Element return type:}
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+const Counter = (): JSX.Element => {  // <-- Explicit!
+  ...
+};
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{All three gates passed — code is ready to push!}
+\end{frame}
 
 \begin{frame}{Live Demo: Bootstrap a Project}
   \textbf{Let's create a new C++ project from scratch:}

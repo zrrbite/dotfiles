@@ -64,7 +64,7 @@ return {
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter").setup({
-        ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query", "json", "yaml", "markdown" },
+        ensure_installed = { "c", "cpp", "lua", "vim", "vimdoc", "query", "json", "yaml", "markdown", "typescript", "tsx", "javascript" },
         auto_install = true,
       })
     end,
@@ -114,9 +114,31 @@ return {
         },
       })
 
+      -- TypeScript LS
+      vim.lsp.config("ts_ls", {
+        cmd = { "typescript-language-server", "--stdio" },
+        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+        root_dir = vim.fs.root(0, { "tsconfig.json", "package.json", ".git" }),
+        capabilities = capabilities,
+        settings = {
+          typescript = {
+            inlayHints = {
+              includeInlayParameterNameHints = "all",
+              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+              includeInlayFunctionParameterTypeHints = true,
+              includeInlayVariableTypeHints = true,
+              includeInlayPropertyDeclarationTypeHints = true,
+              includeInlayFunctionLikeReturnTypeHints = true,
+              includeInlayEnumMemberValueHints = true,
+            },
+          },
+        },
+      })
+
       -- Enable LSPs
       vim.lsp.enable("clangd")
       vim.lsp.enable("lua_ls")
+      vim.lsp.enable("ts_ls")
 
       -- Suppress encoding warnings (functionality works despite warnings)
       local notify = vim.notify
@@ -378,6 +400,35 @@ return {
       -- C and Rust use same config as C++
       dap.configurations.c = dap.configurations.cpp
       dap.configurations.rust = dap.configurations.cpp
+
+      -- Configure Node.js debugger (for TypeScript/JavaScript)
+      dap.adapters.node2 = {
+        type = "executable",
+        command = "node",
+        args = { vim.fn.stdpath("data") .. "/mason/packages/node-debug2-adapter/out/src/nodeDebug.js" },
+      }
+
+      dap.configurations.typescript = {
+        {
+          name = "Launch",
+          type = "node2",
+          request = "launch",
+          program = "${file}",
+          cwd = vim.fn.getcwd(),
+          sourceMaps = true,
+          protocol = "inspector",
+          console = "integratedTerminal",
+        },
+        {
+          name = "Attach to process",
+          type = "node2",
+          request = "attach",
+          processId = require("dap.utils").pick_process,
+        },
+      }
+
+      -- JavaScript uses same config as TypeScript
+      dap.configurations.javascript = dap.configurations.typescript
 
       -- Auto-open/close UI
       dap.listeners.after.event_initialized["dapui_config"] = function()

@@ -1,0 +1,57 @@
+#!/bin/bash
+# TypeScript/JavaScript pre-commit hook
+# Runs Prettier on staged files
+
+# Get staged TypeScript/JavaScript files
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$')
+
+if [ -z "$STAGED_FILES" ]; then
+    exit 0
+fi
+
+echo "Checking TypeScript/JavaScript code formatting..."
+
+# Check if prettier is installed
+if ! command -v prettier &> /dev/null; then
+    echo "Error: prettier not found. Install with:"
+    echo "  npm install -g prettier"
+    exit 1
+fi
+
+# Check formatting
+NEEDS_FORMATTING=false
+for FILE in $STAGED_FILES; do
+    prettier --check "$FILE" > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        NEEDS_FORMATTING=true
+        echo "  ✗ $FILE needs formatting"
+    fi
+done
+
+if [ "$NEEDS_FORMATTING" = true ]; then
+    echo ""
+    echo "╔════════════════════════════════════════════════════════╗"
+    echo "║   CODE FORMATTING VIOLATIONS DETECTED!                ║"
+    echo "╚════════════════════════════════════════════════════════╝"
+    echo ""
+    echo "How to fix:"
+    echo "  npm run format         # Format all files"
+    echo "  git add .              # Re-stage formatted files"
+    echo "  git commit             # Try again"
+    echo ""
+    echo "Or format specific files:"
+    for FILE in $STAGED_FILES; do
+        prettier --check "$FILE" > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            echo "  prettier --write $FILE"
+        fi
+    done
+    echo ""
+    echo "To bypass (not recommended):"
+    echo "  git commit --no-verify"
+    echo ""
+    exit 1
+fi
+
+echo "✓ All TypeScript/JavaScript files properly formatted"
+exit 0

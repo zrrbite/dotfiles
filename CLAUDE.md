@@ -95,11 +95,14 @@ Each top-level directory is a stow package that mirrors the home directory struc
   - macOS: Homebrew paths (`/opt/homebrew`), bash-completion from Homebrew location
   - Windows: Git Bash with Scoop tools, bash-completion from Git for Windows
 
-- **nvim**: Neovim config with lazy.nvim, LSP (clangd), treesitter, DAP debugging, gitsigns (C++ focused)
-  - Full IDE features: completion, diagnostics, refactoring, debugging
+- **nvim**: Neovim config with lazy.nvim, LSP, treesitter, DAP debugging, gitsigns
+  - **C++ (clangd)**: Full IDE features, clang-tidy integration, header/source switching
+  - **TypeScript (ts_ls)**: Autocomplete, go-to-definition, refactoring, inlay hints
+  - **Lua (lua_ls)**: For Neovim config development
   - Git integration: blame, hunks, staging
   - Telescope fuzzy finder for symbols, files, macros
-  - Batch clang-tidy fixes (`Space+cf`)
+  - Debugging: codelldb (C++), node2 (TypeScript/JavaScript)
+  - Batch fixes: `Space+cf` (C++)
 
 - **git**: Extensive git aliases (`git cf` for formatting), global hooks for code quality
   - Uses meld for diff/merge (Arch/WSL) or built-in tools (macOS)
@@ -110,6 +113,12 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **clang**: clang-format (LLVM/Allman style) and clang-tidy config (Unreal Engine standards)
   - Two configs: `.clang-tidy` (default UE style), `.clang-tidy-unreal` (reference copy)
   - Hooks validate code quality with fun ASCII art on violations
+
+- **typescript**: TypeScript/JavaScript configuration
+  - **tsconfig.json**: Strict mode, modern ES2022 target, no implicit any
+  - **ESLint**: TypeScript-specific rules, no-explicit-any enforcement
+  - **Prettier**: Consistent formatting (single quotes, 100 char width)
+  - Project-specific hooks for pre-commit formatting and pre-push type checking
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
   - macOS primary terminal
@@ -157,20 +166,78 @@ Use the bootstrap script to create new projects with optimal Claude Code workflo
 - Customize templates to match your preferred project structure
 - Templates use `PROJECT_NAME` placeholder (auto-replaced by script)
 
+## Starting New TypeScript Projects
+
+Use the bootstrap script to create TypeScript projects with multiple framework options:
+
+```bash
+~/dotfiles/scripts/bootstrap-ts-project.sh my-app --framework=node     # Node.js CLI app
+~/dotfiles/scripts/bootstrap-ts-project.sh my-api --framework=express  # Express API
+~/dotfiles/scripts/bootstrap-ts-project.sh my-web --framework=react    # React app (Vite)
+~/dotfiles/scripts/bootstrap-ts-project.sh my-site --framework=next    # Next.js app
+```
+
+**What it creates:**
+- **CLAUDE.md** - Project context for Claude Code
+- **tsconfig.json** - Strict TypeScript config (from dotfiles/typescript/)
+- **.eslintrc.json** - TypeScript-aware ESLint rules
+- **.prettierrc** - Consistent code formatting
+- **package.json** - Framework-specific scripts and dependencies
+- **.nvim.lua** - DAP debug configuration for Node.js
+- **Git hooks** - Pre-commit (Prettier) and pre-push (type-check + lint)
+- **Directory structure** - src/, tests/, appropriate framework files
+
+**After creating a project:**
+1. `cd ~/dev/my-app`
+2. `npm install` - Install dependencies
+3. `npm run dev` - Start development server
+4. Edit code in `src/`
+5. Git will auto-format on commit, type-check on push
+6. `nvim .` - Opens with LSP and DAP ready (F5 to debug)
+
+**Framework-specific features:**
+- **node/express**: Simple Node.js apps with tsx for hot reload
+- **react**: Vite + React + TypeScript with fast HMR
+- **next**: Next.js 14+ with App Router and TypeScript
+
 ## Recent Features & Important Notes
 
-### Neovim C++ IDE Setup
-- **LSP**: clangd with full C++ support (requires `compile_commands.json` for best results)
+### Neovim IDE Setup
+
+**C++ (clangd):**
+- **LSP**: Full C++ support (requires `compile_commands.json` for best results)
 - **Debugging**: nvim-dap with codelldb adapter
-  - F5: Start/Continue, F10: Step over, F11: Step into, F12: Step out
-  - `Space+b`: Toggle breakpoint, `Space+du`: Toggle debug UI
-- **Git**: gitsigns with inline blame, hunk staging/preview/reset
-  - `Space+gb`: Toggle blame, `Space+hp`: Preview hunk, `Space+hs`: Stage hunk
 - **Formatting**: `Space+F` for clang-format, `Space+cf` for batch clang-tidy fixes
 - **Macros**: `Space+fm` to find #define macros (not visible in LSP symbols)
 - **Generate impl**: `Space+ca` on function declaration to generate implementation
+- **Header switching**: `Space+h` to toggle between .h/.cpp
+
+**TypeScript (ts_ls):**
+- **LSP**: Autocomplete, go-to-definition, refactoring, inlay hints
+- **Debugging**: nvim-dap with node2 adapter (F5 to start)
+- **Formatting**: `Space+F` uses Prettier (respects .prettierrc)
+- **Type checking**: Automatic via LSP, `npm run type-check` for full project
+- **Linting**: ESLint integration, errors shown inline
+
+**Common features (all languages):**
+- F5: Start/Continue, F10: Step over, F11: Step into, F12: Step out
+- `Space+b`: Toggle breakpoint, `Space+du`: Toggle debug UI
+- `Space+gb`: Toggle git blame, `Space+hp`: Preview hunk, `Space+hs`: Stage hunk
+- `Space+ff`: Find files, `Space+fg`: Live grep, `Space+fs`: Find symbols
 
 ### Git Hooks (Automatic Code Quality)
+
+**C++ projects:**
+- **Pre-commit**: Enforces clang-format on all C++ files
+- **Pre-push**: Runs clang-tidy on changed files
+- Fix with `git cf` or bypass with `git commit --no-verify`
+
+**TypeScript projects:**
+- **Pre-commit**: Runs Prettier on staged .ts/.tsx/.js/.jsx files
+- **Pre-push**: Type checks with `tsc --noEmit` and lints with ESLint
+- Fix with `npm run format` or bypass with `git push --no-verify`
+
+### Git Hooks (C++ - Legacy Documentation)
 
 Global hooks automatically installed via stow to `~/.git-hooks/` (applies to all repos).
 
