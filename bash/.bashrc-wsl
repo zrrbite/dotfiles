@@ -65,3 +65,12 @@ export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE
 
 # zoxide - smarter cd (replaces cd command)
 eval "$(zoxide init bash --cmd cd)"
+
+# WSL Windows drive shortcuts
+alias c='cd /mnt/c'
+alias d='cd /mnt/d'
+alias cdrive='cd /mnt/c'
+alias ddrive='cd /mnt/d'
+alias dev='cd /mnt/d/dev'
+alias downloads='cd /mnt/c/Users/$USER/Downloads'
+alias docs='cd /mnt/c/Users/$USER/Documents'
