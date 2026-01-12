@@ -157,7 +157,7 @@ stow */        # everything
 | `discord` | Desktop entry override for native Wayland support |
 | `fastfetch` | System info display with Nord colors (Arch logo, system stats) |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
-| `git`   | Git config with extensive aliases for status, logging, branching, stashing |
+| `git`   | Git config with extensive aliases + global hooks for C++ and TypeScript |
 | `gtk`   | GTK theme config - Nordic theme with Papirus-Dark icons for all GUI apps |
 | `hypr`  | Hyprland compositor + hyprpaper + hyprlock + hypridle + cliphist |
 | `mako`  | Notification daemon (Nord theme) |
@@ -245,16 +245,37 @@ ln -s build/compile_commands.json .
 bear -- make
 ```
 
-### Pre-commit Hook (Automatic Formatting Enforcement)
+## Git Hooks (C++ and TypeScript Support)
 
-A global pre-commit hook runs `git-clang-format` on all staged C++ files before every commit. If code doesn't comply with `.clang-format`, the commit fails with fun ASCII art (`(╯°□°)╯︵ ┻━┻`), a clear diff, and helpful instructions.
+Global git hooks that automatically enforce quality standards for both C++ and TypeScript/JavaScript projects.
 
-**What happens on commit:**
-1. Hook automatically checks all staged `.cpp`, `.hpp`, `.h`, `.cc`, `.cxx` files
-2. If formatting is correct → commit succeeds ✓
-3. If formatting issues found → commit blocked with table-flipping ASCII art and exact diff ✗
+**Hook Architecture:**
+- **Location:** `~/.git-hooks/` (applies to all repositories globally)
+- **Auto-detection:** Hooks detect project type and run appropriate checks
+- **Cross-platform:** Pure bash - works on Linux/Mac/Windows (Git Bash)
 
-**When commit is blocked:**
+### Hook Files
+
+| Hook | Purpose |
+|------|---------|
+| `pre-commit` | Main hook - detects C++ or TypeScript, runs formatting check |
+| `pre-commit-ts` | Helper - TypeScript formatting (npm run format:check) |
+| `pre-push` | Main hook - detects C++ or TypeScript, runs quality checks |
+| `pre-push-ts` | Helper - TypeScript type-check, lint, and tests |
+
+### For C++ Projects
+
+**Pre-commit (Formatting):**
+- Runs `git-clang-format` on all staged C++ files
+- Blocks commit if code doesn't comply with `.clang-format`
+- Shows table-flipping ASCII art (`(╯°□°)╯︵ ┻━┻`) with diff
+
+**Pre-push (Static Analysis):**
+- Runs `clang-tidy` on changed C++ files in commits being pushed
+- Catches bugs, performance issues, and style violations
+- Blocks push if critical issues found
+
+**When pre-commit blocks (formatting):**
 ```bash
 # Option 1: Auto-fix with git cf alias (fastest)
 git cf        # Formats all staged C++ files
@@ -269,14 +290,57 @@ git commit
 git commit --no-verify
 ```
 
+**When pre-push blocks (clang-tidy):**
+```bash
+# Fix the reported issues, then:
+git push      # Try again
+
+# Bypass (not recommended):
+git push --no-verify
+```
+
+### For TypeScript/JavaScript Projects
+
+**Pre-commit (Formatting):**
+- Detects: Staged `.ts`, `.tsx`, `.js`, `.jsx` files + `package.json` exists
+- Runs: `npm run format:check` (works with Prettier or oxfmt)
+- Blocks commit if formatting issues found
+
+**Pre-push (Quality Gates):**
+- Detects: `package.json` AND `tsconfig.json` exist
+- Runs sequentially:
+  1. Type checking: `npm run type-check`
+  2. Linting: `npm run lint`
+  3. Tests: `npm run test:run` (if script exists)
+- Blocks push if any check fails
+
+**When TypeScript pre-commit blocks:**
+```bash
+npm run format    # Auto-format all files
+git add .
+git commit
+```
+
+**When TypeScript pre-push blocks:**
+```bash
+# Fix the specific issue shown, then:
+npm run type-check   # Verify types pass
+npm run lint         # Verify linting passes
+npm run test:run     # Verify tests pass
+git push
+```
+
+### Configuration
+
 **Git alias available:**
 - `git cf` - Formats all staged C++ files (defined in `.gitconfig`)
 
-**Configuration:**
-- Hook location: `~/.git-hooks/pre-commit`
+**Setup:**
+- Hook location: `~/.git-hooks/`
 - Git config: `core.hooksPath = ~/.git-hooks`
 - Applies to all your git repositories globally
-- Uses your `~/.clang-format` configuration
+- C++ uses `~/.clang-format` and `~/.clang-tidy`
+- TypeScript uses npm scripts (tool-agnostic)
 
 ### VS Code with clangd
 
