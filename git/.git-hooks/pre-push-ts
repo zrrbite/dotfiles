@@ -36,19 +36,19 @@ fi
 echo "  ✓ Type checking passed"
 
 # Linting
-echo "  → Linting with ESLint..."
-if ! npm run lint &> /tmp/eslint-output.txt; then
+echo "  → Linting..."
+if ! npm run lint &> /tmp/lint-output.txt; then
     echo ""
     echo "╔════════════════════════════════════════════════════════╗"
     echo "║   LINT ERRORS DETECTED!                               ║"
     echo "╚════════════════════════════════════════════════════════╝"
     echo ""
-    cat /tmp/eslint-output.txt
+    cat /tmp/lint-output.txt
     echo ""
     echo "Fix lint errors before pushing."
     echo ""
     echo "Some errors may be auto-fixable:"
-    echo "  npm run lint -- --fix"
+    echo "  npm run lint:fix"
     echo ""
     echo "To bypass (not recommended):"
     echo "  git push --no-verify"

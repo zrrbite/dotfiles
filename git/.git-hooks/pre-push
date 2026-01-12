@@ -1,8 +1,17 @@
 #!/bin/bash
 #
-# Pre-push hook to run clang-tidy on C++ files
-# Runs on files changed in commits being pushed
-# Less frequent than pre-commit, catches issues before sharing code
+# Pre-push hook - handles both C++ and TypeScript/JavaScript projects
+# For C++: Runs clang-tidy
+# For TS/JS: Delegates to pre-push-ts
+
+# Check for TypeScript/JavaScript project first
+if [ -f "package.json" ] && [ -f "tsconfig.json" ]; then
+    # This is a TypeScript project, delegate to pre-push-ts
+    HOOK_DIR="$(git config --get core.hooksPath || echo ~/.git-hooks)"
+    if [ -f "$HOOK_DIR/pre-push-ts" ]; then
+        exec "$HOOK_DIR/pre-push-ts" "$@"
+    fi
+fi
 
 # Colors
 RED='\033[0;31m'
