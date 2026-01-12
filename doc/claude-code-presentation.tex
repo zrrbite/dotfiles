@@ -295,10 +295,10 @@ $ cd my-app && npm install && npm run dev
     \column{0.5\textwidth}
     \textbf{Time breakdown:}
     \begin{itemize}
-      \item tsconfig/ESLint/Prettier: 2 min
+      \item tsconfig/ESLint/Prettier/Vitest: 2 min
       \item Neovim TypeScript support: 1 min
-      \item Bootstrap script: 3 min
-      \item Git hooks: 2 min
+      \item Bootstrap script (4 frameworks): 3 min
+      \item Git hooks (4 quality gates): 2 min
       \item Testing demo project: 2 min
     \end{itemize}
   \end{columns}
@@ -324,10 +324,11 @@ $ cd my-app && npm install && npm run dev
   \textbf{All include:}
   \begin{itemize}
     \item Strict TypeScript config (no implicit any)
-    \item ESLint + Prettier pre-configured
-    \item Git hooks (pre-commit format, pre-push type-check)
+    \item ESLint + Prettier + Vitest pre-configured
+    \item Git hooks (4 quality gates: format, types, lint, tests)
     \item Neovim LSP + DAP debugging ready
     \item CLAUDE.md with framework-specific guidance
+    \item Sample tests auto-generated for each framework
   \end{itemize}
 \end{frame}
 
@@ -353,9 +354,9 @@ $ cd my-app && npm install && npm run dev
     \textbf{TypeScript Projects:}
     \begin{itemize}
       \item Pre-commit: Prettier
-      \item Pre-push: tsc + ESLint
+      \item Pre-push: tsc + ESLint + Vitest
       \item Fix: \texttt{npm run format}
-      \item Type errors blocked
+      \item Type errors \& test failures blocked
     \end{itemize}
 
     \column{0.5\textwidth}
@@ -538,7 +539,7 @@ CheckOptions:
       New TS/React project & 20-40 min & 5 sec \\
       Configure LSP/DAP & 20-30 min & 0 min (automatic) \\
       Setup git hooks & 15-20 min & 0 min (automatic) \\
-      TSConfig + ESLint + Prettier & 15-25 min & 0 min (automatic) \\
+      TSConfig + ESLint + Prettier + Vitest & 15-25 min & 0 min (automatic) \\
       Cross-platform config & Hours/days & 1 session \\
       Format code & Manual & Automatic (pre-commit) \\
       Type/lint checking & Manual & Automatic (pre-push) \\
@@ -625,7 +626,7 @@ CheckOptions:
 \section{Live Demo}
 % ============================================================================
 
-\begin{frame}{Live Demo: The Three Quality Gates}
+\begin{frame}{Live Demo: The Four Quality Gates}
   \textbf{Let's write some bad code and watch the gates catch it!}
 
   \vspace{1em}
@@ -637,6 +638,7 @@ CheckOptions:
       \item Missing spaces (Prettier)
       \item Implicit \texttt{any} types (TypeScript)
       \item Missing return types (ESLint)
+      \item Failing tests (Vitest)
     \end{itemize}
 
     \column{0.5\textwidth}
@@ -645,6 +647,7 @@ CheckOptions:
       \item Gate 1: Prettier
       \item Gate 2: TypeScript
       \item Gate 3: ESLint
+      \item Gate 4: Vitest
     \end{itemize}
   \end{columns}
 
@@ -738,7 +741,38 @@ const Counter = (): JSX.Element => {  // <-- Explicit!
 
   \vspace{0.5em}
   \centering
-  \textbf{All three gates passed — code is ready to push!}
+  \textbf{Three gates down, one more to go!}
+\end{frame}
+
+\begin{frame}[fragile]{Gate 4: Vitest Catches Logic Bugs}
+  \textbf{Tests verify runtime behavior:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+$ npm run test:run
+
+src/Counter.test.tsx
+  OK renders with initial count of 0
+  OK displays the increment button
+  OK increments count when button is clicked
+  OK increments multiple times correctly
+
+Test Files  1 passed (1)
+     Tests  4 passed (4)
+  Duration  1.25s
+  \end{lstlisting}
+
+  \vspace{1em}
+  \textbf{What Vitest catches that others can't:}
+  \begin{itemize}
+    \item Incorrect logic (button doesn't increment)
+    \item Wrong initial values (starts at 10 instead of 0)
+    \item Runtime errors (undefined function calls)
+    \item Component behavior bugs
+  \end{itemize}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{All four gates passed — code is ready to push!}
 \end{frame}
 
 \begin{frame}{Live Demo: Bootstrap a Project}
