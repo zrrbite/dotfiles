@@ -79,12 +79,16 @@ return {
   },
 
   {
-    "hrsh7th/cmp-nvim-lsp",
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+    },
     config = function()
+      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- Clangd for C++ - use new vim.lsp.config API
-      vim.lsp.config("clangd", {
+      -- Clangd for C++
+      lspconfig.clangd.setup({
         cmd = {
           "clangd",
           "--background-index",
@@ -95,16 +99,11 @@ return {
           "--fallback-style=llvm",
           "--offset-encoding=utf-16",
         },
-        filetypes = { "c", "cpp", "objc", "objcpp" },
-        root_dir = vim.fs.root(0, { ".clangd", "compile_commands.json", ".git" }),
         capabilities = capabilities,
       })
 
       -- Lua LS
-      vim.lsp.config("lua_ls", {
-        cmd = { "lua-language-server" },
-        filetypes = { "lua" },
-        root_dir = vim.fs.root(0, { ".luarc.json", ".git" }),
+      lspconfig.lua_ls.setup({
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -115,10 +114,7 @@ return {
       })
 
       -- TypeScript LS
-      vim.lsp.config("ts_ls", {
-        cmd = { "typescript-language-server", "--stdio" },
-        filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
-        root_dir = vim.fs.root(0, { "tsconfig.json", "package.json", ".git" }),
+      lspconfig.ts_ls.setup({
         capabilities = capabilities,
         settings = {
           typescript = {
@@ -134,11 +130,6 @@ return {
           },
         },
       })
-
-      -- Enable LSPs
-      vim.lsp.enable("clangd")
-      vim.lsp.enable("lua_ls")
-      vim.lsp.enable("ts_ls")
 
       -- Suppress encoding warnings (functionality works despite warnings)
       local notify = vim.notify
