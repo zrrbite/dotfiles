@@ -222,6 +222,7 @@ Use the bootstrap script to create TypeScript projects with multiple framework o
 - **Formatting**: `Space+F` uses Prettier (respects .prettierrc)
 - **Type checking**: Automatic via LSP, `npm run type-check` for full project
 - **Linting**: ESLint integration, errors shown inline
+- **⚠️ REQUIRES**: `npm install -g typescript-language-server typescript` (not in install scripts yet)
 
 **Common features (all languages):**
 - F5: Start/Continue, F10: Step over, F11: Step into, F12: Step out

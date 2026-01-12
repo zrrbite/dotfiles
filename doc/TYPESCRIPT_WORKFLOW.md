@@ -11,6 +11,102 @@ The TypeScript workflow uses **four automated quality gates** that prevent broke
 3. **ESLint** (Pre-push) - Code quality
 4. **Vitest** (Pre-push) - Runtime correctness
 
+## Prerequisites
+
+### Required for Basic Workflow (Git Hooks + CLI)
+
+**Minimum requirements:**
+- Node.js (v18+ recommended)
+- npm (comes with Node.js)
+
+**Installation:**
+```bash
+# Arch Linux
+sudo pacman -S nodejs npm
+
+# WSL (Ubuntu/Debian)
+sudo apt install nodejs npm
+
+# macOS
+brew install node
+
+# Windows (via Scoop)
+scoop install nodejs
+```
+
+### Required for Neovim LSP Integration
+
+**⚠️ IMPORTANT:** The nvim configuration in this repository expects TypeScript LSP support, but the install scripts **do not currently install** the required language server.
+
+**To enable TypeScript LSP in nvim, you must manually install:**
+
+```bash
+# Install TypeScript Language Server globally
+npm install -g typescript-language-server typescript
+```
+
+**What this enables:**
+- Autocomplete for TypeScript/JavaScript
+- Go-to-definition (jump to function/type definitions)
+- Inline type hints and documentation
+- Refactoring support (rename, extract function, etc.)
+- Real-time type error detection as you type
+
+**Verification:**
+```bash
+# Check if installed correctly
+which typescript-language-server
+# Should output: /usr/bin/typescript-language-server (or npm global path)
+
+# Test in nvim
+nvim some-file.ts
+# Run: :LspInfo
+# Should show: ts_ls client active
+```
+
+**If LSP isn't working:**
+1. Make sure `typescript-language-server` is in your PATH
+2. Restart nvim after installation
+3. Open a `.ts` or `.tsx` file and run `:LspInfo`
+4. Check nvim logs: `:messages` or `:checkhealth lsp`
+
+### Optional Enhancements
+
+**Node Version Manager (for multiple Node.js versions):**
+```bash
+# nvm (Linux/macOS/WSL)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+nvm install 20  # Install Node.js v20 LTS
+nvm use 20
+
+# fnm (faster alternative)
+curl -fsSL https://fnm.vercel.app/install | bash
+fnm install 20
+fnm use 20
+```
+
+**Global TypeScript for quick scripts:**
+```bash
+npm install -g tsx  # Run TypeScript directly without compilation
+# Usage: tsx script.ts
+```
+
+**Neovim TypeScript snippets:**
+- Consider adding TypeScript/React snippets via LuaSnip or UltiSnips
+- Common patterns: useState, useEffect, React components, async functions
+
+### Future Work (TODO)
+
+The following improvements should be made to dotfiles:
+
+1. **Update install_arch.sh** to install `typescript-language-server`
+2. **Update install_wsl.sh** to install `typescript-language-server`
+3. **Update install_darwin.sh** to install `typescript-language-server`
+4. **Update install_windows.ps1** to install `typescript-language-server` via npm
+5. **Add .nvmrc** to bootstrap-ts-project.sh output (Node version pinning)
+6. **Add TypeScript snippets** to nvim config for common patterns
+7. **Document Node.js installation** in main README.md
+
 ## The Four Quality Gates
 
 ### Gate 1: Prettier (Pre-commit Hook) 🎨
