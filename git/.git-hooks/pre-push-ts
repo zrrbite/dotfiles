@@ -57,6 +57,27 @@ if ! npm run lint &> /tmp/eslint-output.txt; then
 fi
 echo "  ✓ Linting passed"
 
+# Testing (if package.json has test script)
+if grep -q '"test:run"' package.json 2>/dev/null; then
+    echo "  → Running tests with Vitest..."
+    if ! npm run test:run &> /tmp/vitest-output.txt; then
+        echo ""
+        echo "╔════════════════════════════════════════════════════════╗"
+        echo "║   TEST FAILURES DETECTED!                             ║"
+        echo "╚════════════════════════════════════════════════════════╝"
+        echo ""
+        cat /tmp/vitest-output.txt
+        echo ""
+        echo "Fix failing tests before pushing."
+        echo ""
+        echo "To bypass (not recommended):"
+        echo "  git push --no-verify"
+        echo ""
+        exit 1
+    fi
+    echo "  ✓ Tests passed"
+fi
+
 echo ""
 echo "✓ All pre-push checks passed. Proceeding with push..."
 exit 0

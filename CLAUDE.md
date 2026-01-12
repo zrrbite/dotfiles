@@ -118,7 +118,8 @@ Each top-level directory is a stow package that mirrors the home directory struc
   - **tsconfig.json**: Strict mode, modern ES2022 target, no implicit any
   - **ESLint**: TypeScript-specific rules, no-explicit-any enforcement
   - **Prettier**: Consistent formatting (single quotes, 100 char width)
-  - Project-specific hooks for pre-commit formatting and pre-push type checking
+  - **Vitest**: Fast unit testing with React Testing Library support
+  - Four quality gates: Prettier (pre-commit) → TypeScript + ESLint + Vitest (pre-push)
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
   - macOS primary terminal
@@ -182,18 +183,21 @@ Use the bootstrap script to create TypeScript projects with multiple framework o
 - **tsconfig.json** - Strict TypeScript config (from dotfiles/typescript/)
 - **.eslintrc.json** - TypeScript-aware ESLint rules
 - **.prettierrc** - Consistent code formatting
+- **vitest.config.ts** - Vitest testing configuration
 - **package.json** - Framework-specific scripts and dependencies
 - **.nvim.lua** - DAP debug configuration for Node.js
-- **Git hooks** - Pre-commit (Prettier) and pre-push (type-check + lint)
-- **Directory structure** - src/, tests/, appropriate framework files
+- **Git hooks** - Pre-commit (Prettier) and pre-push (type-check + lint + tests)
+- **Test files** - Auto-generated sample tests for each framework
+- **Directory structure** - src/, src/test/ or test/, appropriate framework files
 
 **After creating a project:**
 1. `cd ~/dev/my-app`
 2. `npm install` - Install dependencies
 3. `npm run dev` - Start development server
-4. Edit code in `src/`
-5. Git will auto-format on commit, type-check on push
-6. `nvim .` - Opens with LSP and DAP ready (F5 to debug)
+4. Edit code in `src/`, write tests in `src/test/`
+5. `npm run test` - Run tests in watch mode (optional during development)
+6. Git enforces four quality gates: Prettier (commit) → TypeScript + ESLint + Vitest (push)
+7. `nvim .` - Opens with LSP and DAP ready (F5 to debug)
 
 **Framework-specific features:**
 - **node/express**: Simple Node.js apps with tsx for hot reload
@@ -232,10 +236,11 @@ Use the bootstrap script to create TypeScript projects with multiple framework o
 - **Pre-push**: Runs clang-tidy on changed files
 - Fix with `git cf` or bypass with `git commit --no-verify`
 
-**TypeScript projects:**
-- **Pre-commit**: Runs Prettier on staged .ts/.tsx/.js/.jsx files
-- **Pre-push**: Type checks with `tsc --noEmit` and lints with ESLint
-- Fix with `npm run format` or bypass with `git push --no-verify`
+**TypeScript projects (Four Quality Gates):**
+- **Pre-commit** (Gate 1): Runs Prettier on staged .ts/.tsx/.js/.jsx files
+- **Pre-push** (Gates 2-4): Type checks with `tsc --noEmit`, lints with ESLint, tests with Vitest
+- Fix formatting with `npm run format`, tests must pass before push
+- Bypass with `git push --no-verify` (not recommended)
 
 ### Git Hooks (C++ - Legacy Documentation)
 

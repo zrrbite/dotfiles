@@ -4,13 +4,14 @@ Complete guide to the TypeScript development workflow with quality gates.
 
 ## Overview
 
-The TypeScript workflow uses **three automated quality gates** that prevent broken code from being committed or pushed:
+The TypeScript workflow uses **four automated quality gates** that prevent broken code from being committed or pushed:
 
 1. **Prettier** (Pre-commit) - Formatting
 2. **TypeScript Compiler** (Pre-push) - Type checking
 3. **ESLint** (Pre-push) - Code quality
+4. **Vitest** (Pre-push) - Runtime correctness
 
-## The Three Quality Gates
+## The Four Quality Gates
 
 ### Gate 1: Prettier (Pre-commit Hook) 🎨
 
@@ -220,6 +221,139 @@ git push              # Try again
 
 ---
 
+### Gate 4: Vitest (Pre-push Hook) 🧪
+
+**When it runs:** Every `git push` (after ESLint check)
+
+**Location:** `git/.git-hooks/pre-push-ts`
+
+**What it does:**
+1. Checks if `package.json` has a `test:run` script
+2. Runs `npm run test:run` (executes `vitest run`)
+3. **Blocks push** if any tests fail
+
+**Configuration:** `vitest.config.ts`
+
+**React/Next.js configuration:**
+```typescript
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',      // Simulate browser environment
+    globals: true,             // Use global test functions
+    setupFiles: './src/test/setup.ts',  // Setup file for jest-dom matchers
+  },
+});
+```
+
+**Node.js/Express configuration:**
+```typescript
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+  },
+});
+```
+
+**Test setup file** (`src/test/setup.ts` for React/Next.js):
+```typescript
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+
+// Extend Vitest's expect with jest-dom matchers
+expect.extend(matchers);
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+```
+
+**Example test:**
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import Counter from './Counter';
+
+describe('Counter', () => {
+  it('renders with initial count of 0', () => {
+    render(<Counter />);
+    expect(screen.getByText(/Counter: 0/i)).toBeInTheDocument();
+  });
+
+  it('increments count when button is clicked', () => {
+    render(<Counter />);
+    const button = screen.getByRole('button', { name: /increment/i });
+
+    fireEvent.click(button);
+    expect(screen.getByText(/Counter: 1/i)).toBeInTheDocument();
+  });
+});
+```
+
+**Example violations:**
+
+```typescript
+// ❌ Vitest rejects (failing test):
+describe('Counter', () => {
+  it('starts at 10', () => {
+    render(<Counter />);
+    // This fails because counter starts at 0, not 10
+    expect(screen.getByText(/Counter: 10/i)).toBeInTheDocument();
+  });
+});
+
+// ❌ Vitest rejects (runtime error):
+describe('Counter', () => {
+  it('renders', () => {
+    render(<Counter />);
+    // This fails because element doesn't exist
+    expect(screen.getByText(/Nonexistent/i)).toBeInTheDocument();
+  });
+});
+
+// ✅ Vitest accepts:
+describe('Counter', () => {
+  it('renders with initial count of 0', () => {
+    render(<Counter />);
+    expect(screen.getByText(/Counter: 0/i)).toBeInTheDocument();
+  });
+});
+```
+
+**How to fix:**
+
+```bash
+npm run test         # Run tests in watch mode (interactive)
+npm run test:ui      # Run tests with UI (visual)
+npm run test:run     # Run tests once (same as pre-push)
+# Fix failing tests in your code
+git push            # Try again
+```
+
+**Why this matters:**
+
+- Prettier catches **formatting** issues
+- TypeScript catches **type** errors
+- ESLint catches **code quality** issues
+- Vitest catches **logic bugs** that only appear at runtime
+
+A function can be perfectly formatted, type-safe, and lint-clean, but still have a bug that makes it return the wrong value. Tests catch those bugs.
+
+**Bypass (not recommended):**
+```bash
+git push --no-verify
+```
+
+---
+
 ## How They Work Together
 
 ### The Commit/Push Flow
@@ -252,7 +386,10 @@ git push
 #   Step 2: ESLint lints entire project
 #   - If fails: ❌ Push blocked, shows lint errors
 #
-#   - If both pass: ✅ Push succeeds
+#   Step 3: Vitest runs all tests
+#   - If fails: ❌ Push blocked, shows test failures
+#
+#   - If all three pass: ✅ Push succeeds
 ```
 
 ### Why Two Stages?
@@ -267,6 +404,7 @@ git push
 - Checks **entire project**
 - TypeScript needs to analyze dependencies
 - ESLint checks all rules across files
+- Vitest runs all tests
 - Slower but more comprehensive
 - Only runs when pushing (less frequent)
 
@@ -281,19 +419,21 @@ This two-stage approach balances **fast feedback** (commit) with **thorough vali
 | **Formatting** | clang-format | Prettier |
 | **Static Analysis** | clang-tidy | ESLint |
 | **Type Checking** | Built into compiler | Separate `tsc` step |
+| **Testing** | Manual/Makefile | Vitest (automated) |
 | **Pre-commit** | clang-format on staged | Prettier on staged |
-| **Pre-push** | clang-tidy on changed | tsc + ESLint on all |
+| **Pre-push** | clang-tidy on changed | tsc + ESLint + Vitest on all |
 | **Auto-fix** | `git cf` | `npm run format` |
-| **Config files** | `.clang-format`, `.clang-tidy` | `.prettierrc`, `.eslintrc.json`, `tsconfig.json` |
+| **Config files** | `.clang-format`, `.clang-tidy` | `.prettierrc`, `.eslintrc.json`, `tsconfig.json`, `vitest.config.ts` |
 
 **Key difference:**
 
-TypeScript has **three separate tools** (Prettier/tsc/ESLint) vs C++ has **two** (clang-format/clang-tidy), because:
+TypeScript has **four separate tools** (Prettier/tsc/ESLint/Vitest) vs C++ has **two** (clang-format/clang-tidy), because:
 - **Prettier** = Pure formatting (like clang-format)
 - **TypeScript** = Type safety (built into C++ compiler)
 - **ESLint** = Code quality (like clang-tidy)
+- **Vitest** = Runtime correctness (tests are manual in C++)
 
-In C++, `clang-tidy` does both static analysis AND some style checking. In TypeScript, these are separate concerns with specialized tools.
+In C++, `clang-tidy` does both static analysis AND some style checking. In TypeScript, these are separate concerns with specialized tools. Additionally, TypeScript projects enforce automated testing via git hooks, while C++ testing is typically manual.
 
 ---
 
@@ -304,6 +444,7 @@ In C++, `clang-tidy` does both static analysis AND some style checking. In TypeS
 1. **Prettier** = How code looks (formatting, style)
 2. **TypeScript** = Type correctness (safety, bugs)
 3. **ESLint** = Best practices (patterns, quality)
+4. **Vitest** = Runtime correctness (logic, behavior)
 
 Each tool has one job and does it well.
 
@@ -311,14 +452,15 @@ Each tool has one job and does it well.
 
 - **Basic:** Just Prettier → Consistent formatting
 - **Better:** + TypeScript → Type safety prevents bugs
-- **Best:** + ESLint → Catch code smells, enforce patterns
+- **Good:** + ESLint → Catch code smells, enforce patterns
+- **Best:** + Vitest → Verify runtime behavior, catch logic bugs
 
 You can start with just Prettier and add the others as your project matures.
 
 ### Fail Fast
 
 - Catch formatting issues at **commit time** (seconds after writing)
-- Catch type/quality issues at **push time** (before code review)
+- Catch type/quality/test issues at **push time** (before code review)
 - Never let broken code reach CI/CD or production
 
 ---
@@ -479,11 +621,16 @@ To github.com:user/repo.git
 npm run type-check      # TypeScript type errors
 npm run lint            # ESLint issues
 npx prettier --check .  # Prettier formatting issues
+npm run test:run        # Run all tests once
 
 # Fix issues
 npm run format          # Auto-fix Prettier
 npm run lint -- --fix   # Auto-fix some ESLint issues
-# Type errors must be fixed manually
+# Type errors and test failures must be fixed manually
+
+# Development
+npm run test            # Run tests in watch mode
+npm run test:ui         # Run tests with visual UI
 
 # Bypass (not recommended)
 git commit --no-verify  # Skip pre-commit hook
@@ -501,9 +648,14 @@ dotfiles/
 │   └── tsconfig.json        # TypeScript config
 ├── git/.git-hooks/
 │   ├── pre-commit-ts        # Prettier gate
-│   └── pre-push-ts          # TypeScript + ESLint gates
+│   └── pre-push-ts          # TypeScript + ESLint + Vitest gates
 └── scripts/
-    └── bootstrap-ts-project.sh  # Creates new TS projects
+    └── bootstrap-ts-project.sh  # Creates new TS projects with Vitest
+
+Project files (created by bootstrap):
+├── vitest.config.ts         # Vitest configuration
+├── src/test/setup.ts        # Test setup (React/Next.js)
+└── src/*.test.tsx           # Test files
 ```
 
 ### Bootstrap a New Project
@@ -525,7 +677,8 @@ dotfiles/
 All frameworks include:
 - ✅ Strict TypeScript config
 - ✅ ESLint + Prettier configured
-- ✅ Git hooks installed automatically
+- ✅ Vitest with auto-generated tests
+- ✅ Git hooks installed automatically (4 quality gates)
 - ✅ CLAUDE.md with project context
 - ✅ .nvim.lua with DAP debugging ready
 
@@ -584,10 +737,11 @@ npm install -g prettier
 
 ### You Can't Push Broken Code
 
-The three gates ensure:
+The four gates ensure:
 - ✅ **Consistent formatting** across the entire team
 - ✅ **Type safety** prevents runtime errors
 - ✅ **Best practices** enforced automatically
+- ✅ **Correct behavior** verified by tests
 
 No manual checking required. No code review comments about formatting. No "I'll fix it later."
 
@@ -597,13 +751,15 @@ No manual checking required. No code review comments about formatting. No "I'll 
 - 30-60 min: Manual code review finding formatting issues
 - 15-30 min: Debugging type errors in production
 - 20-40 min: Refactoring to fix code smells
+- 30-60 min: Debugging logic bugs caught in code review
 
 **With quality gates:**
 - 0 min: Formatting auto-fixed
 - 0 min: Type errors caught before push
 - 0 min: Code smells caught by ESLint
+- 0 min: Logic bugs caught by Vitest
 
-**Result:** 65-130 minutes saved per project, plus fewer bugs in production.
+**Result:** 95-190 minutes saved per project, plus fewer bugs in production.
 
 ---
 
@@ -613,6 +769,8 @@ No manual checking required. No code review comments about formatting. No "I'll 
 - [ESLint Rules](https://eslint.org/docs/rules/)
 - [Prettier Options](https://prettier.io/docs/en/options.html)
 - [TypeScript ESLint](https://typescript-eslint.io/)
+- [Vitest Guide](https://vitest.dev/guide/)
+- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
 
 ---
 

@@ -87,23 +87,31 @@ case $FRAMEWORK in
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/ui": "^4.0.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
+    "jsdom": "^27.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.0.0",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "vitest": "^4.0.0"
   }
 }
 EOF
@@ -211,7 +219,10 @@ EOF
     "start": "node dist/main.js",
     "lint": "eslint . --ext ts",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "express": "^4.18.0"
@@ -221,11 +232,13 @@ EOF
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@vitest/ui": "^4.0.0",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "prettier": "^3.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.0"
   }
 }
 EOF
@@ -295,7 +308,10 @@ EOF
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "next": "^14.0.0",
@@ -303,16 +319,21 @@ EOF
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@vitest/ui": "^4.0.0",
     "eslint": "^8.45.0",
     "eslint-config-next": "^14.0.0",
     "eslint-config-prettier": "^9.0.0",
+    "jsdom": "^27.0.0",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^4.0.0"
   }
 }
 EOF
@@ -388,6 +409,188 @@ EOF
         ;;
 esac
 
+# Create Vitest configuration and test files
+case $FRAMEWORK in
+    react)
+        # Create vitest.config.ts for React
+        cat > vitest.config.ts << 'EOF'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './src/test/setup.ts',
+  },
+});
+EOF
+        # Create test setup
+        mkdir -p src/test
+        cat > src/test/setup.ts << 'EOF'
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+
+// Extend Vitest's expect with jest-dom matchers
+expect.extend(matchers);
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+EOF
+        # Create App.test.tsx
+        cat > src/App.test.tsx << 'EOF'
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+describe('App', () => {
+  it('renders the app component', () => {
+    render(<App />);
+    expect(screen.getByText(/Hello from React \+ TypeScript!/i)).toBeInTheDocument();
+  });
+
+  it('displays the project name', () => {
+    render(<App />);
+    // The actual project name is replaced dynamically in App.tsx
+    expect(screen.getByText(/Project:/i)).toBeInTheDocument();
+  });
+});
+EOF
+        ;;
+
+    node|express)
+        # Create vitest.config.ts for Node.js
+        cat > vitest.config.ts << 'EOF'
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+  },
+});
+EOF
+        # Create test directory and sample test
+        mkdir -p src/test
+        if [ "$FRAMEWORK" = "express" ]; then
+            cat > src/test/main.test.ts << 'EOF'
+import { describe, it, expect } from 'vitest';
+
+// Helper function to test (in a real app, you'd import from your source)
+const greet = (name: string): string => {
+  return `Hello, ${name}!`;
+};
+
+describe('greet function', () => {
+  it('returns a greeting message', () => {
+    expect(greet('World')).toBe('Hello, World!');
+  });
+
+  it('works with different names', () => {
+    expect(greet('TypeScript')).toBe('Hello, TypeScript!');
+    expect(greet('Vitest')).toBe('Hello, Vitest!');
+  });
+});
+
+// Note: For Express apps, you'd typically test routes using supertest:
+// import request from 'supertest';
+// import app from '../main';
+//
+// describe('GET /', () => {
+//   it('responds with json', async () => {
+//     const response = await request(app).get('/');
+//     expect(response.status).toBe(200);
+//     expect(response.body.message).toBe('Hello from Express + TypeScript!');
+//   });
+// });
+EOF
+        else
+            cat > src/test/main.test.ts << 'EOF'
+import { describe, it, expect } from 'vitest';
+
+// Helper function to test
+const greet = (name: string): string => {
+  return `Hello, ${name}!`;
+};
+
+describe('greet function', () => {
+  it('returns a greeting message', () => {
+    expect(greet('World')).toBe('Hello, World!');
+  });
+
+  it('works with different names', () => {
+    expect(greet('TypeScript')).toBe('Hello, TypeScript!');
+    expect(greet('Vitest')).toBe('Hello, Vitest!');
+  });
+});
+EOF
+        fi
+        ;;
+
+    next)
+        # Create vitest.config.ts for Next.js
+        cat > vitest.config.ts << 'EOF'
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './test/setup.ts',
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './'),
+    },
+  },
+});
+EOF
+        # Create test setup
+        mkdir -p test
+        cat > test/setup.ts << 'EOF'
+import { expect, afterEach } from 'vitest';
+import { cleanup } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+
+// Extend Vitest's expect with jest-dom matchers
+expect.extend(matchers);
+
+// Cleanup after each test
+afterEach(() => {
+  cleanup();
+});
+EOF
+        # Create page.test.tsx
+        mkdir -p app/__tests__
+        cat > app/__tests__/page.test.tsx << 'EOF'
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import Home from '../page';
+
+describe('Home Page', () => {
+  it('renders the home page', () => {
+    render(<Home />);
+    expect(screen.getByText(/Hello from Next\.js \+ TypeScript!/i)).toBeInTheDocument();
+  });
+
+  it('displays the project name', () => {
+    render(<Home />);
+    expect(screen.getByText(/Project:/i)).toBeInTheDocument();
+  });
+});
+EOF
+        ;;
+esac
+
+echo -e "${GREEN}[INFO]   ✓ vitest.config.ts${NC}"
+echo -e "${GREEN}[INFO]   ✓ Test files created${NC}"
+
 # Create CLAUDE.md
 cat > CLAUDE.md << EOF
 # $PROJECT_NAME
@@ -406,6 +609,9 @@ npm run build        # Build for production
 npm run lint         # Run ESLint
 npm run format       # Format with Prettier
 npm run type-check   # Type check without emitting files
+npm run test         # Run tests in watch mode
+npm run test:ui      # Run tests with UI
+npm run test:run     # Run tests once (for CI/pre-push)
 \`\`\`
 
 ## Architecture
@@ -413,22 +619,24 @@ npm run type-check   # Type check without emitting files
 - **TypeScript**: Strict mode enabled, no implicit any
 - **ESLint**: Enforces code quality
 - **Prettier**: Consistent formatting
+- **Vitest**: Fast unit testing with React Testing Library
 - **Project structure**:
   - \`src/\` - Source files
-  - \`tests/\` - Test files
+  - \`src/test/\` or \`test/\` - Test files
   - \`dist/\` - Build output (gitignored)
 
-## Git Hooks
+## Git Hooks (Four Quality Gates)
 
-- **Pre-commit**: Runs Prettier on staged files
-- **Pre-push**: Type checks and lints all files
+- **Pre-commit**: Runs Prettier on staged files (Gate 1: Formatting)
+- **Pre-push**: Type checks, lints, and tests all files (Gates 2-4: Types, Quality, Tests)
 
 ## Development Workflow
 
 1. Make changes in \`src/\`
-2. Git will auto-format on commit
-3. Push will fail if type errors or lint issues exist
-4. Fix issues, then push again
+2. Write tests in \`src/test/\` or \`test/\`
+3. Git will auto-format on commit
+4. Push will fail if type errors, lint issues, or tests fail
+5. Fix issues, then push again
 
 ## Neovim Integration
 
