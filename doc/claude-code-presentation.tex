@@ -4,9 +4,25 @@
 % Packages
 \usepackage{booktabs}
 \usepackage{listings}
-\usepackage{fontawesome5}
 \usepackage{hyperref}
 \usepackage{tikz}
+
+% Unicode symbols for icons (no fontawesome5 needed)
+\newcommand{\faIcon}[1]{%
+  \ifnum\pdfstrcmp{#1}{terminal}=0 $\blacktriangleright$\fi%
+  \ifnum\pdfstrcmp{#1}{code}=0 $\langle\!\rangle$\fi%
+  \ifnum\pdfstrcmp{#1}{robot}=0 $\clubsuit$\fi%
+  \ifnum\pdfstrcmp{#1}{search}=0 $\bigcirc$\fi%
+  \ifnum\pdfstrcmp{#1}{edit}=0 $\triangleright$\fi%
+  \ifnum\pdfstrcmp{#1}{check}=0 $\checkmark$\fi%
+  \ifnum\pdfstrcmp{#1}{times}=0 $\times$\fi%
+  \ifnum\pdfstrcmp{#1}{linux}=0 $\bigstar$\fi%
+  \ifnum\pdfstrcmp{#1}{apple}=0 $\bigcirc$\fi%
+  \ifnum\pdfstrcmp{#1}{windows}=0 $\square$\fi%
+  \ifnum\pdfstrcmp{#1}{github}=0 $\bullet$\fi%
+  \ifnum\pdfstrcmp{#1}{book}=0 $\equiv$\fi%
+  \ifnum\pdfstrcmp{#1}{folder}=0 $\diamondsuit$\fi%
+}
 
 % Code highlighting
 \lstset{
@@ -129,14 +145,14 @@ $ ~/dotfiles/scripts/bootstrap-cpp-project.sh my-renderer
 [INFO] Creating C++ project: my-renderer
 [INFO] Location: /home/user/dev/my-renderer
 [INFO] Created directory structure
-[INFO]   ✓ CLAUDE.md
-[INFO]   ✓ .clangd
-[INFO]   ✓ CMakeLists.txt
-[INFO]   ✓ .nvim.lua (debug configs)
-[INFO]   ✓ src/main.cpp
-[INFO]   ✓ Git repository initialized
+[INFO]   OK CLAUDE.md
+[INFO]   OK .clangd
+[INFO]   OK CMakeLists.txt
+[INFO]   OK .nvim.lua (debug configs)
+[INFO]   OK src/main.cpp
+[INFO]   OK Git repository initialized
 
-✓ Project created successfully!
+OK Project created successfully!
   \end{lstlisting}
 
   \begin{exampleblock}{Time Investment}
@@ -243,9 +259,7 @@ Checking C++ code formatting...
 
 src/renderer.cpp needs formatting:
 
-  (╯°□°)╯︵ ┻━┻
-
-  CODE FORMATTING VIOLATIONS DETECTED!
+  *** CODE FORMATTING VIOLATIONS DETECTED! ***
 
 How to fix:
   git cf                    # Format staged files
@@ -311,7 +325,7 @@ To bypass (not recommended):
 ./install_darwin.sh
   \end{lstlisting}
 
-  \begin{lstlisting}[language=powershell]
+  \begin{lstlisting}
 # Windows (PowerShell)
 .\install_windows.ps1
   \end{lstlisting}
