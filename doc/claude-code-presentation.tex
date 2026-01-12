@@ -1,0 +1,554 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{metropolis}
+
+% Packages
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+\usepackage{tikz}
+
+% Code highlighting
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray}
+}
+
+% Title page
+\title{Supercharging C++ Development with Claude Code}
+\subtitle{How AI-Powered Workflow Automation Transformed My Development Process}
+\author{Your Name}
+\date{\today}
+\institute{Your Institution/Company}
+
+\begin{document}
+
+\maketitle
+
+% Table of Contents
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+% ============================================================================
+\section{What is Claude Code?}
+% ============================================================================
+
+\begin{frame}{Claude Code: AI-Powered Development Assistant}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Claude Code (CC)} is Anthropic's official CLI tool
+
+    \vspace{1em}
+    \textbf{Key Features:}
+    \begin{itemize}
+      \item \faIcon{terminal} Interactive terminal interface
+      \item \faIcon{code} Full codebase awareness
+      \item \faIcon{robot} Autonomous task execution
+      \item \faIcon{search} Intelligent code search
+      \item \faIcon{edit} Multi-file editing
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \begin{alertblock}{Not Just a Chatbot}
+      Claude Code can:
+      \begin{itemize}
+        \item Read your entire codebase
+        \item Execute shell commands
+        \item Edit multiple files
+        \item Run git operations
+        \item Debug and test code
+      \end{itemize}
+    \end{alertblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Why Claude Code?}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Traditional Development:}
+    \begin{itemize}
+      \item Manual file navigation
+      \item Repetitive boilerplate
+      \item Context switching
+      \item Documentation hunting
+      \item Tool configuration hell
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{With Claude Code:}
+    \begin{itemize}
+      \item[\faIcon{check}] Natural language tasks
+      \item[\faIcon{check}] Automated scaffolding
+      \item[\faIcon{check}] Maintains context
+      \item[\faIcon{check}] Built-in knowledge
+      \item[\faIcon{check}] One-command setup
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \centering
+  \Large{\textbf{From hours to minutes.}}
+\end{frame}
+
+% ============================================================================
+\section{The Workflow Revolution}
+% ============================================================================
+
+\begin{frame}{Before Claude Code: The Old Workflow}
+  \textbf{Starting a new C++ project meant:}
+
+  \begin{enumerate}
+    \item Create directory structure manually
+    \item Copy-paste CMakeLists.txt from old project
+    \item Setup .gitignore, .clang-format, .clang-tidy
+    \item Configure LSP (clangd) settings
+    \item Setup debugger configurations
+    \item Initialize git repository
+    \item Write README boilerplate
+  \end{enumerate}
+
+  \vspace{1em}
+  \begin{exampleblock}{Time Investment}
+    \textbf{30-60 minutes} of tedious setup before writing any actual code
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{After Claude Code: One Command}
+  \textbf{Now starting a new project:}
+
+  \begin{lstlisting}[language=bash]
+$ ~/dotfiles/scripts/bootstrap-cpp-project.sh my-renderer
+[INFO] Creating C++ project: my-renderer
+[INFO] Location: /home/user/dev/my-renderer
+[INFO] Created directory structure
+[INFO]   ✓ CLAUDE.md
+[INFO]   ✓ .clangd
+[INFO]   ✓ CMakeLists.txt
+[INFO]   ✓ .nvim.lua (debug configs)
+[INFO]   ✓ src/main.cpp
+[INFO]   ✓ Git repository initialized
+
+✓ Project created successfully!
+  \end{lstlisting}
+
+  \begin{exampleblock}{Time Investment}
+    \textbf{5 seconds} and you're ready to code
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{CLAUDE.md: The Secret Weapon}
+  \textbf{Every project gets a CLAUDE.md file:}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{What it contains:}
+    \begin{itemize}
+      \item Project overview
+      \item Architecture notes
+      \item Build commands
+      \item Testing instructions
+      \item Common tasks
+      \item Recent changes
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{Why it matters:}
+    \begin{itemize}
+      \item Claude reads it automatically
+      \item Maintains project context
+      \item Onboards new developers
+      \item Living documentation
+      \item Prevents knowledge loss
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{alertblock}{Key Insight}
+    CLAUDE.md turns every conversation into a context-aware collaboration
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Example: CLAUDE.md in Action}
+  \textbf{Without CLAUDE.md:}
+  \begin{lstlisting}[language=bash]
+You: "Add a new renderer class"
+Claude: "Which file should I add it to? What's the
+         architecture? What rendering API are you using?"
+  \end{lstlisting}
+
+  \vspace{1em}
+  \textbf{With CLAUDE.md:}
+  \begin{lstlisting}[language=bash]
+You: "Add a new renderer class"
+Claude: *reads CLAUDE.md* "I see you're using Skia for
+        rendering. I'll add it to src/renderer.cpp
+        following your existing factory pattern."
+  \end{lstlisting}
+
+  \vspace{1em}
+  \centering
+  \textbf{Zero back-and-forth. Pure productivity.}
+\end{frame}
+
+% ============================================================================
+\section{Automated Code Quality}
+% ============================================================================
+
+\begin{frame}{Git Hooks: Quality Gates on Autopilot}
+  \textbf{Two-layer quality enforcement:}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Pre-commit Hook:}
+    \begin{itemize}
+      \item Runs on every commit
+      \item Enforces clang-format
+      \item Fast (staged files only)
+      \item Shows fun ASCII art on fail
+      \item Prevents style violations
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{Pre-push Hook:}
+    \begin{itemize}
+      \item Runs before push
+      \item Runs clang-tidy analysis
+      \item Smart (changed files only)
+      \item Catches bugs early
+      \item Blocks push on errors
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{exampleblock}{Result}
+    Clean, consistent, bug-free code without thinking about it
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Pre-commit Hook in Action}
+  \textbf{Formatting violation detected:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+Checking C++ code formatting...
+
+src/renderer.cpp needs formatting:
+
+  (╯°□°)╯︵ ┻━┻
+
+  CODE FORMATTING VIOLATIONS DETECTED!
+
+How to fix:
+  git cf                    # Format staged files
+  git commit                # Try again
+
+To bypass (not recommended):
+  git commit --no-verify
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{No more "I'll fix formatting later" — it's enforced automatically.}
+\end{frame}
+
+% ============================================================================
+\section{Cross-Platform Dotfiles}
+% ============================================================================
+
+\begin{frame}{One Dotfiles Repo, Four Platforms}
+  \textbf{Unified configuration across:}
+
+  \vspace{1em}
+  \begin{description}
+    \item[\faIcon{linux} Arch Linux] Full Hyprland desktop + all dev tools
+    \item[\faIcon{linux} WSL] CLI tools only (no GUI)
+    \item[\faIcon{apple} macOS] Homebrew + Alacritty terminal
+    \item[\faIcon{windows} Windows] Scoop + Windows Terminal
+  \end{description}
+
+  \vspace{2em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{Shared configs:}
+    \begin{itemize}
+      \item Git (hooks, aliases)
+      \item Neovim (full IDE)
+      \item Clang tools
+      \item Starship prompt
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{Platform-specific:}
+    \begin{itemize}
+      \item Package managers
+      \item Bash configs
+      \item Terminal emulators
+      \item Desktop environments
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Platform Installation}
+  \textbf{Each platform has a one-command install:}
+
+  \begin{lstlisting}[language=bash]
+# Arch Linux
+./install_arch.sh
+
+# WSL (Ubuntu/Debian)
+./install_wsl.sh
+
+# macOS
+./install_darwin.sh
+  \end{lstlisting}
+
+  \begin{lstlisting}[language=powershell]
+# Windows (PowerShell)
+.\install_windows.ps1
+  \end{lstlisting}
+
+  \vspace{1em}
+  \begin{alertblock}{Built with Claude Code}
+    All four install scripts were created collaboratively with CC in one session
+  \end{alertblock}
+\end{frame}
+
+% ============================================================================
+\section{Unreal Engine Development}
+% ============================================================================
+
+\begin{frame}{Neovim + Unreal Engine = Possible}
+  \textbf{Configured for UE C++ coding standards:}
+
+  \vspace{1em}
+  \begin{columns}
+    \column{0.5\textwidth}
+    \textbf{What works:}
+    \begin{itemize}
+      \item[\faIcon{check}] LSP (clangd)
+      \item[\faIcon{check}] Debugging (DAP)
+      \item[\faIcon{check}] Formatting (Allman braces)
+      \item[\faIcon{check}] Static analysis
+      \item[\faIcon{check}] Git hooks
+    \end{itemize}
+
+    \column{0.5\textwidth}
+    \textbf{UE Standards:}
+    \begin{itemize}
+      \item PascalCase naming
+      \item Type prefixes (U/A/F/E/T)
+      \item Boolean prefix (b)
+      \item Tab indentation
+      \item Always-braces policy
+    \end{itemize}
+  \end{columns}
+
+  \vspace{2em}
+  \begin{exampleblock}{Hybrid Workflow}
+    Neovim for C++ code, Unreal Editor for Blueprints/Assets (7/10 feasibility)
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{UE Clang-Tidy Configuration}
+  \textbf{Enforces Unreal Engine coding standards:}
+
+  \begin{lstlisting}[basicstyle=\ttfamily\tiny]
+# .clang-tidy configured for UE
+
+CheckOptions:
+  # PascalCase for everything (not snake_case)
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: CamelCase
+
+  # No private member suffix (UE doesn't use trailing _)
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: ''
+
+  # Always-braces policy
+  - key: readability-braces-around-statements.ShortStatementLines
+    value: 0
+  \end{lstlisting}
+
+  \vspace{0.5em}
+  \centering
+  \textbf{Pre-push hook catches naming violations before code review.}
+\end{frame}
+
+% ============================================================================
+\section{Real-World Impact}
+% ============================================================================
+
+\begin{frame}{Productivity Gains: By The Numbers}
+  \begin{table}
+    \centering
+    \begin{tabular}{lcc}
+      \toprule
+      \textbf{Task} & \textbf{Before CC} & \textbf{With CC} \\
+      \midrule
+      New project setup & 30-60 min & 5 sec \\
+      Configure LSP/DAP & 20-30 min & 0 min (automatic) \\
+      Setup git hooks & 15-20 min & 0 min (automatic) \\
+      Cross-platform config & Hours/days & 1 session \\
+      Format code & Manual & Automatic (pre-commit) \\
+      Static analysis & Manual & Automatic (pre-push) \\
+      Find project docs & N/A & Instant (CLAUDE.md) \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
+  \vspace{1em}
+  \begin{alertblock}{Time Saved}
+    \textbf{2+ hours per project} in setup and configuration alone
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Workflow Improvements}
+  \textbf{What changed with Claude Code:}
+
+  \vspace{1em}
+  \begin{enumerate}
+    \item \textbf{Context Switching} — Eliminated via CLAUDE.md
+    \item \textbf{Boilerplate Code} — Automated via templates
+    \item \textbf{Configuration Hell} — One-command install scripts
+    \item \textbf{Code Quality} — Enforced via git hooks
+    \item \textbf{Documentation Rot} — Prevented via living CLAUDE.md
+    \item \textbf{Platform Fragmentation} — Unified dotfiles
+  \end{enumerate}
+
+  \vspace{2em}
+  \centering
+  \Large{\textbf{Focus on solving problems, not fighting tools.}}
+\end{frame}
+
+% ============================================================================
+\section{Best Practices}
+% ============================================================================
+
+\begin{frame}{Best Practices for Using Claude Code}
+  \begin{enumerate}
+    \item \textbf{Maintain CLAUDE.md} — Update it as the project evolves
+    \item \textbf{Generate compile\_commands.json} — Required for LSP
+    \item \textbf{Use project-local configs} — .clangd, .nvim.lua, etc.
+    \item \textbf{Trust the hooks} — Don't bypass pre-commit/pre-push
+    \item \textbf{Template everything} — Bootstrap scripts for consistency
+    \item \textbf{Document conventions} — Put them in CLAUDE.md
+    \item \textbf{Version your dotfiles} — Git repo with install scripts
+  \end{enumerate}
+
+  \vspace{1em}
+  \begin{alertblock}{Golden Rule}
+    Invest time in automation once, reap benefits forever
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{What NOT to Use Claude Code For}
+  \textbf{CC is powerful, but not magic:}
+
+  \vspace{1em}
+  \begin{itemize}
+    \item \faIcon{times} \textbf{Complex debugging} — Use a proper debugger (gdb/lldb)
+    \item \faIcon{times} \textbf{Graphical design} — Use specialized tools (Unreal Editor, Blender, etc.)
+    \item \faIcon{times} \textbf{Performance profiling} — Use profilers (perf, Valgrind, etc.)
+    \item \faIcon{times} \textbf{Real-time interaction} — CC has latency, not instant
+    \item \faIcon{times} \textbf{Binary/compiled analysis} — CC works with source code
+  \end{itemize}
+
+  \vspace{2em}
+  \begin{exampleblock}{Use Case}
+    Claude Code excels at \textbf{automation, scaffolding, and refactoring} — not runtime operations
+  \end{exampleblock}
+\end{frame}
+
+% ============================================================================
+\section{Live Demo}
+% ============================================================================
+
+\begin{frame}{Live Demo: Bootstrap a Project}
+  \textbf{Let's create a new C++ project from scratch:}
+
+  \vspace{1em}
+  \begin{enumerate}
+    \item Run bootstrap script
+    \item Show generated files (CLAUDE.md, CMakeLists.txt, .nvim.lua)
+    \item Build the project
+    \item Open in Neovim
+    \item Show LSP features (go-to-definition, autocomplete)
+    \item Show debug configurations (F5 to debug)
+    \item Make a change and commit (pre-commit hook triggers)
+  \end{enumerate}
+
+  \vspace{2em}
+  \centering
+  \textbf{From zero to fully-configured IDE in under 60 seconds.}
+\end{frame}
+
+\begin{frame}{Live Demo: Claude Code in Action}
+  \textbf{Typical Claude Code session:}
+
+  \vspace{1em}
+  \begin{enumerate}
+    \item Ask CC to add a new feature
+    \item CC reads CLAUDE.md for context
+    \item CC explores codebase (grep, read files)
+    \item CC writes code across multiple files
+    \item CC runs tests to verify
+    \item CC commits with descriptive message
+  \end{enumerate}
+
+  \vspace{2em}
+  \begin{alertblock}{Key Observation}
+    You describe \textit{what} you want, Claude Code figures out \textit{how}
+  \end{alertblock}
+\end{frame}
+
+% ============================================================================
+\section{Conclusion}
+% ============================================================================
+
+\begin{frame}{Key Takeaways}
+  \begin{enumerate}
+    \item \textbf{CLAUDE.md is essential} — Project context changes everything
+    \item \textbf{Automate setup} — Bootstrap scripts save hours
+    \item \textbf{Git hooks enforce quality} — Pre-commit + pre-push = clean code
+    \item \textbf{Cross-platform dotfiles} — Write once, run everywhere
+    \item \textbf{Invest in tooling} — Good tools compound over time
+  \end{enumerate}
+
+  \vspace{2em}
+  \centering
+  \Large{\textbf{Claude Code isn't just a tool — it's a workflow multiplier.}}
+\end{frame}
+
+\begin{frame}{Resources}
+  \textbf{Learn More:}
+
+  \vspace{1em}
+  \begin{itemize}
+    \item \faIcon{github} GitHub: \url{https://github.com/anthropics/claude-code}
+    \item \faIcon{book} Documentation: \url{https://claude.com/claude-code}
+    \item \faIcon{folder} My Dotfiles: \url{https://github.com/zrrbite/dotfiles}
+  \end{itemize}
+
+  \vspace{2em}
+  \begin{center}
+    \Large{\textbf{Questions?}}
+  \end{center}
+
+  \vspace{2em}
+  \footnotesize{
+    This presentation was created \textit{with} Claude Code, naturally.
+  }
+\end{frame}
+
+\end{document}
