@@ -37,6 +37,7 @@ APT_PACKAGES=(
     clang-format
     clangd
     gdb
+    tmux
     tldr
     curl
     unzip
@@ -188,7 +189,7 @@ cd "$DOTFILES_DIR"
 
 # Stow universal packages (no GUI/Wayland stuff)
 info "Stowing packages..."
-STOW_PACKAGES=(bash git clang gdb nvim starship)
+STOW_PACKAGES=(bash git clang gdb nvim starship tmux)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
