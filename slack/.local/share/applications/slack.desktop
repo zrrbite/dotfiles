@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Slack
+Comment=Slack Desktop (Wayland)
+GenericName=Slack Client for Linux
+Exec=slack --enable-features=UseOzonePlatform --ozone-platform=wayland %U
+Icon=slack
+Type=Application
+StartupNotify=true
+Categories=Network;InstantMessaging;
+MimeType=x-scheme-handler/slack;
