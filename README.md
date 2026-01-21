@@ -784,3 +784,7 @@ stow */
    ```bash
    git add -A && git commit -m "Add nvim config"
    ```
+
+## Contributing
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for git workflows and development best practices.
