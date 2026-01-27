@@ -154,7 +154,7 @@ stow */        # everything
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |
-| `discord` | Desktop entry override for native Wayland support |
+| `discord` | Desktop entry override for discord_arch_electron (Wayland) |
 | `fastfetch` | System info display with Nord colors (Arch logo, system stats) |
 | `foot`  | Foot terminal emulator - Nord theme, transparency, padding |
 | `git`   | Git config with extensive aliases + global hooks for C++ and TypeScript |

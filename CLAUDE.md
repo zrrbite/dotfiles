@@ -76,7 +76,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **wlogout**: Logout menu
 - **cava**: Audio visualizer
 - **fastfetch**: System info
-- **gtk/mimeapps/discord**: Desktop environment configs
+- **gtk/mimeapps/discord**: Desktop environment configs (uses discord_arch_electron)
 
 **macOS/Optional:**
 - **alacritty**: Cross-platform terminal with Nord theme

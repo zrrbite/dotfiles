@@ -59,7 +59,7 @@ PACKAGES=(
     blueman
 
     # Communication
-    discord
+    discord_arch_electron
     deltachat-desktop
 
     # Utilities
