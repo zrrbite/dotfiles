@@ -1,301 +1,450 @@
 # Neovim Mastery Tutorial
 
-A progressive tutorial to level up your Neovim skills.
-Work through each level, practicing until comfortable before moving on.
+Practice these exercises directly in this file!
+Open with: `nvim ~/dotfiles/doc/nvim-tutorial.md`
 
 ---
 
 ## Level 1: Movement Fundamentals
 
-### 1.1 Vertical Movement (Master These First!)
+### Exercise 1.1: Vertical Movement
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+d` | Half page DOWN |
-| `Ctrl+u` | Half page UP |
-| `gg` | Top of file |
-| `G` | Bottom of file |
-| `42G` or `:42` | Go to line 42 |
+**Keys to learn:**
+```
+Ctrl+d    Half page DOWN
+Ctrl+u    Half page UP
+gg        Top of file
+G         Bottom of file
+50G       Go to line 50 (or :50)
+```
 
-**Exercise:** Open a file with 100+ lines. Navigate using ONLY Ctrl+d/u (no arrow keys!)
+**Do this now:**
+1. Press `G` to go to the bottom of this file
+2. Press `gg` to go back to the top
+3. Press `50G` to jump to line 50
+4. Press `Ctrl+d` three times to scroll down
+5. Press `Ctrl+u` three times to scroll back up
 
-### 1.2 Screen Positioning
+✅ **Checkpoint:** You should be able to navigate without arrow keys!
 
-| Key | Action |
-|-----|--------|
-| `zz` | Center current line |
-| `zt` | Current line to top |
-| `zb` | Current line to bottom |
-| `H` | Jump to top of screen |
-| `M` | Jump to middle of screen |
-| `L` | Jump to bottom of screen |
 
-**Exercise:** Go to line 50, then press `zt`, `zz`, `zb` to see the difference.
+### Exercise 1.2: Screen Positioning
 
-### 1.3 Horizontal Movement
+**Keys to learn:**
+```
+zz    Center current line on screen
+zt    Current line to TOP of screen
+zb    Current line to BOTTOM of screen
+H     Move cursor to HIGH (top of screen)
+M     Move cursor to MIDDLE of screen
+L     Move cursor to LOW (bottom of screen)
+```
 
-| Key | Action |
-|-----|--------|
-| `0` | Start of line |
-| `^` | First non-blank character |
-| `$` | End of line |
-| `w` | Next word |
-| `b` | Back word |
-| `e` | End of current word |
-| `W/B/E` | Same but ignore punctuation |
+**Do this now:**
+1. Go to line 30: `30G`
+2. Center it on screen: `zz`
+3. Put it at the top: `zt`
+4. Put it at the bottom: `zb`
+5. Now jump cursor to top of screen: `H`
+6. Jump to middle: `M`
+7. Jump to bottom: `L`
 
-**Exercise:** Navigate a line using ONLY w, b, e (no arrow keys!)
+✅ **Checkpoint:** You understand `zz/zt/zb` moves SCREEN, `H/M/L` moves CURSOR.
+
+
+### Exercise 1.3: Horizontal Movement
+
+**Keys to learn:**
+```
+0     Start of line
+^     First non-blank character
+$     End of line
+w     Next word
+b     Back word
+e     End of word
+W/B   Next/back WORD (ignores punctuation)
+```
+
+**Practice on this line:**
+```cpp
+    void processUserInput(const std::string& input, int maxLength) {
+```
+
+**Do this now:**
+1. Go to the line above (inside the code block)
+2. Press `0` - cursor goes to column 0
+3. Press `^` - cursor goes to 'v' in void (first non-blank)
+4. Press `$` - cursor goes to end
+5. Press `0` then `w` repeatedly - watch it jump word by word
+6. Press `b` to go back word by word
+7. Try `W` - it skips over `std::string` as one WORD
+
+✅ **Checkpoint:** Never use arrow keys for horizontal movement!
 
 ---
 
 ## Level 2: Precision Movement
 
-### 2.1 Character Finding (Game Changer!)
+### Exercise 2.1: Character Finding (GAME CHANGER!)
 
-| Key | Action |
-|-----|--------|
-| `f{char}` | Jump TO next {char} |
-| `F{char}` | Jump TO previous {char} |
-| `t{char}` | Jump TILL (before) next {char} |
-| `T{char}` | Jump TILL previous {char} |
-| `;` | Repeat last f/F/t/T forward |
-| `,` | Repeat last f/F/t/T backward |
-
-**Exercise:** On this line, use `f(` to jump to the parenthesis:
-```cpp
-void myFunction(int x, int y) { return x + y; }
+**Keys to learn:**
 ```
-Then use `;` to find the next `(` if there is one.
+f{char}   Find next {char} - cursor lands ON it
+t{char}   Till next {char} - cursor lands BEFORE it
+F{char}   Find previous {char}
+T{char}   Till previous {char}
+;         Repeat last f/F/t/T forward
+,         Repeat last f/F/t/T backward
+```
 
-### 2.2 Search Movement
+**Practice on this line:**
+```cpp
+void calculate(int x, int y) { return process(x) + compute(y); }
+```
 
-| Key | Action |
-|-----|--------|
-| `*` | Search word under cursor (forward) |
-| `#` | Search word under cursor (backward) |
-| `/pattern` | Search forward |
-| `?pattern` | Search backward |
-| `n` | Next match |
-| `N` | Previous match |
+**Do this now:**
+1. Go to start of the line above: `0`
+2. Press `f(` - jumps to first `(`
+3. Press `;` - jumps to next `(`
+4. Press `;` - jumps to next `(`
+5. Press `,` - goes back to previous `(`
+6. Press `0` then `f{` - jumps to the `{`
+7. Try `t)` - lands BEFORE the `)`, useful for deleting inside parens!
 
-**Exercise:** Put cursor on a variable name, press `*` to find all occurrences.
+✅ **Checkpoint:** `f` and `;` should become your main horizontal movement!
+
+
+### Exercise 2.2: Search Movement
+
+**Keys to learn:**
+```
+*       Search word under cursor (forward)
+#       Search word under cursor (backward)
+/text   Search forward for "text"
+?text   Search backward for "text"
+n       Next match
+N       Previous match
+```
+
+**Do this now:**
+1. Put your cursor on the word "cursor" anywhere in this file
+2. Press `*` - highlights ALL occurrences, jumps to next
+3. Press `n` to go to next occurrence
+4. Press `N` to go to previous
+5. Press `#` to search backward instead
+6. Try `/Exercise` then Enter - finds next "Exercise"
+7. Press `n` to cycle through all Exercises
+
+✅ **Checkpoint:** Use `*` constantly to find variable usages!
 
 ---
 
-## Level 3: Text Objects (The Power of Vim!)
+## Level 3: Text Objects (THE POWER OF VIM!)
 
-### 3.1 Inner vs Around
+### Exercise 3.1: Understanding Text Objects
 
-| Key | Action |
-|-----|--------|
-| `iw` | Inner word |
-| `aw` | A word (includes space) |
-| `i"` | Inner quotes |
-| `a"` | Around quotes (includes quotes) |
-| `i(` or `ib` | Inner parentheses |
-| `a(` or `ab` | Around parentheses |
-| `i{` or `iB` | Inner braces |
-| `a{` or `aB` | Around braces |
+**The pattern:** `{action}{a/i}{object}`
+- `a` = "around" (includes delimiters)
+- `i` = "inside" (excludes delimiters)
 
-### 3.2 Combining with Actions
+**Common objects:**
+```
+w     word
+"     quotes
+'     single quotes
+(     parentheses (also `b`)
+{     braces (also `B`)
+[     brackets
+<     angle brackets
+t     XML/HTML tag
+```
 
-| Command | Action |
-|---------|--------|
-| `diw` | Delete inner word |
-| `ciw` | Change inner word |
-| `yi"` | Yank (copy) inside quotes |
-| `da(` | Delete around parentheses |
-| `ci{` | Change inside braces |
+**Practice on this line:**
+```cpp
+std::string name = "Hello World";
+```
 
-**Exercise:** Given `"hello world"`, put cursor inside quotes and type `ci"` then type new text.
+**Do this now:**
+1. Put cursor inside "Hello World" (on any letter)
+2. Press `vi"` - visually selects inside quotes: `Hello World`
+3. Press `Escape`, then `va"` - selects around quotes: `"Hello World"`
+4. Press `Escape`, try `di"` - DELETES inside quotes
+5. Press `u` to undo
+6. Try `ci"` - CHANGES inside quotes (deletes and enters insert mode)
+7. Press `Escape`, then `u` to undo
+
+✅ **Checkpoint:** Think "delete inside quotes" = `di"`, not "select, then delete"
+
+
+### Exercise 3.2: More Text Object Practice
+
+**Practice on this function:**
+```cpp
+void process(std::vector<int> items) {
+    for (auto& item : items) {
+        std::cout << item << std::endl;
+    }
+}
+```
+
+**Do this now:**
+1. Put cursor inside the `(std::vector<int> items)` parentheses
+2. Press `di(` or `dib` - deletes everything inside parens
+3. Press `u` to undo
+4. Put cursor inside the `{ ... }` braces
+5. Press `di{` or `diB` - deletes everything inside braces
+6. Press `u` to undo
+7. Try `ci(` to change the function parameters
+
+✅ **Checkpoint:** `ci(`, `ci{`, `ci"` are your new best friends!
 
 ---
 
 ## Level 4: Jump List & Marks
 
-### 4.1 Jump List (Time Travel!)
+### Exercise 4.1: Jump List (Time Travel!)
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+o` | Jump back (older position) |
-| `Ctrl+i` | Jump forward (newer position) |
-| `:jumps` | See jump history |
+**Keys to learn:**
+```
+Ctrl+o    Jump back (older position)
+Ctrl+i    Jump forward (newer position)
+```
 
-**Exercise:** Jump around a file (search, goto line, etc), then use Ctrl+o to retrace your steps.
+**Do this now:**
+1. Go to line 1: `gg`
+2. Go to line 50: `50G`
+3. Go to line 100: `100G`
+4. Search for "Exercise": `/Exercise` Enter
+5. Now press `Ctrl+o` - goes back to line 100
+6. Press `Ctrl+o` again - goes back to line 50
+7. Press `Ctrl+o` again - goes back to line 1
+8. Press `Ctrl+i` - goes forward again!
 
-### 4.2 Marks (Bookmarks)
+✅ **Checkpoint:** `Ctrl+o` is your "oops go back" button!
 
-| Key | Action |
-|-----|--------|
-| `ma` | Set mark 'a' at cursor |
-| `'a` | Jump to line of mark 'a' |
-| `` `a `` | Jump to exact position of mark 'a' |
-| `''` | Jump to last position |
-| `'.` | Jump to last edit |
-| `:marks` | List all marks |
 
-**Exercise:** Set a mark with `ma`, move elsewhere, then return with `'a`.
+### Exercise 4.2: Marks (Bookmarks)
+
+**Keys to learn:**
+```
+ma        Set mark 'a' at cursor position
+'a        Jump to LINE of mark 'a'
+`a        Jump to exact POSITION of mark 'a'
+''        Jump to last position (before last jump)
+'.        Jump to last edit location
+:marks    List all marks
+```
+
+**Do this now:**
+1. Go to line 20: `20G`
+2. Set a mark: `ma` (mark 'a')
+3. Go to line 80: `80G`
+4. Set another mark: `mb` (mark 'b')
+5. Go somewhere else: `gg`
+6. Jump back to mark a: `'a`
+7. Jump to mark b: `'b`
+8. Type `:marks` to see your marks
+
+✅ **Checkpoint:** Use marks for places you keep returning to!
 
 ---
 
 ## Level 5: Registers & Macros
 
-### 5.1 Registers (Multiple Clipboards!)
+### Exercise 5.1: Registers (Multiple Clipboards!)
 
-| Key | Action |
-|-----|--------|
-| `"ayy` | Yank line into register 'a' |
-| `"ap` | Paste from register 'a' |
-| `"Ayy` | APPEND to register 'a' |
-| `"+y` | Yank to system clipboard |
-| `"+p` | Paste from system clipboard |
-| `:reg` | View all registers |
-
-### 5.2 Macros (Record & Replay)
-
-| Key | Action |
-|-----|--------|
-| `qa` | Start recording macro to register 'a' |
-| `q` | Stop recording |
-| `@a` | Play macro 'a' |
-| `@@` | Replay last macro |
-| `10@a` | Play macro 'a' 10 times |
-
-**Exercise:** Record a macro that deletes a line and moves down: `qa` `dd` `j` `q`, then replay with `@a`.
-
----
-
-## Level 6: LSP Navigation (Your Setup)
-
-### 6.1 Go To Commands
-
-| Key | Action |
-|-----|--------|
-| `gd` | Go to definition |
-| `gD` | Go to declaration |
-| `gr` | Go to references |
-| `gI` | Go to implementation |
-| `K` | Hover documentation |
-| `Space+h` | Switch header/source (C++) |
-
-### 6.2 Diagnostics
-
-| Key | Action |
-|-----|--------|
-| `Space+d` | Show diagnostic at cursor |
-| `Space+q` | List all diagnostics |
-| `]d` | Next diagnostic |
-| `[d` | Previous diagnostic |
-| `Space+ca` | Code actions (fixes!) |
-| `Space+cf` | Batch fix (clang-tidy) |
-
-### 6.3 Telescope (Fuzzy Finding)
-
-| Key | Action |
-|-----|--------|
-| `Space+ff` | Find files |
-| `Space+fg` | Find by grep |
-| `Space+fb` | Find buffers |
-| `Space+fs` | Find symbols (current file) |
-| `Space+fw` | Find symbols (workspace) |
-
----
-
-## Level 7: Advanced Editing
-
-### 7.1 Multi-cursor Alternative: Global Commands
-
-```vim
-:%s/old/new/g       " Replace all in file
-:%s/old/new/gc      " Replace all with confirmation
-:g/pattern/d        " Delete all lines matching pattern
-:g/pattern/normal A; " Append ; to all matching lines
+**Keys to learn:**
+```
+"ayy      Yank (copy) line into register 'a'
+"ap       Paste from register 'a'
+"Ayy      APPEND to register 'a' (capital A)
+"+y       Yank to system clipboard
+"+p       Paste from system clipboard
+:reg      View all registers
 ```
 
-### 7.2 Visual Block Mode
+**Do this now:**
+1. Go to any line with content
+2. Press `"ayy` - yanks line to register 'a'
+3. Go to another line, press `"byy` - yanks to register 'b'
+4. Now paste from a: `"ap`
+5. Paste from b: `"bp`
+6. Type `:reg` to see all your registers
 
-| Key | Action |
-|-----|--------|
-| `Ctrl+v` | Enter visual block mode |
-| `I` | Insert at start of each line |
-| `A` | Append at end of each line |
-| `c` | Change selected block |
+✅ **Checkpoint:** You have 26 clipboards (a-z)! Use them!
 
-**Exercise:** Select a column of text with Ctrl+v, then press `I` to insert text on all lines.
 
-### 7.3 Useful Commands
+### Exercise 5.2: Macros (Record & Replay)
 
-```vim
-:earlier 5m         " File state 5 minutes ago
-:later 5m           " Undo the earlier
-gq{motion}          " Format text (e.g., gqap for paragraph)
-gu{motion}          " Lowercase
-gU{motion}          " Uppercase
-Ctrl+a / Ctrl+x     " Increment/decrement number
+**Keys to learn:**
+```
+qa        Start recording macro into register 'a'
+q         Stop recording
+@a        Play macro 'a'
+@@        Replay last macro
+5@a       Play macro 'a' five times
 ```
 
----
-
-## Practice Challenges
-
-### Challenge 1: Navigation Race
-Open a 500+ line file. Get to line 250 in under 3 keystrokes.
-**Solution:** `250G` or `:250` or `50%`
-
-### Challenge 2: Surgical Editing
-Change the function name without retyping parameters:
-```cpp
-void oldFunctionName(int x, int y, std::string z)
+**Practice:** Add "// TODO: " to each of these lines:
 ```
-**Solution:** Put cursor on `oldFunctionName`, then `ciw` and type new name.
+fix this bug
+refactor this function
+add error handling
+write tests
+update documentation
+```
 
-### Challenge 3: Multi-line Edit
-Add `//` comment to lines 10-20:
-**Solution:** `:10,20s/^/\/\/ /` or use visual block mode.
+**Do this now:**
+1. Go to "fix this bug" line
+2. Start recording: `qa`
+3. Go to start of line: `0`
+4. Insert text: `I// TODO: ` then Escape
+5. Move down: `j`
+6. Stop recording: `q`
+7. Now replay: `@a` (adds comment to next line)
+8. Replay 3 more times: `3@a`
 
-### Challenge 4: Find & Replace in Selection
-Replace "foo" with "bar" only in a selected block:
-**Solution:** Visual select, then `:s/foo/bar/g`
+✅ **Checkpoint:** If you do something repetitive, record a macro!
 
 ---
 
-## Daily Practice Routine
+## Level 6: LSP Navigation (Your Config)
 
-1. **Disable arrow keys** (forces you to use hjkl and better motions)
-2. **One new motion per day** - master it before adding another
-3. **Use `.` command** - repeat last change
-4. **Think in text objects** - "delete inside parentheses" not "select and delete"
-5. **Watch yourself** - if doing something repetitive, there's a better way
+### Exercise 6.1: Code Navigation
+
+**Keys in your setup:**
+```
+gd          Go to definition
+gD          Go to declaration
+gr          Go to references
+gI          Go to implementation
+K           Hover documentation
+Space+h     Switch header/source (C++)
+```
+
+**Do this in a real code file:**
+1. Open a C++ or TypeScript file
+2. Put cursor on a function call
+3. Press `gd` - jumps to where it's defined
+4. Press `Ctrl+o` to jump back
+5. Press `gr` - shows all places it's used
+6. Press `K` - shows documentation/type info
+
+
+### Exercise 6.2: Diagnostics & Fixes
+
+**Keys in your setup:**
+```
+Space+d     Show diagnostic at cursor
+Space+q     List ALL diagnostics
+]d          Jump to next diagnostic
+[d          Jump to previous diagnostic
+Space+ca    Code actions (fixes!)
+Space+cf    Batch fix with clang-tidy (C++)
+```
+
+**Do this in a file with warnings:**
+1. Open a file with clang-tidy warnings
+2. Press `Space+q` to see all issues
+3. Press `]d` to jump to next warning
+4. Press `Space+ca` to see available fixes
+5. Select a fix and press Enter
+6. Or use `Space+cf` to fix everything at once
 
 ---
 
-## Your Specific Workflow Tips (C++/TypeScript)
+## Level 7: Visual Block Mode
 
-### C++ Development
-- `Space+h` - Toggle header/source constantly
-- `Space+ca` on function declaration - Generate implementation
-- `Space+cf` - Batch fix clang-tidy warnings
-- `Space+fw` - Find any symbol in project
-- `Space+fm` - Find macros (#define)
+### Exercise 7.1: Column Editing
 
-### TypeScript Development
-- `gd` - Jump into library definitions
-- `gr` - Find all usages before refactoring
-- `Space+ca` - Auto-import, quick fixes
-- `K` - Check types on hover
+**Keys to learn:**
+```
+Ctrl+v    Enter visual BLOCK mode
+I         Insert at start of each line
+A         Append at end of each line
+c         Change selected block
+d         Delete selected block
+```
+
+**Add "public: " to each of these:**
+```
+int x;
+int y;
+int z;
+string name;
+bool active;
+```
+
+**Do this now:**
+1. Put cursor on the `i` of first `int`
+2. Press `Ctrl+v` to start block selection
+3. Press `4j` to extend selection down 4 lines
+4. Press `I` (capital I) to insert
+5. Type `public: `
+6. Press `Escape` - text appears on ALL lines!
+
+✅ **Checkpoint:** Visual block mode is amazing for column edits!
+
+---
+
+## Quick Reference Card
+
+### Movement
+```
+Ctrl+d/u     Half page down/up
+gg / G       Top / bottom of file
+50G          Go to line 50
+zz           Center screen on cursor
+H / M / L    Top / middle / bottom of screen
+w / b / e    Word forward / back / end
+f{c} / ;     Find char / repeat
+* / #        Search word under cursor
+```
+
+### Editing
+```
+ciw          Change inner word
+ci" ci( ci{  Change inside quotes/parens/braces
+diw di" di(  Delete inside
+yiw yi" yi(  Yank inside
+.            Repeat last change
+```
+
+### Navigation
+```
+Ctrl+o / Ctrl+i  Jump back / forward
+gd               Go to definition
+gr               Go to references
+Space+ff         Find files
+Space+fg         Find by grep
+```
 
 ---
 
 ## Progress Tracker
 
-- [ ] Level 1: Basic Movement
-- [ ] Level 2: Precision Movement  
-- [ ] Level 3: Text Objects
+- [ ] Level 1: Movement Fundamentals
+- [ ] Level 2: Precision Movement (f/;)
+- [ ] Level 3: Text Objects (ci"/di{)
 - [ ] Level 4: Jump List & Marks
 - [ ] Level 5: Registers & Macros
 - [ ] Level 6: LSP Navigation
-- [ ] Level 7: Advanced Editing
+- [ ] Level 7: Visual Block Mode
 
-**Started:** ___________
-**Completed:** ___________
+**Date Started:** ___________
+**Date Completed:** ___________
 
+---
+
+## Daily Practice Tips
+
+1. **Disable arrow keys** - forces better habits
+2. **One motion per day** - master before adding more
+3. **Use `.` command** - repeats last change
+4. **Think in text objects** - "change inside parens" not "select then type"
+5. **Record repetitive tasks** - macros save time
+6. **Use `*` constantly** - find all occurrences instantly
+
+---
+
+*Tutorial created with Claude Code. Happy Vimming!* 🚀
