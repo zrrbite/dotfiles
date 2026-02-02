@@ -31,7 +31,9 @@ return {
     branch = "0.1.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      -- Note: fzf-native requires build tools on Windows (cmake, make, C compiler)
+      -- Uncomment and install build tools if you want the native speed boost:
+      -- { "nvim-telescope/telescope-fzf-native.nvim", build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release" },
     },
     config = function()
       require("telescope").setup({
@@ -42,7 +44,8 @@ return {
           },
         },
       })
-      pcall(require("telescope").load_extension, "fzf")
+      -- Only load fzf extension if it's installed
+      -- pcall(require("telescope").load_extension, "fzf")
 
       local builtin = require("telescope.builtin")
       vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "[F]ind [F]iles" })
