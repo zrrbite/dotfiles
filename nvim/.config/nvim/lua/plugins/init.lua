@@ -84,52 +84,112 @@ return {
       "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- Clangd for C++
-      lspconfig.clangd.setup({
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--header-insertion=iwyu",
-          "--completion-style=detailed",
-          "--function-arg-placeholders",
-          "--fallback-style=llvm",
-          "--offset-encoding=utf-16",
-        },
-        capabilities = capabilities,
-      })
+      -- Check Neovim version for API compatibility
+      local nvim_version = vim.version()
+      local use_new_api = nvim_version.major > 0 or (nvim_version.major == 0 and nvim_version.minor >= 11)
 
-      -- Lua LS
-      lspconfig.lua_ls.setup({
-        capabilities = capabilities,
-        settings = {
-          Lua = {
-            runtime = { version = "LuaJIT" },
-            diagnostics = { globals = { "vim" } },
+      if use_new_api then
+        -- Neovim 0.11+ - Use new vim.lsp.config API
+        vim.lsp.config("clangd", {
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+            "--offset-encoding=utf-16",
           },
-        },
-      })
+          filetypes = { "c", "cpp", "objc", "objcpp" },
+          root_dir = vim.fs.root(0, { ".clangd", "compile_commands.json", ".git" }),
+          capabilities = capabilities,
+        })
 
-      -- TypeScript LS
-      lspconfig.ts_ls.setup({
-        capabilities = capabilities,
-        settings = {
-          typescript = {
-            inlayHints = {
-              includeInlayParameterNameHints = "all",
-              includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-              includeInlayFunctionParameterTypeHints = true,
-              includeInlayVariableTypeHints = true,
-              includeInlayPropertyDeclarationTypeHints = true,
-              includeInlayFunctionLikeReturnTypeHints = true,
-              includeInlayEnumMemberValueHints = true,
+        vim.lsp.config("lua_ls", {
+          cmd = { "lua-language-server" },
+          filetypes = { "lua" },
+          root_dir = vim.fs.root(0, { ".luarc.json", ".git" }),
+          capabilities = capabilities,
+          settings = {
+            Lua = {
+              runtime = { version = "LuaJIT" },
+              diagnostics = { globals = { "vim" } },
             },
           },
-        },
-      })
+        })
+
+        vim.lsp.config("ts_ls", {
+          cmd = { "typescript-language-server", "--stdio" },
+          filetypes = { "typescript", "typescriptreact", "javascript", "javascriptreact" },
+          root_dir = vim.fs.root(0, { "tsconfig.json", "package.json", ".git" }),
+          capabilities = capabilities,
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        })
+
+        -- Enable LSPs
+        vim.lsp.enable("clangd")
+        vim.lsp.enable("lua_ls")
+        vim.lsp.enable("ts_ls")
+      else
+        -- Neovim 0.10.x - Use traditional lspconfig
+        local lspconfig = require("lspconfig")
+
+        lspconfig.clangd.setup({
+          cmd = {
+            "clangd",
+            "--background-index",
+            "--clang-tidy",
+            "--header-insertion=iwyu",
+            "--completion-style=detailed",
+            "--function-arg-placeholders",
+            "--fallback-style=llvm",
+            "--offset-encoding=utf-16",
+          },
+          capabilities = capabilities,
+        })
+
+        lspconfig.lua_ls.setup({
+          capabilities = capabilities,
+          settings = {
+            Lua = {
+              runtime = { version = "LuaJIT" },
+              diagnostics = { globals = { "vim" } },
+            },
+          },
+        })
+
+        lspconfig.ts_ls.setup({
+          capabilities = capabilities,
+          settings = {
+            typescript = {
+              inlayHints = {
+                includeInlayParameterNameHints = "all",
+                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+                includeInlayFunctionParameterTypeHints = true,
+                includeInlayVariableTypeHints = true,
+                includeInlayPropertyDeclarationTypeHints = true,
+                includeInlayFunctionLikeReturnTypeHints = true,
+                includeInlayEnumMemberValueHints = true,
+              },
+            },
+          },
+        })
+      end
 
       -- Suppress encoding warnings (functionality works despite warnings)
       local notify = vim.notify
