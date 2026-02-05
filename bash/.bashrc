@@ -56,3 +56,4 @@ export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE
 # zoxide - smarter cd (replaces cd command)
 eval "$(zoxide init bash --cmd cd)"
 
+#export PATH="$HOME/.local/bin:$PATH"
