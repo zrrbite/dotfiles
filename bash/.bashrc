@@ -26,8 +26,8 @@ alias fmd='fd -e md | fzf'                                 # Find markdown files
 alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'  # Find function definitions
 
 # eza aliases (modern ls replacement)
-alias ls='eza --icons'
-alias ll='eza -la --icons --git'
+alias ls='eza --icons -I "CLAUDE.md|.claude*"'
+alias ll='eza -la --icons --git -I "CLAUDE.md|.claude*"'
 alias lt='eza -T --icons --git-ignore'
 alias la='eza -a --icons'
 PS1='[\u@\h \W]\$ '
