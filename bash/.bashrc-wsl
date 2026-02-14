@@ -54,8 +54,19 @@ if [ -f ~/.ssh/id_ed25519 ]; then
     ssh-add ~/.ssh/id_ed25519 2>/dev/null
 fi
 
+# Add local bin to PATH (zoxide, etc. install here)
+export PATH="$HOME/.local/bin:$PATH"
+
 # fzf - fuzzy finder
-eval "$(fzf --bash)"
+if command -v fzf &> /dev/null; then
+    # fzf 0.48+ uses --bash, older versions use shell script
+    if fzf --bash &> /dev/null; then
+        eval "$(fzf --bash)"
+    elif [ -f /usr/share/doc/fzf/examples/key-bindings.bash ]; then
+        source /usr/share/doc/fzf/examples/key-bindings.bash
+        source /usr/share/doc/fzf/examples/completion.bash
+    fi
+fi
 
 # fzf Nord theme
 export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C \
@@ -64,7 +75,9 @@ export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE
 --color=border:#4C566A"
 
 # zoxide - smarter cd (replaces cd command)
-eval "$(zoxide init bash --cmd cd)"
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init bash --cmd cd)"
+fi
 
 # WSL Windows drive shortcuts
 alias c='cd /mnt/c'
