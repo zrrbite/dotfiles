@@ -134,16 +134,14 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
-# Create platform-specific bash symlinks
+# Create platform-specific bash symlinks directly (not via stow)
 info "Creating macOS-specific bash config symlinks..."
-cd "$DOTFILES_DIR/bash"
-ln -sf .bashrc-darwin .bashrc
-ln -sf .bash_profile-darwin .bash_profile
-cd "$DOTFILES_DIR"
+ln -sf "$DOTFILES_DIR/bash/.bashrc-darwin" "$HOME/.bashrc"
+ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow universal packages
 info "Stowing packages..."
-STOW_PACKAGES=(bash git clang nvim starship alacritty)
+STOW_PACKAGES=(git clang nvim starship alacritty)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"

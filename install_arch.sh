@@ -217,17 +217,15 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
-# Create platform-specific bash symlinks
+# Create platform-specific bash symlinks directly (not via stow)
 info "Creating Arch-specific bash config symlinks..."
-cd "$DOTFILES_DIR/bash"
-ln -sf .bashrc-arch .bashrc
-ln -sf .bash_profile-arch .bash_profile
-cd "$DOTFILES_DIR"
+ln -sf "$DOTFILES_DIR/bash/.bashrc-arch" "$HOME/.bashrc"
+ln -sf "$DOTFILES_DIR/bash/.bash_profile-arch" "$HOME/.bash_profile"
 
-# Stow all packages
+# Stow all packages (except bash, handled above)
 info "Stowing all packages..."
 for dir in */; do
-    if [ -d "$dir" ] && [ "$dir" != ".git/" ]; then
+    if [ -d "$dir" ] && [ "$dir" != ".git/" ] && [ "$dir" != "bash/" ]; then
         pkg="${dir%/}"
         info "  Stowing $pkg..."
         stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"

@@ -26,7 +26,6 @@ sudo apt update
 APT_PACKAGES=(
     bash-completion
     stow
-    btop
     fzf
     bat  # Called batcat on Ubuntu
     ripgrep
@@ -120,6 +119,20 @@ else
     info "procs already installed"
 fi
 
+# Install btop (not available in older Ubuntu repos)
+if ! command -v btop &> /dev/null; then
+    info "Installing btop..."
+    BTOP_VERSION="1.4.0"
+    curl -Lo btop.tbz "https://github.com/aristocratos/btop/releases/download/v${BTOP_VERSION}/btop-x86_64-linux-musl.tbz"
+    tar -xjf btop.tbz
+    cd btop
+    sudo make install PREFIX=/usr/local
+    cd ..
+    rm -rf btop btop.tbz
+else
+    info "btop already installed"
+fi
+
 # Determine dotfiles location
 DOTFILES_DIR="${HOME}/dotfiles"
 
@@ -180,16 +193,14 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
-# Create platform-specific bash symlinks
+# Create platform-specific bash symlinks directly (not via stow)
 info "Creating WSL-specific bash config symlinks..."
-cd "$DOTFILES_DIR/bash"
-ln -sf .bashrc-wsl .bashrc
-ln -sf .bash_profile-wsl .bash_profile
-cd "$DOTFILES_DIR"
+ln -sf "$DOTFILES_DIR/bash/.bashrc-wsl" "$HOME/.bashrc"
+ln -sf "$DOTFILES_DIR/bash/.bash_profile-wsl" "$HOME/.bash_profile"
 
 # Stow universal packages (no GUI/Wayland stuff)
 info "Stowing packages..."
-STOW_PACKAGES=(bash git clang gdb nvim starship tmux)
+STOW_PACKAGES=(git clang gdb nvim starship tmux)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
