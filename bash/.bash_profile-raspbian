@@ -1,0 +1,6 @@
+#
+# ~/.bash_profile - Raspbian/Debian Configuration
+#
+
+# Load .bashrc if it exists
+[[ -f ~/.bashrc ]] && . ~/.bashrc

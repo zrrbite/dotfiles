@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Cross-platform personal dotfiles supporting:
 - **Arch Linux**: Full Hyprland desktop environment
 - **WSL (Ubuntu/Debian)**: CLI development tools only
+- **Raspberry Pi (Raspbian)**: CLI development tools only (ARM64)
 - **macOS (M1/M2/Intel)**: CLI tools + Alacritty terminal
 - **Windows 10/11**: CLI tools + Windows Terminal (via Scoop, no Stow needed)
 
@@ -18,6 +19,7 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 ```bash
 ./install_arch.sh     # Arch Linux (full Hyprland + all tools)
 ./install_wsl.sh      # WSL (CLI only, no GUI)
+./install_raspbian.sh # Raspberry Pi / Raspbian (CLI only, ARM64)
 ./install_darwin.sh   # macOS (Homebrew + Alacritty)
 ```
 
@@ -59,6 +61,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 **Platform-specific bash configs:**
 - **bash/.bashrc-arch** - Arch Linux with all tools
 - **bash/.bashrc-wsl** - WSL with CLI tools only
+- **bash/.bashrc-raspbian** - Raspberry Pi / Debian (no WSL drive shortcuts)
 - **bash/.bashrc-darwin** - macOS with Homebrew paths
 - **bash/.bashrc-windows** - Windows Git Bash with Scoop tools
 - Install scripts create symlinks to the appropriate variant
@@ -92,6 +95,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **bash**: Platform-specific shell configuration
   - Arch: Full setup with Hyprland auto-start, all aliases, bash-completion from `/usr/share`
   - WSL: CLI tools only, bash-completion from `/etc` or `/usr/share`, aliases for batcat/fdfind
+  - Raspbian/Debian: Same as WSL but without Windows drive shortcuts
   - macOS: Homebrew paths (`/opt/homebrew`), bash-completion from Homebrew location
   - Windows: Git Bash with Scoop tools, bash-completion from Git for Windows
 
@@ -128,7 +132,11 @@ Each top-level directory is a stow package that mirrors the home directory struc
 ### Install Scripts
 
 - **install_arch.sh**: Pacman + AUR packages, full Hyprland setup, systemd services
-- **install_wsl.sh**: apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs), CLI only
+- **install_debian.sh**: Unified Debian/Ubuntu installer with architecture detection (x86_64/aarch64)
+  - **install_wsl.sh**: Symlink to install_debian.sh (auto-detects WSL, uses `.bashrc-wsl`)
+  - **install_raspbian.sh**: Symlink to install_debian.sh (auto-detects Raspberry Pi, uses `.bashrc-raspbian`)
+  - apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs, btop)
+  - procs skipped on ARM64 (no prebuilt binary available)
 - **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support
 - **install_windows.ps1**: Scoop packages, Windows Terminal, native PowerShell symlinks (no Stow)
   - Requires: Windows 10 (Developer Mode) or Windows 11
