@@ -141,7 +141,7 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow universal packages
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty)
+STOW_PACKAGES=(git clang nvim starship alacritty claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"

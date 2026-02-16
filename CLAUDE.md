@@ -57,6 +57,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **clang**: clang-format/clang-tidy configs (fully portable)
 - **nvim**: Neovim full IDE setup (fully portable)
 - **starship**: Shell prompt (fully portable)
+- **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
 
 **Platform-specific bash configs:**
 - **bash/.bashrc-arch** - Arch Linux with all tools
@@ -128,6 +129,12 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **alacritty**: GPU-accelerated terminal with Nord theme
   - macOS primary terminal
   - Optional on Arch/WSL (foot is default on Arch)
+
+- **claude**: Claude Code global skills (stowed to `~/.claude/skills/`)
+  - `/review` - Code review current diff for bugs, security issues, style violations
+  - `/fix-issue <number>` - Read a GitHub issue and implement a fix
+  - `/bootstrap [name]` - Interactive project scaffolding (C++, TypeScript variants)
+  - All skills use `disable-model-invocation: true` (user-triggered only)
 
 ### Install Scripts
 

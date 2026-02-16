@@ -250,7 +250,7 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-${BASH_PROFILE_VARIANT}" "$HOME/.bash_p
 
 # Stow universal packages (no GUI/Wayland stuff)
 info "Stowing packages..."
-STOW_PACKAGES=(git clang gdb nvim starship tmux)
+STOW_PACKAGES=(git clang gdb nvim starship tmux claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"

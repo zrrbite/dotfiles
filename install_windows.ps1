@@ -176,6 +176,9 @@ New-DotfileSymlink "starship\.config\starship.toml" "$homeDir\.config\starship.t
 # Bash config (for Git Bash)
 New-DotfileSymlink "bash\.bashrc-windows" "$homeDir\.bashrc"
 
+# Claude Code skills
+New-DotfileSymlink "claude\.claude\skills" "$homeDir\.claude\skills"
+
 Write-Host ""
 Write-Info "✓ Installation complete!"
 Write-Host ""
