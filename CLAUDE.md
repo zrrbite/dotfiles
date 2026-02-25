@@ -28,13 +28,24 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 .\install_windows.ps1
 ```
 
-### Managing Configs with Stow
+### Managing Configs with Stow (Linux/macOS)
 ```bash
 stow <package>        # Enable a package (creates symlinks)
 stow -D <package>     # Remove a package's symlinks
 stow -R <package>     # Re-stow (useful after adding files)
 stow */               # Stow all packages
 ```
+
+### Managing Configs on Windows
+```powershell
+.\stow_windows.ps1 git              # Link one package
+.\stow_windows.ps1 git nvim clang   # Link multiple packages
+.\stow_windows.ps1 -All             # Link all supported packages
+.\stow_windows.ps1 -Delete git      # Remove a package's symlinks
+.\stow_windows.ps1 -Delete -All     # Remove all symlinks
+.\stow_windows.ps1 -List            # Show available packages and their mappings
+```
+Requires Developer Mode (Windows 10) or Windows 11. Handles Windows-specific paths (e.g., nvim -> `%LOCALAPPDATA%\nvim`).
 
 ### Adding New Configs
 1. Create directory mirroring home structure: `mkdir -p ~/dotfiles/foo/.config/foo`
@@ -145,10 +156,20 @@ Each top-level directory is a stow package that mirrors the home directory struc
   - apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs, btop)
   - procs skipped on ARM64 (no prebuilt binary available)
 - **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support
-- **install_windows.ps1**: Scoop packages, Windows Terminal, native PowerShell symlinks (no Stow)
+- **install_windows.ps1**: Full setup - Scoop packages, Windows Terminal, and all symlinks
   - Requires: Windows 10 (Developer Mode) or Windows 11
   - Installs: Git, Neovim, LLVM, modern CLI tools via Scoop
   - Symlinks: Git hooks, clang configs, nvim (to %LOCALAPPDATA%), starship, bashrc
+- **stow_windows.ps1**: Symlinks only (no package installation) - the Windows equivalent of `stow`
+  - Use this to manage individual packages after initial setup
+  - Supports: stow, unstow (-Delete), list (-List), all packages (-All)
+
+**Windows Stow script** (`stow_windows.ps1`): Lightweight GNU Stow equivalent for Windows.
+- Auto-detects dotfiles directory (no hardcoded paths)
+- Per-package control, same workflow as `stow` on Linux
+- Backs up existing non-symlink files before overwriting
+- Skips already-correct symlinks
+- Supports all universal packages: git, clang, nvim, starship, bash
 
 ## Starting New C++ Projects
 
