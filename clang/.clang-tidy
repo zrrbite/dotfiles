@@ -79,12 +79,11 @@ CheckOptions:
   - key: readability-identifier-naming.VariablePrefix
     value: ''  # Can't enforce globally
 
-  # Constants: const variables use k prefix (kMaxHealth)
-  # UPROPERTY constants and defines use ALL_CAPS
+  # Constants: PascalCase (MaxHealth), macros/defines use ALL_CAPS
   - key: readability-identifier-naming.ConstantCase
     value: CamelCase
   - key: readability-identifier-naming.ConstantPrefix
-    value: 'k'
+    value: ''
 
   # Enum values: PascalCase (EMyEnum::FirstValue)
   - key: readability-identifier-naming.EnumConstantCase
@@ -94,11 +93,12 @@ CheckOptions:
   - key: readability-identifier-naming.NamespaceCase
     value: CamelCase
 
-  # Template parameters: T prefix (TArray, TObjectPtr)
+  # Template parameters: In prefix (InElementType, InAllocator)
+  # Note: T prefix is for template *class names* (TArray, TMap), not parameters
   - key: readability-identifier-naming.TemplateParameterCase
     value: CamelCase
   - key: readability-identifier-naming.TemplateParameterPrefix
-    value: 'T'
+    value: 'In'
 
   # Modernize settings
   - key: modernize-use-nullptr.NullMacros
@@ -137,9 +137,11 @@ CheckOptions:
 # Type Prefixes (manually enforce):
 # - U prefix: Classes derived from UObject (UMyActor, UMyComponent)
 # - A prefix: Classes derived from AActor (AMyCharacter, AMyGameMode)
+# - S prefix: Classes derived from SWidget (SButton, STextBlock)
 # - F prefix: Plain C++ classes/structs (FVector, FMyStruct)
 # - E prefix: Enums (EMyEnum)
 # - I prefix: Abstract interfaces (IMyInterface)
+# - C prefix: Concept-alike struct types
 # - T prefix: Template classes (TArray, TMap, TObjectPtr)
 # - b prefix: Boolean variables (bIsAlive, bShouldUpdate)
 #

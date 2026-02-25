@@ -305,9 +305,9 @@ Global hooks automatically installed via stow to `~/.git-hooks/` (applies to all
 - Configured for **Unreal Engine coding standards** by default
 - **PascalCase** for all types, functions, variables (not snake_case)
 - **No private member suffix** (UE doesn't use trailing `_`)
-- **Prefixes**: `k` for constants, `T` for template parameters
+- **Prefixes**: `In` for template parameters
 - **Always-braces** policy for if statements (UE standard)
-- **Type prefixes documented**: U/A/F/E/I/T/b (manually enforced)
+- **Type prefixes documented**: U/A/S/F/E/I/C/T/b (manually enforced)
 - Less aggressive modernization (matches UE idioms)
 
 **Reference copy** (`clang/.clang-tidy-unreal`):
