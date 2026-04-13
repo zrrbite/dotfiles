@@ -160,8 +160,10 @@ keybindings:
   - commands: ['resize --height -2%']
     bindings: ['alt+i']
 
-  - commands: ['wm-enable-binding-mode --name resize']
-    bindings: ['alt+r']
+  # alt+r is reserved for PowerToys Run launcher (matches Hyprland).
+  # Resize mode still available via config edit; direct resize via alt+u/i/o/p.
+  # - commands: ['wm-enable-binding-mode --name resize']
+  #   bindings: ['alt+r']
 
   - commands: ['wm-toggle-pause']
     bindings: ['alt+shift+p']
