@@ -115,7 +115,8 @@ $configFiles = @(
     "$homeDir\.bashrc",
     "$homeDir\.config\starship.toml",
     "$env:LOCALAPPDATA\nvim",
-    "$homeDir\.glzr\glazewm\config.yaml"
+    "$homeDir\.glzr\glazewm\config.yaml",
+    "$homeDir\.glzr\zebar\settings.json"
 )
 
 foreach ($file in $configFiles) {
@@ -193,6 +194,9 @@ New-DotfileSymlink "claude\.claude\skills" "$homeDir\.claude\skills"
 
 # GlazeWM tiling window manager
 New-DotfileSymlink "glazewm\.glzr\glazewm\config.yaml" "$homeDir\.glzr\glazewm\config.yaml"
+
+# Zebar status bar (companion to GlazeWM)
+New-DotfileSymlink "zebar\.glzr\zebar\settings.json" "$homeDir\.glzr\zebar\settings.json"
 
 Write-Host ""
 Write-Info "✓ Installation complete!"

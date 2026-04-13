@@ -101,7 +101,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **bash/.bashrc-windows**: Git Bash configuration (Scoop tools)
 - **Windows Terminal**: Recommended terminal emulator (replaces Alacritty/Foot)
 - **glazewm**: i3-inspired tiling WM (symlinks to `~/.glzr/glazewm/config.yaml`)
-- **zebar**: Status bar companion to GlazeWM (auto-started via GlazeWM startup command)
+- **zebar**: Status bar companion to GlazeWM (auto-started via GlazeWM startup command, symlinks `~/.glzr/zebar/settings.json`)
 - **No Hyprland/Wayland**: Windows doesn't support Linux desktop environment configs
 
 ### Key Packages
