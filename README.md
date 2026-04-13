@@ -92,6 +92,7 @@ This will:
 - **Fonts**: JetBrains Mono Nerd, CJK (Chinese/Japanese/Korean), emoji
 - **Utils**: screenshots (grim + slurp + satty), screen recording (wf-recorder), clipboard history, screen lock, chafa (terminal images), fzf (fuzzy finder), zoxide (smart cd), bat (cat with syntax highlighting), eza (modern ls), tldr (simplified man pages)
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
+- **Tiling WMs per OS**: Hyprland (Linux), GlazeWM + Zebar (Windows) — see [doc/tiling-window-managers.md](doc/tiling-window-managers.md) for a cross-platform comparison
 
 ## Screenshots
 
