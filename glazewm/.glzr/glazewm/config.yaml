@@ -1,12 +1,9 @@
 general:
   # Commands to run when the WM has started.
-  # Uncomment once Zebar is installed (`scoop install extras/zebar`).
-  startup_commands: []
-  # startup_commands: ['shell-exec zebar']
+  startup_commands: ['shell-exec zebar']
 
   # Commands to run just before the WM is shutdown.
-  shutdown_commands: []
-  # shutdown_commands: ['shell-exec taskkill /IM zebar.exe /F']
+  shutdown_commands: ['shell-exec taskkill /IM zebar.exe /F']
 
   # Commands to run after the WM config is reloaded.
   config_reload_commands: []

@@ -77,8 +77,9 @@ $scoopPackages = @(
     # Diff/merge
     "meld",
 
-    # Tiling window manager
-    "extras/glazewm"
+    # Tiling window manager + bar
+    "extras/glazewm",
+    "extras/zebar"
 )
 
 foreach ($pkg in $scoopPackages) {
@@ -209,6 +210,7 @@ Write-Host "  - Clang tools (clang-format, clang-tidy, clangd)"
 Write-Host "  - Modern CLI: ripgrep, fd, fzf, bat, eza, zoxide, git-delta"
 Write-Host "  - Windows Terminal (recommended)"
 Write-Host "  - GlazeWM tiling window manager (run: glazewm)"
+Write-Host "  - Zebar status bar (auto-starts with GlazeWM)"
 Write-Host ""
 Write-Host "GlazeWM:"
 Write-Host "  - Config: ~/.glzr/glazewm/config.yaml (symlinked)"
