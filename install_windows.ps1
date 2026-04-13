@@ -1,4 +1,4 @@
-# Windows dotfiles installation script
+﻿# Windows dotfiles installation script
 # Requires: Windows 10 (Developer Mode) or Windows 11
 # Run: powershell -ExecutionPolicy Bypass -File install_windows.ps1
 
@@ -35,14 +35,20 @@ if (-not $isWin11) {
 # Install Scoop if not present
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     Write-Info "Installing Scoop package manager..."
-    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force -ErrorAction SilentlyContinue
     Invoke-RestMethod get.scoop.sh | Invoke-Expression
     Write-Info "Scoop installed ✓"
 } else {
     Write-Info "Scoop already installed ✓"
 }
 
-# Add extras bucket for meld, etc.
+# Scoop needs its own git to manage buckets, even if system git exists.
+if (-not (scoop list git 2>$null | Select-String -Pattern '^git\s')) {
+    Write-Info "Installing git via Scoop (required for buckets)..."
+    scoop install git
+}
+
+# Add extras bucket for meld, glazewm, etc.
 Write-Info "Adding Scoop extras bucket..."
 scoop bucket add extras 2>$null
 
@@ -64,12 +70,15 @@ $scoopPackages = @(
     "bat",
     "eza",
     "zoxide",
-    "git-delta",
+    "delta",
     "duf",
     "procs",
 
     # Diff/merge
-    "meld"
+    "meld",
+
+    # Tiling window manager
+    "extras/glazewm"
 )
 
 foreach ($pkg in $scoopPackages) {
@@ -104,7 +113,8 @@ $configFiles = @(
     "$homeDir\.clang-tidy",
     "$homeDir\.bashrc",
     "$homeDir\.config\starship.toml",
-    "$env:LOCALAPPDATA\nvim"
+    "$env:LOCALAPPDATA\nvim",
+    "$homeDir\.glzr\glazewm\config.yaml"
 )
 
 foreach ($file in $configFiles) {
@@ -149,10 +159,11 @@ function New-DotfileSymlink {
 
     # Create symlink
     try {
-        New-Item -ItemType SymbolicLink -Path $Target -Target $fullSource -Force | Out-Null
+        New-Item -ItemType SymbolicLink -Path $Target -Target $fullSource -Force -ErrorAction Stop | Out-Null
         Write-Info "  ✓ Linked: $Source -> $(Split-Path $Target -Leaf)"
     } catch {
         Write-Error "  ✗ Failed to link $Source : $_"
+        Write-Warn "    Enable Developer Mode (Settings > For Developers) or run as Administrator."
     }
 }
 
@@ -179,6 +190,9 @@ New-DotfileSymlink "bash\.bashrc-windows" "$homeDir\.bashrc"
 # Claude Code skills
 New-DotfileSymlink "claude\.claude\skills" "$homeDir\.claude\skills"
 
+# GlazeWM tiling window manager
+New-DotfileSymlink "glazewm\.glzr\glazewm\config.yaml" "$homeDir\.glzr\glazewm\config.yaml"
+
 Write-Host ""
 Write-Info "✓ Installation complete!"
 Write-Host ""
@@ -194,6 +208,14 @@ Write-Host "  - Neovim (full IDE: LSP, DAP, Git integration)"
 Write-Host "  - Clang tools (clang-format, clang-tidy, clangd)"
 Write-Host "  - Modern CLI: ripgrep, fd, fzf, bat, eza, zoxide, git-delta"
 Write-Host "  - Windows Terminal (recommended)"
+Write-Host "  - GlazeWM tiling window manager (run: glazewm)"
+Write-Host ""
+Write-Host "GlazeWM:"
+Write-Host "  - Config: ~/.glzr/glazewm/config.yaml (symlinked)"
+Write-Host "  - Start: glazewm  (consider adding to Startup folder)"
+Write-Host "  - Keybinds: alt+{h,j,k,l} focus, alt+shift+{h,j,k,l} move,"
+Write-Host "              alt+{1-9} workspace, alt+enter terminal, alt+shift+q close,"
+Write-Host "              alt+r resize mode, alt+shift+e exit WM, alt+shift+r reload"
 Write-Host ""
 Write-Host "Git Bash usage:"
 Write-Host "  - Bash config: ~/.bashrc (symlinked from dotfiles)"

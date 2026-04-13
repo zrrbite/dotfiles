@@ -100,6 +100,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **Git, Neovim, Clang, Starship**: All work identically to Linux/macOS
 - **bash/.bashrc-windows**: Git Bash configuration (Scoop tools)
 - **Windows Terminal**: Recommended terminal emulator (replaces Alacritty/Foot)
+- **glazewm**: i3-inspired tiling WM (symlinks to `~/.glzr/glazewm/config.yaml`)
 - **No Hyprland/Wayland**: Windows doesn't support Linux desktop environment configs
 
 ### Key Packages
