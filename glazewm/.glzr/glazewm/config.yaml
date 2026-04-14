@@ -111,6 +111,11 @@ window_rules:
       - window_process: { equals: 'POWERPNT' }
         window_class: { not_regex: 'PPTFrameClass' }
 
+  # Games: keep floating so GlazeWM doesn't force-tile/fullscreen them.
+  - commands: ['set-floating']
+    match:
+      - window_process: { equals: 'Fellowship' }
+
 binding_modes:
   # Resize mode: arrow keys or HJKL to resize focused window.
   - name: 'resize'
