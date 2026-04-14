@@ -111,8 +111,9 @@ window_rules:
       - window_process: { equals: 'POWERPNT' }
         window_class: { not_regex: 'PPTFrameClass' }
 
-  # Games: keep floating so GlazeWM doesn't force-tile/fullscreen them.
-  - commands: ['set-floating']
+  # Games: fully ignore so GlazeWM doesn't fight the game's own
+  # fullscreen/resolution handling at launch.
+  - commands: ['ignore']
     match:
       - window_process: { equals: 'fellowship-Win64-Shipping' }
 
