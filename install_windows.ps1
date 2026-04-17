@@ -219,6 +219,20 @@ if (Test-Path $wtSettingsDir) {
 # Fastfetch (Windows-specific config with Windows logo)
 New-DotfileSymlink "fastfetch\.config\fastfetch\config-windows.jsonc" "$homeDir\.config\fastfetch\config.jsonc"
 
+# Set desktop wallpaper
+$wallpaper = Join-Path $dotfilesDir "hypr\.local\share\wallpapers\pexels-ahmedadly-1270184.jpg"
+if (Test-Path $wallpaper) {
+    Add-Type -TypeDefinition @"
+using System.Runtime.InteropServices;
+public class Wallpaper {
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+}
+"@
+    [Wallpaper]::SystemParametersInfo(0x0014, 0, (Resolve-Path $wallpaper).Path, 0x0003) | Out-Null
+    Write-Info "  ✓ Desktop wallpaper set"
+}
+
 Write-Host ""
 Write-Info "✓ Installation complete!"
 Write-Host ""
