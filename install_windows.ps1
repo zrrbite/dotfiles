@@ -77,6 +77,9 @@ $scoopPackages = @(
     # Diff/merge
     "meld",
 
+    # System info
+    "fastfetch",
+
     # Tiling window manager + bar
     "extras/glazewm",
     "extras/zebar"
@@ -116,7 +119,9 @@ $configFiles = @(
     "$homeDir\.config\starship.toml",
     "$env:LOCALAPPDATA\nvim",
     "$homeDir\.glzr\glazewm\config.yaml",
-    "$homeDir\.glzr\zebar\settings.json"
+    "$homeDir\.glzr\zebar\settings.json",
+    "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json",
+    "$homeDir\.config\fastfetch\config.jsonc"
 )
 
 foreach ($file in $configFiles) {
@@ -197,6 +202,17 @@ New-DotfileSymlink "glazewm\.glzr\glazewm\config.yaml" "$homeDir\.glzr\glazewm\c
 
 # Zebar status bar (companion to GlazeWM)
 New-DotfileSymlink "zebar\.glzr\zebar\settings.json" "$homeDir\.glzr\zebar\settings.json"
+
+# Windows Terminal (Nord theme, JetBrains Mono Nerd Font)
+$wtSettingsDir = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+if (Test-Path $wtSettingsDir) {
+    New-DotfileSymlink "windowsterminal\settings.json" "$wtSettingsDir\settings.json"
+} else {
+    Write-Warn "Windows Terminal (Store) not found, skipping settings symlink"
+}
+
+# Fastfetch (Windows-specific config with Windows logo)
+New-DotfileSymlink "fastfetch\.config\fastfetch\config-windows.jsonc" "$homeDir\.config\fastfetch\config.jsonc"
 
 Write-Host ""
 Write-Info "✓ Installation complete!"
