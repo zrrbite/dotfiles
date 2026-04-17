@@ -1,0 +1,111 @@
+# AeroSpace tiling window manager for macOS
+# Keybinds mirror GlazeWM (Windows) and Hyprland (Linux) from this dotfiles repo.
+# Docs: https://nikitabobko.github.io/AeroSpace/guide
+
+start-at-login = true
+after-login-command = []
+after-startup-command = []
+
+# Focus follows mouse (matches Hyprland/GlazeWM)
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# Normalizations
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Mouse handling
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Layout algorithm: 'tiles' (i3-style) or 'accordion'
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Gaps (matches GlazeWM 12px)
+[gaps]
+inner.horizontal = 12
+inner.vertical = 12
+outer.left = 12
+outer.bottom = 12
+outer.top = 12
+outer.right = 12
+
+# Main mode keybindings
+[mode.main.binding]
+# Focus movement (vim-style)
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+# Move focused window
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+
+# Resize
+alt-u = 'resize width -50'
+alt-p = 'resize width +50'
+alt-o = 'resize height +50'
+alt-i = 'resize height -50'
+
+# Enter resize mode (HJKL to resize, escape to exit)
+alt-r = 'mode resize'
+
+# Toggle tiling direction (matches alt+v in GlazeWM)
+alt-v = 'layout tiles horizontal vertical'
+
+# Toggle floating (matches alt+shift+space in GlazeWM)
+alt-shift-space = 'layout floating tiling'
+
+# Toggle fullscreen (matches alt+f in GlazeWM)
+alt-f = 'fullscreen'
+
+# Close focused window (matches alt+shift+q in GlazeWM)
+alt-shift-q = 'close'
+
+# Launch Alacritty (matches alt+enter in GlazeWM → terminal)
+alt-enter = 'exec-and-forget open -na Alacritty'
+
+# Reload config (matches alt+shift+r in GlazeWM)
+alt-shift-r = 'reload-config'
+
+# Focus workspace (matches alt+N in GlazeWM/Hyprland)
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# Move window to workspace and follow (matches alt+shift+N in GlazeWM)
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+
+# Cycle through active workspaces (matches alt+s/alt+a in GlazeWM)
+alt-s = 'workspace next'
+alt-a = 'workspace prev'
+alt-d = 'workspace-back-and-forth'
+
+# Move workspace to monitor (matches alt+shift+a/f in GlazeWM)
+alt-shift-a = 'move-workspace-to-monitor prev'
+alt-shift-f = 'move-workspace-to-monitor next'
+
+# Resize mode (matches GlazeWM resize binding mode)
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+escape = 'mode main'
+enter = 'mode main'

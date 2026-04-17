@@ -51,6 +51,7 @@ if (-not (scoop list git 2>$null | Select-String -Pattern '^git\s')) {
 # Add extras bucket for meld, glazewm, etc.
 Write-Info "Adding Scoop extras bucket..."
 scoop bucket add extras 2>$null
+scoop bucket add nerd-fonts 2>$null
 
 # Install core packages
 Write-Info "Installing packages via Scoop..."
@@ -79,6 +80,9 @@ $scoopPackages = @(
 
     # System info
     "fastfetch",
+
+    # Font
+    "nerd-fonts/JetBrainsMono-NF",
 
     # Tiling window manager + bar
     "extras/glazewm",

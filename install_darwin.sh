@@ -70,6 +70,7 @@ brew install "${BREW_PACKAGES[@]}"
 # Install Homebrew casks (GUI apps if needed)
 BREW_CASKS=(
     font-jetbrains-mono-nerd-font
+    nikitabobko/tap/aerospace
 )
 
 info "Installing Homebrew casks..."
@@ -106,6 +107,7 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-format
     ~/.bashrc
     ~/.bash_profile
+    ~/.config/aerospace/aerospace.toml
 )
 
 backup_needed=false
@@ -141,7 +143,7 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow universal packages
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
@@ -159,6 +161,16 @@ echo "  - fzf, bat, ripgrep, fd, eza, zoxide"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, lldb"
 echo "  - starship prompt, alacritty terminal"
+echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
+echo ""
+echo "AeroSpace tiling WM:"
+echo "  - Starts at login automatically"
+echo "  - Keybinds match GlazeWM (Windows) and Hyprland (Linux):"
+echo "    alt+hjkl focus, alt+shift+hjkl move, alt+1-9 workspaces"
+echo "    alt+enter Alacritty, alt+shift+q close, alt+f fullscreen"
+echo "    alt+v toggle split direction, alt+r resize mode"
+echo "    alt+shift+r reload config"
+echo "  - Grant Accessibility permission when prompted"
 echo ""
 echo "Note: You may need to grant terminal permissions in System Preferences"
 echo ""

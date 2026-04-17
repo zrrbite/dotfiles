@@ -7,7 +7,7 @@ dotfiles repo supports. The row marked ✓ is what this repo ships configs for.
 
 | Manager | Protocol | Language | Notes |
 |---|---|---|---|
-| ✓ **Hyprland** | Wayland | C++ | Dynamic tiling with animations/effects, actively developed. Used here with waybar + rofi + mako. |
+| ✓ **Hyprland** | Wayland | C++ | Dynamic tiling with animations. Used here with waybar + rofi + mako. |
 | Sway | Wayland | C | i3-compatible config, minimal, rock solid. |
 | i3 | X11 | C | The reference manual tiler; huge ecosystem. |
 | AwesomeWM | X11 | Lua | Fully scriptable in Lua, very flexible. |
@@ -25,11 +25,10 @@ dotfiles repo supports. The row marked ✓ is what this repo ships configs for.
 | Manager | Language | Config | Notes |
 |---|---|---|---|
 | ✓ **GlazeWM** | Rust | YAML | i3-inspired, paired with Zebar for status bar. Most popular (~12k stars). |
-| Whim | C# | YAML/JSON + C# scripting | Plugin architecture, multiple layout engines (tree/slice). Alpha. |
+| Whim | C# | YAML/JSON + C# scripting | Plugin architecture, multiple layout engines (tree/slice). Pre-1.0. |
 | komorebi | Rust | JSON | bspwm-style, uses AutoHotkey or whkd for bindings. Mature. |
 | Jwno | Janet | Janet scripting | Lisp-family REPL-driven, UIAutomation integration. Niche. |
 | FancyWM | C# | GUI | Microsoft Store app, tree tiling, beginner-friendly. |
-| workspacer | C# | C# scripting | Older, less active than Whim. |
 
 **This repo uses GlazeWM + Zebar** — see `glazewm/`, `zebar/`. Installed via
 `./install_windows.ps1`. Paired with PowerToys Run (`Ctrl+Space`) for a
@@ -40,16 +39,14 @@ Spotlight-style launcher and optionally WinLaunch for a Launchpad-style grid.
 | Manager | Language | Config | Notes |
 |---|---|---|---|
 | yabai | C | `yabairc` shell script | Most powerful. Requires partially disabling SIP for full features. Pairs with skhd for hotkeys. |
-| AeroSpace | Swift | TOML | i3-style, no SIP changes needed, rising in popularity. |
+| ✓ **AeroSpace** | Swift | TOML | i3-style, no SIP changes needed. Config in dotfiles repo. |
 | Amethyst | Swift | GUI preferences | Simple automatic tiling, no scripting, very low friction. |
 | Rectangle | Swift | GUI | Window snapping only (not true tiling), but often "enough". Free. |
 | Magnet | Swift | GUI | Paid snapping tool, Mac App Store. |
 | Phoenix | JS | JavaScript config | Scriptable window manager, not strictly tiling. |
 
-**This repo does not currently ship a macOS tiling WM config.** `install_darwin.sh`
-sets up CLI tools + Alacritty only. AeroSpace is the recommended starting point
-if you want to add one — config-file-driven (fits the dotfiles model), no SIP
-changes, closest i3/GlazeWM analogue on macOS.
+**This repo uses AeroSpace** — see `aerospace/`. Installed via `./install_darwin.sh`.
+Keybinds match GlazeWM (Windows) and Hyprland (Linux) for cross-platform muscle memory.
 
 ## Cross-platform convergence
 
@@ -58,7 +55,7 @@ across platforms:
 
 | Role | Linux (Arch) | Windows | macOS (recommended) |
 |---|---|---|---|
-| Window manager | Hyprland | GlazeWM | AeroSpace |
+| Window manager | Hyprland | GlazeWM | ✓ AeroSpace |
 | Status bar | Waybar | Zebar | sketchybar |
 | Launcher | Rofi | PowerToys Run (`Ctrl+Space`) | Raycast / Spotlight |
 | Notifications | Mako | Windows native | macOS native |

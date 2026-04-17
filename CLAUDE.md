@@ -93,7 +93,8 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **fastfetch**: System info
 - **gtk/mimeapps/discord**: Desktop environment configs (uses discord_arch_electron)
 
-**macOS/Optional:**
+**macOS:**
+- **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
 - **alacritty**: Cross-platform terminal with Nord theme
 
 **Windows 10/11:**
