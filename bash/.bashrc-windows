@@ -25,9 +25,9 @@ fi
 # Fallback prompt for standalone mintty
 PS1='[\u@\h \W]\$ '
 
-# Scoop tools only work in Windows Terminal (shims break in MSYS2/mintty).
-# WT_SESSION is set by Windows Terminal.
-if [[ -n "$WT_SESSION" ]]; then
+# Scoop shims break in standalone mintty. Skip Scoop tools there.
+# Mintty sets TERM_PROGRAM=mintty; Windows Terminal and other hosts don't.
+if [[ "$TERM_PROGRAM" != "mintty" ]]; then
     export PATH="$HOME/scoop/shims:$PATH"
 
     # Pro tip aliases - chain commands together
