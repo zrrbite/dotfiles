@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Ensure Scoop shims are on PATH (mintty doesn't always inherit Windows PATH)
+[[ -d "$HOME/scoop/shims" ]] && export PATH="$HOME/scoop/shims:$PATH"
+
 # Enable bash completion (comes with Git for Windows)
 if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
