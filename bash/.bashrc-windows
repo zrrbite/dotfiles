@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Ensure Scoop shims are on PATH (mintty doesn't always inherit Windows PATH)
+[[ -d "$HOME/scoop/shims" ]] && export PATH="$HOME/scoop/shims:$PATH"
+
 # Enable bash completion (comes with Git for Windows)
 if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -14,6 +17,30 @@ fi
 
 alias grep='grep --color=auto'
 
+# Pro tip aliases - chain commands together
+alias fcpp='fd -e cpp -e hpp | fzf | xargs bat'           # Find and view C++ files
+alias ftodo='rg -l "TODO" | fzf | xargs nvim'              # Find and edit TODOs
+alias fmd='fd -e md | fzf'                                 # Find markdown files
+alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'  # Find function definitions
+
+# eza aliases (modern ls replacement)
+alias ls='eza --icons'
+alias ll='eza -la --icons --git'
+alias lt='eza -T --icons --git-ignore'
+alias la='eza -a --icons'
+
+# bat (better cat)
+alias cat='bat --paging=never'
+alias less='bat'
+
+# Modern CLI tools
+alias find='fd'
+alias ps='procs'
+alias df='duf'
+
+PS1='[\u@\h \W]\$ '
+eval "$(starship init bash)"
+
 # SSH agent (Git for Windows includes ssh-agent)
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" > /dev/null
@@ -22,51 +49,19 @@ if [ -f ~/.ssh/id_ed25519 ]; then
     ssh-add ~/.ssh/id_ed25519 2>/dev/null
 fi
 
-# Fallback prompt for standalone mintty
-PS1='[\u@\h \W]\$ '
+# fzf - fuzzy finder
+eval "$(fzf --bash)"
 
-# Scoop shims break in standalone mintty. Skip Scoop tools there.
-# Mintty sets TERM_PROGRAM=mintty; Windows Terminal and other hosts don't.
-if [[ "$TERM_PROGRAM" != "mintty" ]]; then
-    export PATH="$HOME/scoop/shims:$PATH"
-
-    # Pro tip aliases - chain commands together
-    alias fcpp='fd -e cpp -e hpp | fzf | xargs bat'
-    alias ftodo='rg -l "TODO" | fzf | xargs nvim'
-    alias fmd='fd -e md | fzf'
-    alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'
-
-    # eza aliases (modern ls replacement)
-    alias ls='eza --icons'
-    alias ll='eza -la --icons --git'
-    alias lt='eza -T --icons --git-ignore'
-    alias la='eza -a --icons'
-
-    # bat (better cat)
-    alias cat='bat --paging=never'
-    alias less='bat'
-
-    # Modern CLI tools
-    alias find='fd'
-    alias ps='procs'
-    alias df='duf'
-
-    eval "$(starship init bash)"
-
-    # fzf - fuzzy finder
-    eval "$(fzf --bash)"
-
-    # fzf Nord theme
-    export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C \
+# fzf Nord theme
+export FZF_DEFAULT_OPTS="--color=bg+:#3B4252,bg:#2E3440,spinner:#81A1C1,hl:#A3BE8C \
 --color=fg:#D8DEE9,header:#A3BE8C,info:#EBCB8B,pointer:#88C0D0 \
 --color=marker:#88C0D0,fg+:#ECEFF4,prompt:#88C0D0,hl+:#A3BE8C \
 --color=border:#4C566A"
 
-    # zoxide - smarter cd (replaces cd command)
-    eval "$(zoxide init bash --cmd cd)"
+# zoxide - smarter cd (replaces cd command)
+eval "$(zoxide init bash --cmd cd)"
 
-    # fastfetch - system info on terminal launch
-    if command -v fastfetch &>/dev/null; then
-        fastfetch
-    fi
+# fastfetch - system info on terminal launch
+if command -v fastfetch &>/dev/null; then
+    fastfetch
 fi
