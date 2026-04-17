@@ -84,6 +84,12 @@ $scoopPackages = @(
     # Font
     "nerd-fonts/JetBrainsMono-NF",
 
+    # Per-app volume control
+    "extras/eartrumpet",
+
+    # System command-line utility (used by GlazeWM for volume keys)
+    "nircmd",
+
     # Tiling window manager + bar
     "extras/glazewm",
     "extras/zebar"

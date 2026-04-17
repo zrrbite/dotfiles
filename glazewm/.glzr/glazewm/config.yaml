@@ -202,6 +202,14 @@ keybindings:
   - commands: ['wm-redraw']
     bindings: ['alt+shift+w']
 
+  # Volume control (requires nircmd via Scoop).
+  - commands: ['shell-exec nircmd mutesysvolume 2']
+    bindings: ['alt+F1']
+  - commands: ['shell-exec nircmd changesysvolume -3000']
+    bindings: ['alt+F2']
+  - commands: ['shell-exec nircmd changesysvolume 3000']
+    bindings: ['alt+F3']
+
   # Launch Windows Terminal (installed by install_windows.ps1).
   # Swap to `shell-exec %ProgramFiles%/Git/git-bash.exe` for Git Bash.
   - commands: ['shell-exec wt']
