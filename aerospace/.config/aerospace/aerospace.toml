@@ -4,7 +4,11 @@
 
 start-at-login = true
 after-login-command = []
-after-startup-command = []
+after-startup-command = ['exec-and-forget sketchybar']
+
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
 
 # Focus follows mouse (matches Hyprland/GlazeWM)
 on-focus-changed = ['move-mouse window-lazy-center']

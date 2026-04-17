@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Nord palette
+NORD0=0xff2e3440
+NORD1=0xff3b4252
+NORD2=0xff434c5e
+NORD3=0xff4c566a
+NORD4=0xffd8dee9
+NORD7=0xff8fbcbb
+NORD8=0xff88c0d0
+NORD9=0xff81a1c1
+NORD11=0xffbf616a
+NORD13=0xffebcb8b
+NORD14=0xffa3be8c
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+# Bar appearance
+sketchybar --bar \
+    position=top \
+    height=32 \
+    blur_radius=30 \
+    color=$NORD0 \
+    border_color=$NORD3 \
+    border_width=0 \
+    shadow=off \
+    padding_left=12 \
+    padding_right=12 \
+    margin=0 \
+    y_offset=0 \
+    corner_radius=0 \
+    topmost=window
+
+# Defaults
+sketchybar --default \
+    icon.font="JetBrainsMono Nerd Font:Bold:14.0" \
+    icon.color=$NORD4 \
+    label.font="JetBrainsMono Nerd Font:Regular:12.0" \
+    label.color=$NORD4 \
+    padding_left=4 \
+    padding_right=4 \
+    background.corner_radius=5 \
+    background.height=24
+
+# -- AeroSpace workspaces (left) --
+sketchybar --add event aerospace_workspace_change
+
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+        --subscribe space.$sid aerospace_workspace_change \
+        --set space.$sid \
+            background.color=$NORD1 \
+            background.corner_radius=5 \
+            background.height=24 \
+            background.drawing=off \
+            label="$sid" \
+            label.color=$NORD4 \
+            label.font="JetBrainsMono Nerd Font:Bold:12.0" \
+            label.padding_left=8 \
+            label.padding_right=8 \
+            click_script="aerospace workspace $sid" \
+            script="$PLUGIN_DIR/aerospace.sh $sid"
+done
+
+# -- Clock (right) --
+sketchybar --add item clock right \
+    --set clock \
+        update_freq=30 \
+        icon="" \
+        icon.color=$NORD8 \
+        label.color=$NORD4 \
+        script="$PLUGIN_DIR/clock.sh"
+
+# -- Battery (right) --
+sketchybar --add item battery right \
+    --set battery \
+        update_freq=120 \
+        icon.color=$NORD14 \
+        label.color=$NORD4 \
+        script="$PLUGIN_DIR/battery.sh"
+
+# -- Front app name (center-left) --
+sketchybar --add item front_app left \
+    --set front_app \
+        icon.drawing=off \
+        label.color=$NORD8 \
+        label.font="JetBrainsMono Nerd Font:Bold:12.0" \
+        script="$PLUGIN_DIR/front_app.sh" \
+    --subscribe front_app front_app_switched
+
+# Force initial update
+sketchybar --update

@@ -60,6 +60,9 @@ BREW_PACKAGES=(
     clang-format
     lldb
 
+    # Status bar (pairs with AeroSpace)
+    FelixKratz/formulae/sketchybar
+
     # Terminal
     alacritty
 )
@@ -108,6 +111,7 @@ CONFIGS_TO_BACKUP=(
     ~/.bashrc
     ~/.bash_profile
     ~/.config/aerospace/aerospace.toml
+    ~/.config/sketchybar
 )
 
 backup_needed=false
@@ -143,7 +147,7 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow universal packages
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
@@ -162,6 +166,7 @@ echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, lldb"
 echo "  - starship prompt, alacritty terminal"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
+echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo ""
 echo "AeroSpace tiling WM:"
 echo "  - Starts at login automatically"

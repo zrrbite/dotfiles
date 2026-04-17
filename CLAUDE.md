@@ -95,6 +95,7 @@ Each top-level directory is a stow package that mirrors the home directory struc
 
 **macOS:**
 - **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
+- **sketchybar**: Nord-themed status bar with workspace indicators (auto-launched by AeroSpace)
 - **alacritty**: Cross-platform terminal with Nord theme
 
 **Windows 10/11:**

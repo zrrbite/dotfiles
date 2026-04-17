@@ -56,7 +56,7 @@ across platforms:
 | Role | Linux (Arch) | Windows | macOS (recommended) |
 |---|---|---|---|
 | Window manager | Hyprland | GlazeWM | ✓ AeroSpace |
-| Status bar | Waybar | Zebar | sketchybar |
+| Status bar | Waybar | Zebar | ✓ sketchybar |
 | Launcher | Rofi | PowerToys Run (`Ctrl+Space`) | Raycast / Spotlight |
 | Notifications | Mako | Windows native | macOS native |
 | App grid | (n/a) | WinLaunch | Launchpad (built-in) |
