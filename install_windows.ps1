@@ -92,7 +92,10 @@ $scoopPackages = @(
 
     # Tiling window manager + bar
     "extras/glazewm",
-    "extras/zebar"
+    "extras/zebar",
+
+    # Alt+drag to move/resize windows (Linux-style)
+    "extras/altsnap"
 )
 
 foreach ($pkg in $scoopPackages) {

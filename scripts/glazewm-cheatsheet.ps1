@@ -56,6 +56,10 @@ $label.Text = @"
   Alt + Shift + P       Pause GlazeWM
   Alt + Shift + E       Exit GlazeWM
 
+  MOUSE (AltSnap)
+  Alt + Left-drag       Move window
+  Alt + Right-drag      Resize window
+
   Ctrl + Space          PowerToys Run
 "@
 
