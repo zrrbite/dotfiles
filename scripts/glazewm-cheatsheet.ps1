@@ -3,7 +3,7 @@ Add-Type -AssemblyName System.Drawing
 
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "GlazeWM Keybinds"
-$form.Size = New-Object System.Drawing.Size(480, 620)
+$form.Size = New-Object System.Drawing.Size(520, 720)
 $form.StartPosition = "CenterScreen"
 $form.FormBorderStyle = "FixedDialog"
 $form.MaximizeBox = $false
@@ -14,7 +14,7 @@ $form.Add_KeyDown({ if ($_.KeyCode -eq "Escape") { $form.Close() } })
 
 $label = New-Object System.Windows.Forms.Label
 $label.AutoSize = $false
-$label.Size = New-Object System.Drawing.Size(440, 560)
+$label.Size = New-Object System.Drawing.Size(480, 660)
 $label.Location = New-Object System.Drawing.Point(20, 20)
 $label.Font = New-Object System.Drawing.Font("Consolas", 10)
 $label.ForeColor = [System.Drawing.ColorTranslator]::FromHtml("#D8DEE9")
