@@ -210,6 +210,10 @@ keybindings:
   - commands: ['shell-exec nircmd changesysvolume 3000']
     bindings: ['alt+F3']
 
+  # Keybind cheatsheet popup.
+  - commands: ['shell-exec powershell -ExecutionPolicy Bypass -File C:/dev/dotfiles.git/scripts/glazewm-cheatsheet.ps1']
+    bindings: ['alt+oem_2']
+
   # Launch Windows Terminal (installed by install_windows.ps1).
   # Swap to `shell-exec %ProgramFiles%/Git/git-bash.exe` for Git Bash.
   - commands: ['shell-exec wt']
