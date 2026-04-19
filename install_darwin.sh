@@ -53,6 +53,7 @@ BREW_PACKAGES=(
     git-delta
     procs
     starship
+    fastfetch
 
     # Development
     neovim
@@ -147,11 +148,37 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow universal packages
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar fastfetch claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
 done
+
+# Symlink macOS-specific fastfetch config (Apple logo instead of Arch)
+ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+
+# Clean up macOS desktop to match tiling WM aesthetic
+info "Configuring macOS desktop..."
+
+# Auto-hide Dock (sketchybar replaces it)
+defaults write com.apple.dock autohide -bool true
+defaults write com.apple.dock autohide-delay -float 0
+defaults write com.apple.dock autohide-time-modifier -float 0.3
+killall Dock 2>/dev/null || true
+
+# Auto-hide menu bar (sketchybar replaces it)
+defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# Hide desktop icons
+defaults write com.apple.finder CreateDesktop -bool false
+killall Finder 2>/dev/null || true
+
+# Set wallpaper (skull, matching Windows)
+WALLPAPER="$DOTFILES_DIR/hypr/.local/share/wallpapers/pexels-ahmedadly-1270184.jpg"
+if [ -f "$WALLPAPER" ]; then
+    osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$WALLPAPER\""
+    info "  ✓ Wallpaper set"
+fi
 
 echo ""
 info "macOS installation complete!"
@@ -161,12 +188,18 @@ echo "  1. Restart your terminal or run: source ~/.bashrc"
 echo "  2. Open Alacritty (Command+Space, type 'Alacritty')"
 echo ""
 echo "Installed tools:"
-echo "  - fzf, bat, ripgrep, fd, eza, zoxide"
+echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, lldb"
 echo "  - starship prompt, alacritty terminal"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
+echo ""
+echo "Desktop:"
+echo "  - Dock auto-hidden (sketchybar replaces it)"
+echo "  - Menu bar auto-hidden"
+echo "  - Desktop icons hidden"
+echo "  - Wallpaper set (skull)"
 echo ""
 echo "AeroSpace tiling WM:"
 echo "  - Starts at login automatically"
