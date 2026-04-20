@@ -4,7 +4,10 @@
 
 start-at-login = true
 after-login-command = []
-after-startup-command = ['exec-and-forget sketchybar']
+after-startup-command = [
+    'exec-and-forget sketchybar',
+    'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=8.0'
+]
 
 exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
@@ -26,11 +29,11 @@ default-root-container-orientation = 'auto'
 
 # Gaps (matches GlazeWM 12px)
 [gaps]
-inner.horizontal = 12
-inner.vertical = 12
+inner.horizontal = 20
+inner.vertical = 20
 outer.left = 12
 outer.bottom = 12
-outer.top = 12
+outer.top = 44
 outer.right = 12
 
 # Main mode keybindings
