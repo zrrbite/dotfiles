@@ -29,8 +29,13 @@ url="$2"
 while read local_ref local_sha remote_ref remote_sha; do
     # If remote_sha is all zeros, it's a new branch - check all commits
     if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
-        # New branch - check last 10 commits (or specify a base branch)
-        range="HEAD~10..HEAD"
+        # New branch - check last 10 commits, or the whole history when it
+        # is shorter than that (HEAD~10 does not exist in a young repo)
+        if git rev-parse --verify --quiet HEAD~10 >/dev/null; then
+            range="HEAD~10..HEAD"
+        else
+            range="$(git hash-object -t tree /dev/null)..HEAD"
+        fi
     else
         # Existing branch - check commits since last push
         range="$remote_sha..$local_sha"
@@ -47,12 +52,14 @@ while read local_ref local_sha remote_ref remote_sha; do
     echo -e "${BLUE}Running clang-tidy on changed C++ files...${NC}"
     echo ""
 
-    # Check if compile_commands.json exists
+    # Without a compilation database clang-tidy cannot resolve include
+    # paths and every file fails with spurious 'file not found' errors -
+    # skip the check instead of blocking the push on noise.
     if [ ! -f "compile_commands.json" ] && [ ! -f "build/compile_commands.json" ]; then
-        echo -e "${YELLOW}⚠️  Warning: No compile_commands.json found${NC}"
-        echo -e "${YELLOW}   clang-tidy works best with a compilation database${NC}"
-        echo -e "${YELLOW}   Run: cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON${NC}"
+        echo -e "${YELLOW}⚠️  No compile_commands.json found - skipping clang-tidy${NC}"
+        echo -e "${YELLOW}   Generate one: cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON${NC}"
         echo ""
+        continue
     fi
 
     # Run clang-tidy on each changed file
