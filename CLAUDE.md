@@ -21,6 +21,10 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 ./install_wsl.sh      # WSL (CLI only, no GUI)
 ./install_raspbian.sh # Raspberry Pi / Raspbian (CLI only, ARM64)
 ./install_darwin.sh   # macOS (Homebrew + Alacritty)
+                      #   --dry-run       show actions without doing them
+                      #   --with-desktop  also set wallpaper/Dock/menu bar (fresh machine)
+                      #   --upgrade       allow brew to upgrade existing packages
+                      # Default is re-run safe: missing packages only, no desktop changes.
 ```
 
 ```powershell

@@ -57,7 +57,26 @@ Installs CLI development tools only (no GUI/Wayland):
 
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./install_darwin.sh
+cd ~/dotfiles && ./install_darwin.sh --with-desktop
+```
+
+The script is safe to re-run: by default it installs only missing packages and
+leaves your desktop settings alone.
+
+| Flag | Effect |
+|---|---|
+| `-n`, `--dry-run` | Print every action without doing any of it |
+| `--with-desktop` | Also auto-hide the Dock and menu bar, hide desktop icons, **set the wallpaper**, and restart Dock and Finder. For a fresh machine |
+| `--upgrade` | Pass every package to `brew install` even when present, upgrading outdated ones |
+
+`--upgrade` is off by default deliberately: `brew install` upgrades an
+already-installed-but-outdated formula, so a plain re-run could otherwise jump
+clang-format several major versions and change what the pre-commit hook accepts.
+
+Preview any run first:
+
+```bash
+./install_darwin.sh --dry-run
 ```
 
 Installs via Homebrew:
