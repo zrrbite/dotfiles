@@ -50,6 +50,9 @@ make clean
 
 ## Other Documentation
 
+- **[aerospace-macos.md](aerospace-macos.md)** — using the tiling window manager
+  on macOS: keybindings, layouts, and the gotchas (accordion, restarts losing
+  window placement, where focus-follows-mouse actually comes from).
 - **[status-bar-theming.md](status-bar-theming.md)** — the Nord colour contract
   shared by waybar and sketchybar, sketchybar's constraints versus waybar CSS,
   and how to add or restyle a module.

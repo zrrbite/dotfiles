@@ -129,6 +129,7 @@ This will:
 - **Idle**: Lock at 5min, display off at 10min, suspend at 30min (hypridle)
 - **Tiling WMs per OS**: Hyprland (Linux), GlazeWM + Zebar (Windows) — see [doc/tiling-window-managers.md](doc/tiling-window-managers.md) for a cross-platform comparison
 - **Status bars**: waybar (Linux) and sketchybar (macOS) share one Nord colour contract — see [doc/status-bar-theming.md](doc/status-bar-theming.md) for the palette, sketchybar's constraints, and how to add a module
+- **AeroSpace on macOS**: keybindings, layouts and gotchas in [doc/aerospace-macos.md](doc/aerospace-macos.md)
 
 ## Screenshots
 
