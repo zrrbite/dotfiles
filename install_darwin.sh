@@ -33,6 +33,11 @@ else
     info "Homebrew already installed"
 fi
 
+# Add third-party taps
+info "Adding Homebrew taps..."
+brew tap nikitabobko/tap
+brew tap FelixKratz/formulae
+
 # Install packages via Homebrew
 BREW_PACKAGES=(
     # Core shell
@@ -61,24 +66,26 @@ BREW_PACKAGES=(
     clang-format
     lldb
 
-    # Status bar (pairs with AeroSpace)
-    FelixKratz/formulae/sketchybar
-
-    # Terminal
-    alacritty
+    # Status bar + window borders (pairs with AeroSpace)
+    sketchybar
+    borders
 )
 
 info "Installing Homebrew packages..."
 brew install "${BREW_PACKAGES[@]}"
 
-# Install Homebrew casks (GUI apps if needed)
+# Install Homebrew casks (GUI apps)
 BREW_CASKS=(
     font-jetbrains-mono-nerd-font
     nikitabobko/tap/aerospace
+    alacritty
 )
 
 info "Installing Homebrew casks..."
 brew install --cask "${BREW_CASKS[@]}"
+
+# Remove Gatekeeper quarantine from Alacritty (unsigned cask)
+xattr -cr /Applications/Alacritty.app 2>/dev/null || true
 
 # Determine dotfiles location
 DOTFILES_DIR="${HOME}/dotfiles"
@@ -146,12 +153,12 @@ info "Creating macOS-specific bash config symlinks..."
 ln -sf "$DOTFILES_DIR/bash/.bashrc-darwin" "$HOME/.bashrc"
 ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
-# Stow universal packages
+# Stow packages (use -t ~ in case dotfiles dir isn't ~/dotfiles)
 info "Stowing packages..."
 STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar fastfetch claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
-    stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
+    stow -t "$HOME" -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
 done
 
 # Symlink macOS-specific fastfetch config (Apple logo instead of Arch)
@@ -194,6 +201,7 @@ echo "  - neovim, git, clang-format, lldb"
 echo "  - starship prompt, alacritty terminal"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
+echo "  - JankyBorders (active window glow, Nord blue)"
 echo ""
 echo "Desktop:"
 echo "  - Dock auto-hidden (sketchybar replaces it)"

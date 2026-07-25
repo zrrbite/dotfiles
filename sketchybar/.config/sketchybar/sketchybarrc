@@ -79,6 +79,44 @@ sketchybar --add item battery right \
         label.color=$NORD4 \
         script="$PLUGIN_DIR/battery.sh"
 
+# -- Volume (right) --
+sketchybar --add item volume right \
+    --set volume \
+        update_freq=5 \
+        icon.color=$NORD13 \
+        label.color=$NORD4 \
+        script="$PLUGIN_DIR/volume.sh"
+
+# -- Network (right) --
+sketchybar --add item network right \
+    --set network \
+        update_freq=10 \
+        icon.color=$NORD9 \
+        label.color=$NORD4 \
+        script="$PLUGIN_DIR/network.sh"
+
+# -- Memory (right) --
+sketchybar --add item memory right \
+    --set memory \
+        update_freq=10 \
+        icon="󰍛" \
+        icon.color=$NORD8 \
+        label.color=$NORD4 \
+        background.color=$NORD1 \
+        background.drawing=on \
+        script="$PLUGIN_DIR/memory.sh"
+
+# -- CPU (right) --
+sketchybar --add item cpu right \
+    --set cpu \
+        update_freq=5 \
+        icon="󰻠" \
+        icon.color=$NORD14 \
+        label.color=$NORD4 \
+        background.color=$NORD1 \
+        background.drawing=on \
+        script="$PLUGIN_DIR/cpu.sh"
+
 # -- Front app name (center-left) --
 sketchybar --add item front_app left \
     --set front_app \
