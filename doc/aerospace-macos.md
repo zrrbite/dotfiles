@@ -38,16 +38,17 @@ both places would leave two instances polling the cursor. See
 |---|---|
 | `alt` + `h/j/k/l` | Focus left / down / up / right |
 | `alt-shift` + `h/j/k/l` | Move the focused window in that direction |
+| `alt-tab` | Cycle to the next window in the workspace |
+| `alt-shift-tab` | Cycle to the previous window |
 
-Focus is **directional**, not a cycle: with two windows side by side, `alt-l` and
-`alt-h` move between them. AeroSpace also supports alt-tab style cycling through
-every window in a workspace via `focus dfs-next` / `focus dfs-prev`, but nothing
-is bound to it here. To add it:
+Two ways to change focus. The `hjkl` bindings are **directional** — with two
+windows side by side, `alt-l` and `alt-h` move between them. `alt-tab` instead
+walks every window in the workspace in tree order (`focus dfs-next`), which is
+easier when you have several windows and do not want to think about where they
+sit.
 
-```toml
-alt-tab = 'focus dfs-next'
-alt-shift-tab = 'focus dfs-prev'
-```
+Neither wraps into other workspaces; use `alt-1`–`alt-9` or `alt-s`/`alt-a` for
+that.
 
 ### Workspaces
 

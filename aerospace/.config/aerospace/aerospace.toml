@@ -54,6 +54,11 @@ alt-j = 'focus down'
 alt-k = 'focus up'
 alt-l = 'focus right'
 
+# Cycle windows within the workspace, alt-tab style. The hjkl bindings above
+# are directional; these walk every window in tree order instead.
+alt-tab = 'focus dfs-next'
+alt-shift-tab = 'focus dfs-prev'
+
 # Move focused window
 alt-shift-h = 'move left'
 alt-shift-j = 'move down'
