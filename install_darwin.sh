@@ -232,6 +232,7 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-format
     ~/.bashrc
     ~/.bash_profile
+    ~/.zshrc
     ~/.config/aerospace/aerospace.toml
     ~/.config/sketchybar
 )
@@ -292,7 +293,7 @@ run ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 # stow's conflict reports go to stderr and are worth seeing, so they are not
 # silenced -- a hidden failure here means a config silently missing from $HOME.
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise zsh claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     run stow -t "$HOME" -R "$pkg" || warn "  Failed to stow $pkg (see stow output above)"

@@ -226,6 +226,7 @@ stow */        # everything
 | `rofi`  | App launcher with Nord theme |
 | `sketchybar` | macOS status bar - shares waybar's Nord colour contract |
 | `starship` | Minimal shell prompt with Nerd Font icons |
+| `zsh`   | macOS login shell config - oh-my-zsh + starship, deduplicated PATH |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 | `wlogout` | Logout menu with Nord theme (lock, logout, shutdown, reboot, suspend) |
 

@@ -94,6 +94,15 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **starship**: Shell prompt (fully portable)
 - **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
 
+**macOS shell:**
+- **zsh**: `zsh/.zshrc` → `~/.zshrc`. zsh is the macOS login shell, so this is
+  what actually runs there — the `bash/.bashrc-darwin` file is only read if you
+  explicitly start bash. Keeps oh-my-zsh, swaps its theme for starship (matching
+  Arch and Windows), and initialises zoxide and fzf. Every tool integration is
+  guarded by `command -v`, so it degrades quietly before the packages exist.
+  Deliberately does **not** port `.bashrc-darwin`'s `ls`/`cat`/`find`/`ps`
+  aliases, which override standard commands.
+
 **Platform-specific bash configs:**
 - **bash/.bashrc-arch** - Arch Linux with all tools
 - **bash/.bashrc-wsl** - WSL with CLI tools only
