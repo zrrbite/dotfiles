@@ -168,6 +168,13 @@ done
 # Symlink macOS-specific fastfetch config (Apple logo instead of Arch)
 ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
 
+# Focus follows mouse. Started as a launchd service rather than from AeroSpace's
+# after-startup-command so it survives restarting AeroSpace. This has to run
+# after stowing, or AutoRaise starts before ~/.config/AutoRaise/config exists
+# and comes up with defaults instead.
+info "Starting AutoRaise service (focus follows mouse)..."
+brew services start dimentium/autoraise/autoraise 2>/dev/null || warn "  Failed to start AutoRaise"
+
 # Clean up macOS desktop to match tiling WM aesthetic
 info "Configuring macOS desktop..."
 

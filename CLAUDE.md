@@ -118,8 +118,11 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **sketchybar**: Nord-themed status bar with workspace indicators (auto-launched by AeroSpace).
   Shares waybar's colour contract — see `doc/status-bar-theming.md`
 - **autoraise**: focus-follows-mouse. AeroSpace has no setting for this, so AutoRaise
-  (`brew tap dimentium/autoraise`) supplies it, started from AeroSpace's
-  `after-startup-command` and configured in `~/.config/AutoRaise/config`.
+  (`brew tap dimentium/autoraise`) supplies it, configured in
+  `~/.config/AutoRaise/config` and run as a launchd service
+  (`brew services start dimentium/autoraise/autoraise`) so it survives an
+  AeroSpace restart. Do not also start it from `after-startup-command` — that
+  would leave two instances running.
   Note that `on-focus-changed = ['move-mouse window-lazy-center']` in
   `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
   it keeps the cursor on the keyboard-focused window so AutoRaise does not

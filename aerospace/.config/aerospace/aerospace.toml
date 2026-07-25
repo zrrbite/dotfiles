@@ -6,12 +6,14 @@ start-at-login = true
 after-login-command = []
 after-startup-command = [
     'exec-and-forget sketchybar',
-    'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=8.0',
-    # Focus follows mouse. AeroSpace has no such setting, so AutoRaise supplies
-    # it -- this is the Hyprland behaviour, not something AeroSpace can do.
-    # Reads ~/.config/AutoRaise/config (stowed from the autoraise package).
-    'exec-and-forget /opt/homebrew/opt/autoraise/bin/AutoRaise'
+    'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=8.0'
 ]
+
+# Focus-follows-mouse comes from AutoRaise, which AeroSpace cannot do itself.
+# It runs as a launchd service rather than from after-startup-command, so it
+# survives restarting AeroSpace and starts at login independently:
+#   brew services start dimentium/autoraise/autoraise
+# Do not also launch it above -- that would leave two instances running.
 
 exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'

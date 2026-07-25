@@ -71,8 +71,17 @@ Installs via Homebrew:
 
 **Focus follows mouse.** AeroSpace has no setting for this, so AutoRaise
 supplies the behaviour Hyprland gives us on Linux. It is configured in
-`autoraise/.config/AutoRaise/config` and started by AeroSpace's
-`after-startup-command`. The options that matter:
+`autoraise/.config/AutoRaise/config` and runs as a launchd service, so it starts
+at login and survives restarting AeroSpace:
+
+```bash
+brew services start dimentium/autoraise/autoraise   # start now + at login
+brew services stop dimentium/autoraise/autoraise    # stop
+brew services list | grep autoraise                 # check status
+```
+
+Do not also launch it from AeroSpace's `after-startup-command` — that leaves two
+instances running. The options that matter:
 
 | Option | Value | Why |
 |---|---|---|
