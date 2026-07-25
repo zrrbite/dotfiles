@@ -36,9 +36,19 @@ notation) so the blur behind it reads, with a nord3 `#4c566a` border.
 
 ### Sizing
 
-JetBrainsMono Nerd Font at 13pt for labels and 15pt bold for icons, in 26pt
+JetBrainsMono Nerd Font Bold at 13pt for labels and 15pt for icons, in 26pt
 pills. Waybar sets `font-size: 13px`, so labels match; icons run two points
 larger because Nerd Font glyphs read small next to digits at the same size.
+
+Everything is Bold. Regular labels look noticeably thin here — dark text on a
+saturated fill optically thins its strokes, the reverse of the light-on-dark
+case waybar mostly deals with.
+
+Only `Regular` and `Bold` are styles of the base family. JetBrains ships the
+other weights as *separate families*, so Medium is
+`JetBrainsMono Nerd Font Medium:Regular:13.0`, not
+`JetBrainsMono Nerd Font:Medium:13.0` — the latter resolves to a fallback face
+silently, with no error and no obvious visual tell.
 
 The bar stays 32pt tall. `aerospace.toml` sets `gaps.outer.top = 44`, which is
 the 32pt bar plus the same 12pt margin used on the other three sides — so
