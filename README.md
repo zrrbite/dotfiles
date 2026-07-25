@@ -64,6 +64,32 @@ Installs via Homebrew:
 - All CLI tools from WSL setup
 - Alacritty terminal with Nord theme
 - Platform-specific tools (lldb instead of gdb)
+- AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland
+- sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)
+- JankyBorders for the active-window glow
+- AutoRaise for focus-follows-mouse
+
+**Focus follows mouse.** AeroSpace has no setting for this, so AutoRaise
+supplies the behaviour Hyprland gives us on Linux. It is configured in
+`autoraise/.config/AutoRaise/config` and started by AeroSpace's
+`after-startup-command`. The options that matter:
+
+| Option | Value | Why |
+|---|---|---|
+| `pollMillis` | `50` | Cursor poll interval, in ms. 20 is the minimum; lower costs CPU. |
+| `delay` | `1` | Raise delay in units of `pollMillis`. Mostly affects floating windows, since tiled ones do not overlap. |
+| `requireMouseStop` | `false` | Focus while the cursor is still moving, like Hyprland. The default `true` feels like focus lagging behind. |
+| `altTaskSwitcher` | `true` | AeroSpace moves focus with its own keybinds rather than command-tab. |
+| `disableKey` | `control` | Hold control to suspend focus-follows-mouse. |
+
+`warpX` / `warpY` are deliberately unset: AeroSpace already warps the cursor to
+the focused window via `on-focus-changed`, and a second warp would fight it.
+That warp is also what makes AutoRaise usable — without it, focusing a window
+by keyboard would leave the cursor over the *previous* window and AutoRaise
+would immediately take focus back.
+
+AutoRaise needs Accessibility permission: **System Settings → Privacy &
+Security → Accessibility**.
 
 ## Updating Your Config
 
@@ -152,6 +178,9 @@ stow */        # everything
 
 | Package | Description |
 |---------|-------------|
+| `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
+| `alacritty` | GPU-accelerated terminal with Nord theme (primary on macOS) |
+| `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
 | `btop`  | System monitor (Nord theme) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
@@ -166,6 +195,7 @@ stow */        # everything
 | `mimeapps` | Default applications (Chrome, imv, mpv, zathura) |
 | `nvim`  | Neovim IDE setup - LSP, treesitter, telescope (C++ focused) |
 | `rofi`  | App launcher with Nord theme |
+| `sketchybar` | macOS status bar - shares waybar's Nord colour contract |
 | `starship` | Minimal shell prompt with Nerd Font icons |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 | `wlogout` | Logout menu with Nord theme (lock, logout, shutdown, reboot, suspend) |

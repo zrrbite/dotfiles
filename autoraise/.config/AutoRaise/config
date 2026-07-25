@@ -1,0 +1,25 @@
+# AutoRaise -- focus follows mouse for macOS.
+# AeroSpace has no focus-follows-mouse setting of its own, so this supplies the
+# behaviour that Hyprland gives us on Linux.
+# Docs: https://github.com/sbmpost/AutoRaise
+
+# How often the cursor position is polled, in milliseconds. 50 is the default;
+# 20 is the minimum. Lower means more responsive and more CPU.
+pollMillis=50
+
+# Raise delay in units of pollMillis, so 1 = 50ms. Windows rarely overlap in a
+# tiling layout, so this mostly affects floating windows.
+delay=1
+
+# Focus while the cursor is still moving, the way Hyprland does. The default
+# (true) waits for the mouse to stop, which feels like focus lagging behind.
+requireMouseStop=false
+
+# AeroSpace moves focus with its own keybinds rather than command-tab.
+altTaskSwitcher=true
+
+# Hold control to suspend focus-follows-mouse temporarily.
+disableKey=control
+
+# warpX / warpY are deliberately unset. AeroSpace already warps the cursor to
+# the focused window via on-focus-changed; a second warp would fight it.

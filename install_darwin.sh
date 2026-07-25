@@ -37,6 +37,7 @@ fi
 info "Adding Homebrew taps..."
 brew tap nikitabobko/tap
 brew tap FelixKratz/formulae
+brew tap dimentium/autoraise
 
 # Install packages via Homebrew
 BREW_PACKAGES=(
@@ -69,6 +70,9 @@ BREW_PACKAGES=(
     # Status bar + window borders (pairs with AeroSpace)
     sketchybar
     borders
+
+    # Focus follows mouse -- AeroSpace has no setting for it
+    autoraise
 )
 
 info "Installing Homebrew packages..."
@@ -155,7 +159,7 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow packages (use -t ~ in case dotfiles dir isn't ~/dotfiles)
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar fastfetch claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise fastfetch claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -t "$HOME" -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
@@ -202,6 +206,10 @@ echo "  - starship prompt, alacritty terminal"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
+echo "  - AutoRaise (focus follows mouse, like Hyprland)"
+echo ""
+echo "NOTE: AutoRaise needs Accessibility permission before it will work:"
+echo "  System Settings > Privacy & Security > Accessibility > enable AutoRaise"
 echo ""
 echo "Desktop:"
 echo "  - Dock auto-hidden (sketchybar replaces it)"

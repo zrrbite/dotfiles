@@ -115,7 +115,15 @@ Each top-level directory is a stow package that mirrors the home directory struc
 
 **macOS:**
 - **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
-- **sketchybar**: Nord-themed status bar with workspace indicators (auto-launched by AeroSpace)
+- **sketchybar**: Nord-themed status bar with workspace indicators (auto-launched by AeroSpace).
+  Shares waybar's colour contract — see `doc/status-bar-theming.md`
+- **autoraise**: focus-follows-mouse. AeroSpace has no setting for this, so AutoRaise
+  (`brew tap dimentium/autoraise`) supplies it, started from AeroSpace's
+  `after-startup-command` and configured in `~/.config/AutoRaise/config`.
+  Note that `on-focus-changed = ['move-mouse window-lazy-center']` in
+  `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
+  it keeps the cursor on the keyboard-focused window so AutoRaise does not
+  immediately steal focus back. Needs Accessibility permission.
 - **alacritty**: Cross-platform terminal with Nord theme
 
 **Windows 10/11:**
