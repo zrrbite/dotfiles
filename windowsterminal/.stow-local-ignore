@@ -1,0 +1,4 @@
+# Not a stow package: this directory holds repo content, not dotfiles meant
+# to be symlinked into $HOME. Ignoring everything makes `stow */` skip it
+# instead of littering the home directory.
+.*

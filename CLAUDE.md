@@ -52,6 +52,26 @@ Requires Developer Mode (Windows 10) or Windows 11. Handles Windows-specific pat
 2. Move config files into it
 3. Run `stow foo` from dotfiles root
 
+### Non-Package Directories
+
+`stow */` treats **every** top-level directory as a package, so directories
+holding repo content rather than dotfiles (`doc/`, `img/`, `screenshots/`,
+`scripts/`, `templates/`, `windowsterminal/`) each carry a `.stow-local-ignore`
+containing `.*`, which makes stow skip them. Without it, `stow */` symlinks
+their contents straight into `$HOME` — `~/Makefile`, `~/settings.json`,
+`~/terminal.png` and friends.
+
+Add one to any new directory that is not meant to be stowed. A package can also
+ignore individual files: `typescript/.stow-local-ignore` excludes
+`tsconfig.json` (bootstrap scripts read it from the repo) while still stowing
+the dotfiles beside it.
+
+Verify with a dry run before committing — this only simulates:
+```bash
+stow -n -v -t ~ */ 2>&1 | grep '^LINK:' | grep -v 'LINK: \.'
+```
+Any output means something would land as a bare `~/file`.
+
 ## Architecture
 
 ### Platform Structure

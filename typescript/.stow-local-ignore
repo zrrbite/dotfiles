@@ -1,0 +1,4 @@
+# The dotfiles here (.prettierrc, .eslintrc.json, .prettierignore) are meant to
+# be stowed into $HOME, but tsconfig.json is not -- a bare ~/tsconfig.json does
+# nothing. bootstrap-ts-project.sh copies it straight out of the repo instead.
+tsconfig\.json
