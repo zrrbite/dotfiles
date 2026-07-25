@@ -118,8 +118,16 @@ in accordion. Change the layout, not just the direction.
 `layout` exits **1 when the change is a no-op** — that is, when you are already
 in the requested layout — and 0 when it actually changed something. An exit of 1
 with no error message means there was nothing to do, not that the command
-failed. The same applies to `fullscreen`. Read `$?` directly; piping the command
-into anything gives you the pipeline's exit code instead.
+failed.
+
+`fullscreen` does **not** behave the same way, despite the similarity: a no-op
+`aerospace fullscreen off` exits **0** and prints "Already not fullscreen". Only
+with `--fail-if-noop` does it exit 1. So use the flag whenever you intend to read
+the exit code.
+
+Either way, read `$?` directly. Piping the command into anything gives you the
+pipeline's exit code instead of AeroSpace's — an easy way to convince yourself a
+command succeeded when it did nothing.
 
 `alt-f` fullscreen produces a similar "the other window vanished" impression.
 `aerospace fullscreen off --fail-if-noop` tells you which it was: exit 0 means
@@ -218,4 +226,13 @@ file:
 
 ```bash
 python3 -c "import tomllib; print(tomllib.load(open('$HOME/.config/aerospace/aerospace.toml','rb')))"
+```
+
+`tomllib` needs Python 3.11+. macOS itself ships 3.9.6 and nothing in
+`install_darwin.sh` installs a newer one, so on a machine set up purely from
+this repo that command fails with `ModuleNotFoundError`. Either `brew install
+python` or just read the file — it is short, and `grep` answers most questions:
+
+```bash
+grep -n 'alt-tab\|after-startup\|outer.top' ~/.config/aerospace/aerospace.toml
 ```

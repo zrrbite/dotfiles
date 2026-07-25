@@ -39,6 +39,18 @@ brew tap nikitabobko/tap
 brew tap FelixKratz/formulae
 brew tap dimentium/autoraise
 
+# Homebrew 6 refuses to load formulae from an untrusted tap, so tapping alone is
+# not enough -- `brew install sketchybar` fails with "Refusing to load formula
+# ... from untrusted tap". Trusting is a separate, explicit step, and a
+# non-interactive run has no way to answer the prompt. Older Homebrew has no
+# `brew trust` command, hence the guard.
+if brew trust --help >/dev/null 2>&1; then
+    info "Trusting third-party taps..."
+    for tap in nikitabobko/tap FelixKratz/formulae dimentium/autoraise; do
+        brew trust "$tap" || warn "  Failed to trust $tap"
+    done
+fi
+
 # Install packages via Homebrew
 BREW_PACKAGES=(
     # Core shell
@@ -65,7 +77,9 @@ BREW_PACKAGES=(
     neovim
     git
     clang-format
-    lldb
+    # lldb ships inside the llvm formula; there is no `lldb` formula, and naming
+    # one makes the whole `brew install` below fail under `set -e`.
+    llvm
 
     # Status bar + window borders (pairs with AeroSpace)
     sketchybar
@@ -126,9 +140,27 @@ CONFIGS_TO_BACKUP=(
     ~/.config/sketchybar
 )
 
+# `[ ! -L ]` only tests the final path component, so a path that reaches a real
+# file *through* a stow symlink looks like an ordinary file and would be backed
+# up and deleted -- destroying the tracked original in the repo. That is exactly
+# what ~/.config/aerospace/aerospace.toml is once ~/.config/aerospace has been
+# folded into a symlink. Resolve the path and skip anything living in the repo.
+is_in_repo() {
+    local resolved
+    resolved="$(realpath "$1" 2>/dev/null)" || return 1
+    case "$resolved" in
+        "$(realpath "$DOTFILES_DIR")"/*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+needs_backup() {
+    [ -e "$1" ] && [ ! -L "$1" ] && ! is_in_repo "$1"
+}
+
 backup_needed=false
 for config in "${CONFIGS_TO_BACKUP[@]}"; do
-    if [ -e "$config" ] && [ ! -L "$config" ]; then
+    if needs_backup "$config"; then
         backup_needed=true
         break
     fi
@@ -138,7 +170,7 @@ if [ "$backup_needed" = true ]; then
     info "Backing up existing configs to $BACKUP_DIR"
     mkdir -p "$BACKUP_DIR"
     for config in "${CONFIGS_TO_BACKUP[@]}"; do
-        if [ -e "$config" ] && [ ! -L "$config" ]; then
+        if needs_backup "$config"; then
             cp -r "$config" "$BACKUP_DIR/" 2>/dev/null || true
             rm -rf "$config"
         fi
@@ -159,13 +191,24 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 
 # Stow packages (use -t ~ in case dotfiles dir isn't ~/dotfiles)
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise fastfetch claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     stow -t "$HOME" -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
 done
 
+# fastfetch is stowed separately, ignoring config.jsonc, because the macOS
+# config is linked over that name below. Stowing it normally makes stow claim
+# ~/.config/fastfetch/config.jsonc, and every later run then aborts the whole
+# package with "existing target is not owned by stow" -- leaving the other
+# fastfetch configs unstowed.
+# Note: stow anchors --ignore patterns at both ends itself, so writing
+# '^config\.jsonc$' here silently matches nothing and the conflict returns.
+info "  Stowing fastfetch (config.jsonc handled separately)..."
+stow -t "$HOME" -R --ignore='config\.jsonc' fastfetch 2>/dev/null || warn "  Failed to stow fastfetch"
+
 # Symlink macOS-specific fastfetch config (Apple logo instead of Arch)
+mkdir -p "$HOME/.config/fastfetch"
 ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
 
 # Focus follows mouse. Started as a launchd service rather than from AeroSpace's
@@ -208,7 +251,7 @@ echo ""
 echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
-echo "  - neovim, git, clang-format, lldb"
+echo "  - neovim, git, clang-format, llvm (provides lldb)"
 echo "  - starship prompt, alacritty terminal"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"

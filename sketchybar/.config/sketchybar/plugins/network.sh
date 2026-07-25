@@ -19,13 +19,16 @@ if [ -n "$SSID" ]; then
     LABEL="$SSID"
     COLOR=$NORD9
 else
-    # Fall back to a wired interface (skipping the Wi-Fi device itself)
+    # Fall back to a wired interface. Enumerate them rather than assuming
+    # en0-en2: on a laptop with a dock, en1/en2 are Thunderbolt and the real
+    # Ethernet adapters come up as en3/en4, so a hardcoded range reports
+    # "Disconnected" while the machine is online over the dock.
     IP=""
-    for dev in en0 en1 en2; do
+    while read -r dev; do
         [ "$dev" = "$WIFI_DEV" ] && continue
         IP=$(ipconfig getifaddr "$dev" 2>/dev/null)
         [ -n "$IP" ] && break
-    done
+    done < <(networksetup -listallhardwareports | awk '/^Device: /{print $2}')
 
     if [ -n "$IP" ]; then
         ICON="󰈀"

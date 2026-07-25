@@ -98,6 +98,13 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **bash/.bashrc-windows** - Windows Git Bash with Scoop tools
 - Install scripts create symlinks to the appropriate variant
 
+**Cross-platform with per-OS configs:**
+- **fastfetch**: System info. Stowed on both Arch and macOS. The package ships
+  `config.jsonc` (Arch logo), `config-darwin.jsonc` (Apple logo) and
+  `config-windows.jsonc`; `install_darwin.sh` links the darwin one over
+  `~/.config/fastfetch/config.jsonc` and stows the package with
+  `--ignore='config\.jsonc'` so stow does not fight that symlink.
+
 **Linux-only (Arch + optionally WSL):**
 - **btop**: System monitor
 - **gdb**: Debugger config (macOS uses lldb instead)
@@ -110,7 +117,6 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **mako**: Notifications
 - **wlogout**: Logout menu
 - **cava**: Audio visualizer
-- **fastfetch**: System info
 - **gtk/mimeapps/discord**: Desktop environment configs (uses discord_arch_electron)
 
 **macOS:**

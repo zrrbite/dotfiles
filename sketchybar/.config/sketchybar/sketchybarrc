@@ -131,9 +131,12 @@ sketchybar --add item memory right \
         script="$PLUGIN_DIR/memory.sh"
 
 # -- CPU (right) --
+# update_freq is 10 rather than 5: cpu.sh samples `top` twice a second apart,
+# which costs ~1.7s wall and ~0.65s CPU per run. At 5s that is a third of wall
+# time and a steady ~13% of one core spent measuring CPU usage.
 sketchybar --add item cpu right \
     --set cpu \
-        update_freq=5 \
+        update_freq=10 \
         icon="󰻠" \
         background.color=$NORD14 \
         script="$PLUGIN_DIR/cpu.sh"
