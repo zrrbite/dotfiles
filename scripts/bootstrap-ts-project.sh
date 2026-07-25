@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Resolve the dotfiles root from this script's own location. Assuming
+# ~/dotfiles breaks whenever the repo is cloned somewhere else.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -56,10 +61,10 @@ mkdir -p tests
 echo -e "${GREEN}[INFO] Created directory structure${NC}"
 
 # Copy TypeScript configs from dotfiles
-cp ~/dotfiles/typescript/tsconfig.json .
-cp ~/dotfiles/typescript/.eslintrc.json .
-cp ~/dotfiles/typescript/.prettierrc .
-cp ~/dotfiles/typescript/.prettierignore .
+cp "$DOTFILES_DIR/typescript/tsconfig.json" .
+cp "$DOTFILES_DIR/typescript/.eslintrc.json" .
+cp "$DOTFILES_DIR/typescript/.prettierrc" .
+cp "$DOTFILES_DIR/typescript/.prettierignore" .
 
 # Create .gitignore
 cat > .gitignore << 'EOF'
@@ -676,8 +681,8 @@ echo -e "${GREEN}[INFO]   ✓ Git repository initialized${NC}"
 
 # Set up git hooks (copy from dotfiles)
 mkdir -p .git/hooks
-cp ~/dotfiles/git/.git-hooks/pre-commit-ts .git/hooks/pre-commit
-cp ~/dotfiles/git/.git-hooks/pre-push-ts .git/hooks/pre-push
+cp "$DOTFILES_DIR/git/.git-hooks/pre-commit-ts" .git/hooks/pre-commit
+cp "$DOTFILES_DIR/git/.git-hooks/pre-push-ts" .git/hooks/pre-push
 chmod +x .git/hooks/pre-commit .git/hooks/pre-push
 echo -e "${GREEN}[INFO]   ✓ Git hooks installed${NC}"
 
