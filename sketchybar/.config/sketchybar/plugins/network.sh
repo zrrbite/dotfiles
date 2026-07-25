@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Nord
+NORD0=0xff2e3440
+NORD9=0xff81a1c1
+NORD11=0xffbf616a
+
 # The `airport` CLI was gutted in macOS 14.4 (prints only a deprecation
 # warning, no data), so SSID comes from networksetup instead.
 WIFI_DEV=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
@@ -10,7 +15,9 @@ if [ -n "$WIFI_DEV" ]; then
 fi
 
 if [ -n "$SSID" ]; then
-    sketchybar --set "$NAME" icon="󰖩" label="$SSID"
+    ICON="󰖩"
+    LABEL="$SSID"
+    COLOR=$NORD9
 else
     # Fall back to a wired interface (skipping the Wi-Fi device itself)
     IP=""
@@ -21,8 +28,20 @@ else
     done
 
     if [ -n "$IP" ]; then
-        sketchybar --set "$NAME" icon="󰈀" label="$IP"
+        ICON="󰈀"
+        LABEL="$IP"
+        COLOR=$NORD9
     else
-        sketchybar --set "$NAME" icon="󰖪" label="Disconnected"
+        # Matches waybar's `#network.disconnected`
+        ICON="󰖪"
+        LABEL="Disconnected"
+        COLOR=$NORD11
     fi
 fi
+
+sketchybar --set "$NAME" \
+    icon="$ICON" \
+    label="$LABEL" \
+    icon.color=$NORD0 \
+    label.color=$NORD0 \
+    background.color="$COLOR"

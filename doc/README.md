@@ -50,4 +50,11 @@ make clean
 
 ## Other Documentation
 
-(Future documentation goes here)
+- **[status-bar-theming.md](status-bar-theming.md)** — the Nord colour contract
+  shared by waybar and sketchybar, sketchybar's constraints versus waybar CSS,
+  and how to add or restyle a module.
+- **[tiling-window-managers.md](tiling-window-managers.md)** — cross-platform
+  comparison of tiling window managers and what this repo ships.
+- **[nvim-tutorial.md](nvim-tutorial.md)** — Neovim setup walkthrough.
+- **[TYPESCRIPT_WORKFLOW.md](TYPESCRIPT_WORKFLOW.md)** — TypeScript project
+  workflow and quality gates.

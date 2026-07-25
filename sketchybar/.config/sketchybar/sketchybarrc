@@ -6,12 +6,18 @@ NORD1=0xff3b4252
 NORD2=0xff434c5e
 NORD3=0xff4c566a
 NORD4=0xffd8dee9
+NORD6=0xffeceff4
 NORD7=0xff8fbcbb
 NORD8=0xff88c0d0
 NORD9=0xff81a1c1
+NORD10=0xff5e81ac
 NORD11=0xffbf616a
 NORD13=0xffebcb8b
 NORD14=0xffa3be8c
+NORD15=0xffb48ead
+
+# Bar background at 90% opacity, matching waybar's rgba(46, 52, 64, 0.9)
+BAR_BG=0xe62e3440
 
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
@@ -20,9 +26,9 @@ sketchybar --bar \
     position=top \
     height=32 \
     blur_radius=30 \
-    color=$NORD0 \
+    color=$BAR_BG \
     border_color=$NORD3 \
-    border_width=0 \
+    border_width=2 \
     shadow=off \
     padding_left=12 \
     padding_right=12 \
@@ -32,15 +38,23 @@ sketchybar --bar \
     topmost=window
 
 # Defaults
+# Interior padding mirrors waybar's `padding: 0 10px` on each module:
+# 8px outside the icon, 4px between icon and label, 8px after the label.
+# Item padding of 2 either side yields waybar's 4px inter-module spacing.
 sketchybar --default \
-    icon.font="JetBrainsMono Nerd Font:Bold:14.0" \
-    icon.color=$NORD4 \
-    label.font="JetBrainsMono Nerd Font:Regular:12.0" \
-    label.color=$NORD4 \
-    padding_left=4 \
-    padding_right=4 \
-    background.corner_radius=5 \
-    background.height=24
+    icon.font="JetBrainsMono Nerd Font:Bold:15.0" \
+    icon.color=$NORD0 \
+    icon.padding_left=8 \
+    icon.padding_right=4 \
+    label.font="JetBrainsMono Nerd Font:Regular:13.0" \
+    label.color=$NORD0 \
+    label.padding_left=0 \
+    label.padding_right=8 \
+    padding_left=2 \
+    padding_right=2 \
+    background.corner_radius=4 \
+    background.height=26 \
+    background.drawing=on
 
 # -- AeroSpace workspaces (left) --
 sketchybar --add event aerospace_workspace_change
@@ -49,50 +63,63 @@ for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
         --subscribe space.$sid aerospace_workspace_change \
         --set space.$sid \
-            background.color=$NORD1 \
-            background.corner_radius=5 \
-            background.height=24 \
+            icon.drawing=off \
+            background.color=$NORD10 \
+            background.border_color=$NORD8 \
+            background.border_width=0 \
             background.drawing=off \
             label="$sid" \
             label.color=$NORD4 \
-            label.font="JetBrainsMono Nerd Font:Bold:12.0" \
+            label.font="JetBrainsMono Nerd Font:Bold:13.0" \
             label.padding_left=8 \
             label.padding_right=8 \
             click_script="aerospace workspace $sid" \
             script="$PLUGIN_DIR/aerospace.sh $sid"
 done
 
+# -- Front app name (center-left) --
+# Unfilled bold label, like waybar's #window
+sketchybar --add item front_app left \
+    --set front_app \
+        icon.drawing=off \
+        background.drawing=off \
+        label.color=$NORD6 \
+        label.font="JetBrainsMono Nerd Font:Bold:13.0" \
+        label.padding_left=8 \
+        label.padding_right=8 \
+        script="$PLUGIN_DIR/front_app.sh" \
+    --subscribe front_app front_app_switched
+
 # -- Clock (right) --
 sketchybar --add item clock right \
     --set clock \
         update_freq=30 \
         icon="" \
-        icon.color=$NORD8 \
-        label.color=$NORD4 \
+        background.color=$NORD10 \
         script="$PLUGIN_DIR/clock.sh"
 
 # -- Battery (right) --
+# Fill colour is set by the plugin: green / yellow charging / red low
 sketchybar --add item battery right \
     --set battery \
         update_freq=120 \
-        icon.color=$NORD14 \
-        label.color=$NORD4 \
+        background.color=$NORD14 \
         script="$PLUGIN_DIR/battery.sh"
 
 # -- Volume (right) --
+# Fill colour is set by the plugin: yellow / grey when muted
 sketchybar --add item volume right \
     --set volume \
         update_freq=5 \
-        icon.color=$NORD13 \
-        label.color=$NORD4 \
+        background.color=$NORD13 \
         script="$PLUGIN_DIR/volume.sh"
 
 # -- Network (right) --
+# Fill colour is set by the plugin: blue / red when disconnected
 sketchybar --add item network right \
     --set network \
         update_freq=10 \
-        icon.color=$NORD9 \
-        label.color=$NORD4 \
+        background.color=$NORD9 \
         script="$PLUGIN_DIR/network.sh"
 
 # -- Memory (right) --
@@ -100,10 +127,7 @@ sketchybar --add item memory right \
     --set memory \
         update_freq=10 \
         icon="󰍛" \
-        icon.color=$NORD8 \
-        label.color=$NORD4 \
-        background.color=$NORD1 \
-        background.drawing=on \
+        background.color=$NORD15 \
         script="$PLUGIN_DIR/memory.sh"
 
 # -- CPU (right) --
@@ -111,20 +135,8 @@ sketchybar --add item cpu right \
     --set cpu \
         update_freq=5 \
         icon="󰻠" \
-        icon.color=$NORD14 \
-        label.color=$NORD4 \
-        background.color=$NORD1 \
-        background.drawing=on \
+        background.color=$NORD14 \
         script="$PLUGIN_DIR/cpu.sh"
-
-# -- Front app name (center-left) --
-sketchybar --add item front_app left \
-    --set front_app \
-        icon.drawing=off \
-        label.color=$NORD8 \
-        label.font="JetBrainsMono Nerd Font:Bold:12.0" \
-        script="$PLUGIN_DIR/front_app.sh" \
-    --subscribe front_app front_app_switched
 
 # Force initial update
 sketchybar --update
