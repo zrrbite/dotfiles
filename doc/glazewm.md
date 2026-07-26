@@ -4,8 +4,8 @@ The tiling setup on Windows. Config lives in `glazewm/.glzr/glazewm/config.yaml`
 
 Keybinds deliberately mirror [AeroSpace on macOS](aerospace-macos.md) — same
 modifier, same `hjkl`, same chords for close/fullscreen/resize — so muscle
-memory carries between the two. The Linux setup
-([hyprland.md](hyprland.md)) does **not** match; it uses `SUPER` and arrow keys.
+memory carries between the two. [Hyprland on Linux](hyprland.md) shares the
+`hjkl` focus and move bindings but uses `SUPER` as its modifier.
 
 ## What actually runs
 

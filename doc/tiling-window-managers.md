@@ -46,7 +46,8 @@ Spotlight-style launcher and optionally WinLaunch for a Launchpad-style grid.
 | Phoenix | JS | JavaScript config | Scriptable window manager, not strictly tiling. |
 
 **This repo uses AeroSpace** — see `aerospace/`. Installed via `./install_darwin.sh`.
-Keybinds match GlazeWM (Windows) and Hyprland (Linux) for cross-platform muscle memory.
+Keybinds match GlazeWM (Windows) exactly, and share the `hjkl` scheme with
+Hyprland (Linux), which uses `SUPER` as its modifier instead of `alt`.
 
 ## Cross-platform convergence
 
@@ -62,9 +63,21 @@ across platforms:
 | App grid | (n/a) | WinLaunch | Launchpad (built-in) |
 | Terminal | Foot | Windows Terminal / Alacritty | Alacritty |
 
-Hotkey conventions across platforms in this repo:
-- `Alt+HJKL` — focus direction
-- `Alt+Shift+HJKL` — move window
-- `Alt+1..9` — switch workspace
-- `Alt+Shift+1..9` — move window to workspace
-- `Ctrl+Space` — launcher (Windows); `Alt+R` on Hyprland
+Hotkey conventions in this repo. The modifier is `alt` on macOS and Windows, and
+`SUPER` on Linux — Hyprland cannot use `alt` because `kb_options =
+grp:alt_shift_toggle` puts the dk/us layout switcher on Alt+Shift. Read `MOD` as
+whichever applies:
+
+| Intent | Binding |
+|---|---|
+| Focus direction | `MOD`+`HJKL` (Hyprland and GlazeWM also accept arrows) |
+| Move window | `MOD+Shift`+`HJKL` |
+| Switch workspace | `MOD`+`1..9` |
+| Move window to workspace | `MOD+Shift`+`1..9` |
+| Launcher | `SUPER+R` rofi (Linux) · `Ctrl+Space` PowerToys Run (Windows) · Spotlight (macOS) |
+| Lock | `SUPER+Ctrl+L` (Linux) · `Win+L` (Windows) · `⌃⌘Q` (macOS) |
+
+Full per-platform detail, including where the three genuinely differ, is in
+[hyprland.md](hyprland.md), [glazewm.md](glazewm.md) and
+[aerospace-macos.md](aerospace-macos.md). A side-by-side table of all three is
+in [zrrbite/cheatsheets](https://github.com/zrrbite/cheatsheets).

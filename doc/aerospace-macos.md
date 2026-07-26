@@ -3,8 +3,9 @@
 How the tiling setup works on macOS, and the things that will confuse you at
 least once. Keybinds deliberately mirror [GlazeWM on Windows](glazewm.md) — same
 modifier, same `hjkl`, same chords — so muscle memory carries between the two.
-The Linux setup ([hyprland.md](hyprland.md)) does **not** match: it uses `SUPER`
-and arrow keys, because `alt-shift` is taken by its keyboard-layout switcher.
+[Hyprland on Linux](hyprland.md) shares the `hjkl` half but uses `SUPER` as its
+modifier, because `alt-shift` there is taken by the dk/us keyboard-layout
+switcher.
 
 Config lives in `aerospace/.config/aerospace/aerospace.toml`.
 
