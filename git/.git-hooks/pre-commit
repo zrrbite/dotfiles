@@ -41,11 +41,45 @@ if [ -z "$STAGED_FILES" ]; then
     exit 0
 fi
 
-echo "Checking C++ code formatting..."
+# Pin the formatter rather than trusting whatever PATH resolves to.
+#
+# Two clang-formats are commonly installed side by side here: the llvm
+# formula (/opt/homebrew/opt/llvm/bin/clang-format, currently 21) and the
+# clang-format formula (/opt/homebrew/bin/clang-format, currently 15). They
+# agree on almost everything -- but not everything: LLVM 16+ puts a lambda's
+# opening brace on its own line where 15 keeps it on the same line. Whichever
+# comes first on PATH wins, so an unpinned hook silently reformats files back
+# and forth depending on which shell ran it, and blames the author.
+#
+# Override per machine with:  git config --global clangFormat.binary <path>
+CF="$(git config --get clangFormat.binary)"
+if [ -z "$CF" ]; then
+    for candidate in /opt/homebrew/opt/llvm/bin/clang-format \
+                     /usr/local/opt/llvm/bin/clang-format \
+                     "$(command -v clang-format 2>/dev/null)"; do
+        if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+            CF="$candidate"
+            break
+        fi
+    done
+fi
+
+if [ -z "$CF" ]; then
+    echo -e "${RED}Error: no clang-format found. Install one, or set:${NC}"
+    echo -e "${RED}       git config --global clangFormat.binary <path>${NC}"
+    exit 1
+fi
+
+CF_VERSION="$("$CF" --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
+
+# Name the version in the output. When two machines format the same file
+# differently, this line is what makes the cause obvious rather than
+# mysterious.
+echo "Checking C++ code formatting (clang-format $CF_VERSION)..."
 
 # Run git-clang-format to check if staged changes are formatted
 # --diff mode shows what would change, returns non-zero if formatting needed
-OUTPUT=$(git clang-format --staged --diff)
+OUTPUT=$(git clang-format --binary "$CF" --staged --diff)
 
 # Check if there are formatting issues
 if echo "$OUTPUT" | grep -q "no modified files to format" || echo "$OUTPUT" | grep -q "clang-format did not modify any files"; then
