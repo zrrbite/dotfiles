@@ -93,6 +93,8 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **nvim**: Neovim full IDE setup (fully portable)
 - **starship**: Shell prompt (fully portable)
 - **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
+- **tmux**: Terminal multiplexer, `Ctrl+a` prefix and Nord status line. Stowed
+  and installed on Arch, Debian/WSL/Raspbian and macOS; not on Windows.
 
 **macOS shell:**
 - **zsh**: `zsh/.zshrc` → `~/.zshrc`. zsh is the macOS login shell, so this is
@@ -119,8 +121,11 @@ Each top-level directory is a stow package that mirrors the home directory struc
   `--ignore='config\.jsonc'` so stow does not fight that symlink.
 
 **Linux-only (Arch + optionally WSL):**
-- **btop**: System monitor
 - **gdb**: Debugger config (macOS uses lldb instead)
+
+btop is installed as a binary by every installer but has no stow package here —
+it runs on its own defaults. There is no `btop/` directory; don't add it to a
+stow list.
 
 **Arch-only (native hardware with GPU):**
 - **hypr**: Hyprland compositor, hyprpaper, hyprlock, wallpapers

@@ -210,7 +210,6 @@ stow */        # everything
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
 | `alacritty` | GPU-accelerated terminal with Nord theme (primary on macOS) |
 | `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
-| `btop`  | System monitor (Nord theme) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |
@@ -226,6 +225,7 @@ stow */        # everything
 | `rofi`  | App launcher with Nord theme |
 | `sketchybar` | macOS status bar - shares waybar's Nord colour contract |
 | `starship` | Minimal shell prompt with Nerd Font icons |
+| `tmux`  | Terminal multiplexer - Nord status line, Ctrl+a prefix, vi keys and copy mode |
 | `zsh`   | macOS login shell config - oh-my-zsh + starship, deduplicated PATH |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 | `wlogout` | Logout menu with Nord theme (lock, logout, shutdown, reboot, suspend) |
@@ -751,7 +751,7 @@ Perfect for quickly previewing images without leaving the terminal. The `fimg` a
 
 ### btop - System Monitor
 
-Beautiful system monitor with Nord theme:
+Beautiful system monitor (runs on btop's own defaults - no config is stowed):
 
 ```bash
 btop                    # Launch interactive monitor
