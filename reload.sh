@@ -31,6 +31,7 @@ waybar &
 
 # Source bashrc (for current terminal)
 echo -e "${GREEN}[5/5]${NC} Sourcing bashrc..."
+# shellcheck source=/dev/null  # ~/.bashrc is a symlink chosen per platform
 source ~/.bashrc
 
 echo -e "${BLUE}✅ Dotfiles reloaded!${NC}"

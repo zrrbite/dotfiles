@@ -20,13 +20,19 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Skip if pushing to remote other than origin (less strict for personal repos)
+# git passes the remote name and URL as $1/$2. Neither is used yet -- they are
+# named so the hook's interface is readable, and so a future "only enforce on
+# origin" rule has them to hand.
+# shellcheck disable=SC2034
 remote="$1"
+# shellcheck disable=SC2034
 url="$2"
 
 # Get the range of commits being pushed
 # Format: <local ref> <local sha> <remote ref> <remote sha>
-while read local_ref local_sha remote_ref remote_sha; do
+# local_ref and remote_ref are part of that stdin format but unused here.
+# shellcheck disable=SC2034
+while read -r local_ref local_sha remote_ref remote_sha; do
     # If remote_sha is all zeros, it's a new branch - check all commits
     if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
         # New branch - check last 10 commits, or the whole history when it
@@ -42,7 +48,7 @@ while read local_ref local_sha remote_ref remote_sha; do
     fi
 
     # Get C++ files modified in this range
-    CHANGED_FILES=$(git diff --name-only --diff-filter=ACM $range | grep -E '\.(cpp|hpp|h|cc|cxx|c)$' | sort -u)
+    CHANGED_FILES=$(git diff --name-only --diff-filter=ACM "$range" | grep -E '\.(cpp|hpp|h|cc|cxx|c)$' | sort -u)
 
     if [ -z "$CHANGED_FILES" ]; then
         # No C++ files changed

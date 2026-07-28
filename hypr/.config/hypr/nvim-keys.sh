@@ -128,7 +128,7 @@ if [ -n "$SELECTED" ]; then
     # Skip separator lines
     if [ "$SELECTED" != "---" ]; then
         # Extract just the keybind (before the •)
-        KEYBIND=$(echo "$SELECTED" | sed 's/ •.*//')
+        KEYBIND="${SELECTED%% •*}"
         echo -n "$KEYBIND" | wl-copy
         notify-send "Keybind Copied" "$KEYBIND" -t 2000
     fi

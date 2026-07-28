@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: shellcheck + stow dry-run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # shellcheck is preinstalled on the ubuntu runner; stow is not.
+      - name: Install stow
+        run: sudo apt-get update && sudo apt-get install -y stow
+
+      - name: Report tool versions
+        run: |
+          shellcheck --version
+          stow --version
+
+      # The same script is runnable locally: ./scripts/lint.sh
+      - name: Run checks
+        run: ./scripts/lint.sh
+
+  # The installers are long and only ever run on a fresh machine, where a
+  # failure is most expensive. Parsing them here will not catch a wrong package
+  # name, but it does catch the syntax errors that a rarely-run script hides.
+  parse-installers:
+    name: parse installers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: bash -n every installer
+        run: |
+          status=0
+          for f in install_*.sh reload.sh scripts/*.sh; do
+            # install_wsl.sh and install_raspbian.sh are symlinks to
+            # install_debian.sh; parsing the target twice is harmless.
+            if bash -n "$f"; then
+              echo "ok    $f"
+            else
+              echo "FAIL  $f"
+              status=1
+            fi
+          done
+          exit $status
+
+  powershell:
+    name: PSScriptAnalyzer
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Error severity only. The Windows scripts use Write-Host throughout,
+      # which is the right call for an installer that exists to narrate what it
+      # is doing -- but PSScriptAnalyzer flags every one of them as a Warning.
+      # Gating on Warning would mean 60+ findings and a permanently red job, so
+      # this catches the serious class and stays actionable.
+      - name: Analyse PowerShell scripts
+        shell: pwsh
+        run: |
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+          $results = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error
+          if ($results) {
+            $results | Format-Table -AutoSize
+            Write-Error "PSScriptAnalyzer found $($results.Count) error(s)"
+            exit 1
+          }
+          Write-Output "PSScriptAnalyzer: clean"

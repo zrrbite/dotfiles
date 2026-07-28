@@ -39,7 +39,7 @@ start_recording() {
 
 stop_recording() {
     if [ -f "$PIDFILE" ]; then
-        kill -INT $(cat "$PIDFILE") 2>/dev/null
+        kill -INT "$(cat "$PIDFILE")" 2>/dev/null
         rm "$PIDFILE"
         notify-send "Recording Stopped" "Saved to ~/Videos/Recordings"
     else
