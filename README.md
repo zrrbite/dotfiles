@@ -135,6 +135,10 @@ Pull the latest changes and reload everything:
 cd ~/dotfiles && ./reload.sh
 ```
 
+Coming from an older version? Save your git identity to `~/.gitconfig.local`
+**before** pulling, and re-run the installer to pick up new tools. See
+[Updating a machine](doc/applying-the-setup.md#updating-a-machine-that-already-has-it).
+
 This will:
 - Pull latest changes from git (fast-forward only)
 - Re-stow this OS's packages from `scripts/packages.sh` (picks up new files)

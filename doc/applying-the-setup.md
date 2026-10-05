@@ -18,6 +18,10 @@ Ask the human two things before doing anything, unless they already said:
 | Martin's own | [Path A](#path-a-martins-own-machine) | [Path A](#path-a-martins-own-machine) | [Path A](#path-a-martins-own-machine) | [Path C](#path-c-windows) |
 | Work, or anyone else's | [Path B](#path-b-work-or-someone-elses-machine) | [Path B](#path-b-work-or-someone-elses-machine) | [Path B](#path-b-work-or-someone-elses-machine) | [Path C](#path-c-windows) |
 
+Already set up from an older version of this repo? See
+[Updating a machine](#updating-a-machine-that-already-has-it) instead. Its
+first step has to happen before `git pull`.
+
 The repo can be cloned anywhere. Every script works from its own location,
 and every stow command here passes `-t ~`. The examples use `~/dotfiles`.
 
@@ -311,6 +315,62 @@ Notes:
   shows identity from `~\.gitconfig.local`.
 - A test commit in a scratch repo shows the expected author.
 - `nvim` then `:checkhealth`, if `nvim` was linked.
+
+## Updating a machine that already has it
+
+For a machine set up from an older version of this repo.
+
+**1. Save git identity first, before pulling.** If `~/.gitconfig` is a
+symlink into the repo, an older version carried the identity inside the
+tracked file. Newer versions moved it to `~/.gitconfig.local`, so pulling
+would leave the machine with no identity. Copy the current values out while
+they still exist:
+
+```bash
+if [ ! -e ~/.gitconfig.local ]; then
+    git config -f ~/.gitconfig.local user.name  "$(git config --global user.name)"
+    git config -f ~/.gitconfig.local user.email "$(git config --global user.email)"
+    h="$(git config --global credential.helper)"
+    [ -n "$h" ] && git config -f ~/.gitconfig.local credential.helper "$h"   # an empty value would reset helpers
+fi
+```
+
+If `~/.gitconfig` is a plain file instead, skip this. The installers'
+seed step handles it.
+
+**2. Pull and re-run the installer** (macOS / Linux). It's re-run safe,
+installs only what's missing (new tools, fonts, casks), and re-links:
+
+```bash
+cd ~/dotfiles && git pull --ff-only
+./install_darwin.sh        # or ./install_arch.sh, ./install_debian.sh
+```
+
+For config-only changes, with no new tools, `./reload.sh` is enough: pull,
+re-stow and reload the desktop.
+
+**3. Check, and fix anything folded into the repo.** Run
+`scripts/verify.sh`. Older installers could leave `~/.claude` or
+`~/.config/fastfetch` as a symlink into the repo; `verify.sh` reports that as
+FAIL. To fix one:
+
+```bash
+stow -D -t ~ claude && rm ~/.claude && mkdir ~/.claude && stow -t ~ claude
+```
+
+This works because `rm` on a symlink removes only the link. Check with
+`ls -ld ~/.claude` first that it really is a symlink (`l` in the first
+column).
+
+**4. Pick up the changes in running apps.**
+- Open a new shell.
+- In Ghostty, reload with `⌘⇧,` (Alacritty reloads by itself).
+- `aerospace reload-config` and `sketchybar --reload`, or let `reload.sh` do it.
+
+**Windows:** do step 1 the same way in Git Bash or PowerShell, then
+`git pull`, then `.\stow_windows.ps1 -DryRun <packages>` and
+`.\stow_windows.ps1 <packages>`. Then the [Done on Windows](#done-on-windows)
+checks.
 
 ## Git
 
