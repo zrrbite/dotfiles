@@ -73,6 +73,29 @@ if command -v fzf >/dev/null 2>&1; then
 --color=border:#4C566A"
 fi
 
+# ------------------------------------------------------------- line editing --
+# macOS-style editing keys, matching the terminal configs. Ghostty and
+# Alacritty send these sequences for the shortcuts in the right-hand column.
+# Bound after oh-my-zsh and fzf, which set their own bindings and would
+# otherwise win.
+#
+# Home/End arrive in several forms: \e[H / \e[F straight from the terminal,
+# \eOH / \eOF in application-cursor mode, and \e[1~ / \e[4~ inside tmux,
+# which re-encodes keys for its own TERM (screen-256color). Bind them all.
+# Cmd-Left/Right send Home/End rather than Ctrl-A/E so they still work inside
+# tmux, whose prefix is Ctrl-A.
+bindkey '^[[H'  beginning-of-line    # Cmd-Left
+bindkey '^[OH'  beginning-of-line
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[F'  end-of-line          # Cmd-Right
+bindkey '^[OF'  end-of-line
+bindkey '^[[4~' end-of-line
+bindkey '^[b'   backward-word        # Option-Left
+bindkey '^[f'   forward-word         # Option-Right
+bindkey '^[^?'  backward-kill-word   # Option-Backspace
+bindkey '^U'    backward-kill-line   # Cmd-Backspace: to line start, as in macOS
+                                     # (zsh's default ^U clears the whole line)
+
 # ---------------------------------------------------------------- ssh-agent --
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" >/dev/null

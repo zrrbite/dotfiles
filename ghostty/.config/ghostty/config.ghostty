@@ -73,3 +73,13 @@ keybind = ctrl+shift+v=paste_from_clipboard
 keybind = ctrl+equal=increase_font_size:1
 keybind = ctrl+minus=decrease_font_size:1
 keybind = ctrl+digit_0=reset_font_size
+
+# macOS text editing in the shell. zsh/.zshrc binds what these send.
+# Cmd-Left/Right send Home/End (Ghostty's default is Ctrl-A/E, which tmux
+# takes as its prefix). Option-Backspace sends Esc-Delete, zsh's
+# backward-kill-word -- Option itself stays a normal key for the Danish layout.
+# Cmd-Backspace (Ctrl-U, delete to line start) and Option-Left/Right (Esc-b/f,
+# word jumps) are already Ghostty defaults.
+keybind = super+arrow_left=text:\x1b[H
+keybind = super+arrow_right=text:\x1b[F
+keybind = alt+backspace=esc:\x7f

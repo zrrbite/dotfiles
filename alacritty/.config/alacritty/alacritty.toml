@@ -88,4 +88,15 @@ bindings = [
     { key = "Plus", mods = "Control", action = "IncreaseFontSize" },
     { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
     { key = "Key0", mods = "Control", action = "ResetFontSize" },
+
+    # macOS text editing in the shell, matching Ghostty; zsh/.zshrc binds what
+    # these send. Cmd-Left/Right send Home/End (not Ctrl-A/E, which tmux takes
+    # as its prefix). Only arrows and Backspace are mapped, so Option still
+    # types { } [ ] | @ $ on the Danish layout.
+    { key = "ArrowLeft",  mods = "Command", chars = "\u001b[H" },   # line start
+    { key = "ArrowRight", mods = "Command", chars = "\u001b[F" },   # line end
+    { key = "ArrowLeft",  mods = "Option",  chars = "\u001bb" },    # word back
+    { key = "ArrowRight", mods = "Option",  chars = "\u001bf" },    # word forward
+    { key = "Backspace",  mods = "Option",  chars = "\u001b\u007f" }, # delete word
+    { key = "Backspace",  mods = "Command", chars = "\u0015" },     # delete to line start
 ]
