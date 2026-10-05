@@ -43,7 +43,7 @@ Find out the following and report it before changing anything:
 | Existing credential helper | `git config --global --show-origin --get-all credential.helper` | same |
 | Existing global hooks | `git config --global --get core.hooksPath` | same |
 | Do work repos use hook managers? | look for `.husky/`, `lefthook.yml`, `.pre-commit-config.yaml` | same |
-| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,aerospace,sketchybar}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
+| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,ghostty,aerospace,sketchybar}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
 | Proxy or blocked downloads? | `env \| grep -i proxy`; does `curl -I https://github.com` work? | same, in PowerShell |
 
 If the machine is managed, expect that installing casks into `/Applications`,
@@ -61,6 +61,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `tmux` | mac, Linux | ✅ | `Ctrl+a` prefix. |
 | `clang` | all | ✅ with care | `~/.clang-format`/`~/.clang-tidy` are only fallbacks. A repo's own config wins, but a work repo *without* one would pick up Allman/Unreal Engine style. |
 | `alacritty` | mac (Linux optional) | ✅ | Terminal, Nord theme. |
+| `ghostty` | mac | ✅ | Second terminal, same Nord config; `ghostty` cask. Only one of the two is needed. |
 | `zsh` | mac | ⚠️ ask | Replaces `~/.zshrc`. Merge any work-specific lines (proxy, SDK paths, corporate tooling) into it, or source a local file. |
 | `fastfetch` | all | ✅ | On macOS, stow with `--ignore='config\.jsonc'` and link `config-darwin.jsonc` in its place (see `CLAUDE.md`). |
 | `aerospace`, `sketchybar`, `autoraise` | mac | ✅ needs permissions | The desktop stack. See [macOS desktop](#macos-desktop). |

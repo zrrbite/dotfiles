@@ -164,6 +164,8 @@ BREW_CASKS=(
     font-sketchybar-app-font
     nikitabobko/tap/aerospace
     alacritty
+    # On trial alongside Alacritty (alt-shift-enter); see CLAUDE.md
+    ghostty
 )
 
 # `brew install <already-installed-but-outdated>` upgrades it. That makes a
@@ -251,6 +253,7 @@ CONFIGS_TO_BACKUP=(
     ~/.config/nvim
     ~/.config/starship.toml
     ~/.config/alacritty
+    ~/.config/ghostty
     ~/.gitconfig
     ~/.clang-format
     ~/.bashrc
@@ -323,7 +326,7 @@ run ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 # stow's conflict reports go to stderr and are worth seeing, so they are not
 # silenced -- a hidden failure here means a config silently missing from $HOME.
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise zsh tmux claude)
+STOW_PACKAGES=(git clang nvim starship alacritty ghostty aerospace sketchybar autoraise zsh tmux claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     run stow -t "$HOME" -R "$pkg" || warn "  Failed to stow $pkg (see stow output above)"
@@ -393,7 +396,7 @@ echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, llvm (provides lldb)"
-echo "  - starship prompt, alacritty terminal"
+echo "  - starship prompt, alacritty terminal (ghostty alongside, alt-shift-enter)"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
