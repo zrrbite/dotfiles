@@ -24,23 +24,21 @@ BAR_BG=0xe62e3440
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 # Bar appearance
-# Floating rather than edge-to-edge: margin matches AeroSpace's 12px outer
-# gaps, so the bar lines up with the window edges below it. Its bottom edge is
-# y_offset + height = 40, and aerospace.toml's gaps.outer.top = 52 adds the
-# same 12px gap again -- change either number and that gap must follow.
+# Pinned edge-to-edge at the top. aerospace.toml's gaps.outer.top = 44 is this
+# 32pt height plus a 12pt gap -- change the height and that gap must follow.
 sketchybar --bar \
     position=top \
     height=32 \
     blur_radius=30 \
     color=$BAR_BG \
     border_color=$NORD3 \
-    border_width=1 \
-    shadow=on \
-    padding_left=6 \
-    padding_right=6 \
-    margin=12 \
-    y_offset=8 \
-    corner_radius=10 \
+    border_width=2 \
+    shadow=off \
+    padding_left=12 \
+    padding_right=12 \
+    margin=0 \
+    y_offset=0 \
+    corner_radius=0 \
     topmost=window
 
 # Defaults

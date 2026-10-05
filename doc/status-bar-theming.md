@@ -38,9 +38,9 @@ workspaces instead of jumping. Waybar does neither yet — a deliberate macOS
 lead, not a contract change: the colours are the same.
 
 The bar itself is `#2e3440` at 90% opacity (`0xe62e3440` in sketchybar's ARGB
-notation) so the blur behind it reads, with a 1px nord3 `#4c566a` border. It
-floats: 12pt in from the screen sides to line up with AeroSpace's outer gaps,
-8pt down from the top, corners rounded at 10pt, with a shadow.
+notation) so the blur behind it reads, with a nord3 `#4c566a` border. It is
+pinned edge-to-edge at the top of the screen. A floating, rounded variant was
+tried on 2026-10-05 and rejected — keep it flush.
 
 ### Sizing
 
@@ -58,11 +58,9 @@ other weights as *separate families*, so Medium is
 `JetBrainsMono Nerd Font:Medium:13.0` — the latter resolves to a fallback face
 silently, with no error and no obvious visual tell.
 
-The bar stays 32pt tall and sits at `y_offset=8`, so its bottom edge is at
-40pt. `aerospace.toml` sets `gaps.outer.top = 52`: that 40 plus the same 12pt
-margin used on the other three sides. Changing the bar height **or** its
-offset means changing that gap too, or windows will sit under the bar or leave
-a hole above themselves.
+The bar stays 32pt tall. `aerospace.toml` sets `gaps.outer.top = 44`, which is
+the 32pt bar plus the same 12pt margin used on the other three sides — so
+changing the bar height means changing that gap too, or windows will sit wrong.
 
 ### Deviation: dark text everywhere
 
@@ -101,8 +99,8 @@ Things waybar does with CSS that sketchybar cannot:
   the whole pill instead. Faking a true underline needs a second thin item per
   workspace.
 - **The bar border is not per-edge either.** `border_width` on `--bar` outlines
-  the whole bar. Now that the bar floats, all four edges show — waybar still
-  has only a `border-bottom`.
+  the whole bar. Flush against the top of the screen, the bottom edge is
+  effectively all you see, which is close enough to waybar's `border-bottom`.
 - **Padding is per-component, not a box.** Waybar's `padding: 0 10px` becomes
   `icon.padding_left=8`, `icon.padding_right=4`, `label.padding_right=8` in
   sketchybar's `--default`. Item-level `padding_left/right` is the *gap between*
