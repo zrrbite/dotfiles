@@ -29,7 +29,7 @@ lists every binding.
 | Reattach from a new terminal | `tmux a` (or `t name`) |
 | Pick a session from a list | `Ctrl+a` `s` |
 | Back to the previous session | `Ctrl+a` `Tab` |
-| Previous / next session | `Ctrl+a` `(` / `)` |
+| Previous / next session | `Ctrl+a` `⌘ ←` / `⌘ →`. Keep pressing ⌘ → to cycle without the prefix. (`Ctrl+a` `(` / `)` also work.) |
 | **Panes** | |
 | Split side by side / stacked | `Ctrl+a` `\|` / `Ctrl+a` `-` |
 | Move between panes | `Ctrl+a` `h` `j` `k` `l`, or click |
