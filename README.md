@@ -25,6 +25,9 @@ Want to try Omarchy? See `./install_omarchy.sh` for installation guidance and in
 
 ## Quick Install
 
+> **Work machine, or a machine that already has its own git identity?** Don't run
+> the installers as-is. Follow [doc/applying-the-setup.md](doc/applying-the-setup.md) instead.
+
 ### Arch Linux (native with Hyprland)
 
 ```bash

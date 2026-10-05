@@ -13,6 +13,11 @@ Cross-platform personal dotfiles supporting:
 
 Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows uses native PowerShell symlinks.
 
+**Setting up another machine (especially a work one)?** Read
+`doc/applying-the-setup.md` first. The installers assume Martin's personal
+machines: they replace `~/.gitconfig` (personal identity, plaintext
+credentials, global hooks) and `~/.zshrc`.
+
 ## Commands
 
 ### Installation
@@ -139,7 +144,7 @@ stow list.
 
 **macOS:**
 - **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
-- **sketchybar**: Nord-themed floating status bar; workspace pills show app icons
+- **sketchybar**: Nord-themed status bar, pinned to the top; workspace pills show app icons
   (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
   (auto-launched by AeroSpace).
   Shares waybar's colour contract — see `doc/status-bar-theming.md`
