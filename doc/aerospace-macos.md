@@ -75,8 +75,8 @@ that.
 
 | Key | Action |
 |---|---|
-| `alt-enter` | New Alacritty window (`open -na`, so it really is a new one) |
-| `alt-shift-enter` | New Ghostty window (on trial alongside Alacritty) |
+| `alt-enter` | New Ghostty window (`open -na`, so it really is a new one) |
+| `alt-shift-enter` | New Alacritty window (kept alongside while Ghostty is on trial) |
 | `alt-shift-q` | Close the focused window |
 | `alt-shift-r` | Reload the config |
 

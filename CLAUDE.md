@@ -169,8 +169,9 @@ stow list.
   `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
   it keeps the cursor on the keyboard-focused window so AutoRaise does not
   immediately steal focus back. Needs Accessibility permission.
-- **alacritty**: Cross-platform terminal with Nord theme (`alt-enter`)
-- **ghostty**: On trial alongside Alacritty since 2026-10-05 (`alt-shift-enter`).
+- **alacritty**: Cross-platform terminal with Nord theme (`alt-shift-enter`)
+- **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
+  (`alt-enter`) since the same day.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,
   opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
   protocol and a native window. Alacritty stays until the trial is decided;

@@ -164,7 +164,7 @@ BREW_CASKS=(
     font-sketchybar-app-font
     nikitabobko/tap/aerospace
     alacritty
-    # On trial alongside Alacritty (alt-shift-enter); see CLAUDE.md
+    # Default terminal (alt-enter), on trial against Alacritty; see CLAUDE.md
     ghostty
 )
 
@@ -396,7 +396,7 @@ echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, llvm (provides lldb)"
-echo "  - starship prompt, alacritty terminal (ghostty alongside, alt-shift-enter)"
+echo "  - starship prompt, ghostty terminal (alt-enter), alacritty alongside (alt-shift-enter)"
 echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
