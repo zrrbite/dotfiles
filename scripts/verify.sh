@@ -140,7 +140,10 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     if brew services list 2>/dev/null | grep -q -E '^autoraise[[:space:]]+started'; then
         pass "AutoRaise service is started"
     else
-        warn "AutoRaise service not started: brew services start dimentium/autoraise/autoraise"
+        # FAIL, not WARN: the installer starts this itself, so not running is
+        # a real failure. The three processes above need AeroSpace launched
+        # once by a person, so they only warn.
+        fail "AutoRaise service not started: brew services start dimentium/autoraise/autoraise"
     fi
     echo
     echo "Cannot be checked from a script -- confirm by hand:"

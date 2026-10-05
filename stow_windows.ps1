@@ -125,6 +125,8 @@ $packageMappings = @{
     )
     "bash" = @(
         @{ Source = "bash\.bashrc-windows"; Target = "$homeDir\.bashrc" }
+        # Git Bash's terminal (mintty): Nord colours and font
+        @{ Source = "bash\.minttyrc"; Target = "$homeDir\.minttyrc" }
     )
     "fastfetch" = @(
         @{ Source = "fastfetch\.config\fastfetch\config-windows.jsonc"; Target = "$homeDir\.config\fastfetch\config.jsonc" }
@@ -178,11 +180,28 @@ foreach ($pkg in $Packages) {
     }
 }
 
-if (-not $Delete -and -not $DryRun -and -not (Test-SymlinkPermission)) {
-    Write-Err "This account cannot create symlinks, so nothing was changed."
+function Write-SymlinkHelp {
     Write-Host "    Enable Developer Mode (Settings > System > For developers), or run" -ForegroundColor DarkGray
     Write-Host "    from an elevated shell. On a managed machine this may need IT." -ForegroundColor DarkGray
-    exit 1
+    if ($PSVersionTable.PSVersion.Major -lt 6) {
+        # Windows PowerShell 5.1's New-Item has been reported to need elevation
+        # for symlinks even with Developer Mode on; PowerShell 7 does not.
+        Write-Host "    This is Windows PowerShell $($PSVersionTable.PSVersion); if Developer Mode is" -ForegroundColor DarkGray
+        Write-Host "    already on, try PowerShell 7 (pwsh) instead." -ForegroundColor DarkGray
+    }
+}
+
+# Probed in a dry run too, so a preview can't look clean on a machine where
+# the real run would stop.
+if (-not $Delete -and -not (Test-SymlinkPermission)) {
+    if ($DryRun) {
+        Write-Warn "This account cannot create symlinks -- a real run would stop here."
+        Write-SymlinkHelp
+    } else {
+        Write-Err "This account cannot create symlinks, so nothing was changed."
+        Write-SymlinkHelp
+        exit 1
+    }
 }
 
 $action = if ($Delete) { "Unstowing" } elseif ($DryRun) { "Dry run for" } else { "Stowing" }

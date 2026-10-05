@@ -22,6 +22,7 @@ $probeDir = Join-Path ([IO.Path]::GetTempPath()) ("dotfiles-probe-" + [guid]::Ne
 New-Item -ItemType Directory -Path $probeDir | Out-Null
 Set-Content -Path (Join-Path $probeDir "target") -Value "probe"
 $canLink = $true
+$script:linkFailures = 0
 try {
     New-Item -ItemType SymbolicLink -Path (Join-Path $probeDir "link") -Target (Join-Path $probeDir "target") -ErrorAction Stop | Out-Null
 } catch {
@@ -35,6 +36,11 @@ if (-not $canLink) {
     Write-Host "Enable Developer Mode (Windows 10 and 11):"
     Write-Host "  Settings > System > For developers > Developer Mode"
     Write-Host "or run this script from an elevated shell. On a managed machine this may need IT."
+    if ($PSVersionTable.PSVersion.Major -lt 6) {
+        # Reported: Windows PowerShell 5.1 may need elevation even with
+        # Developer Mode on. PowerShell 7 does not.
+        Write-Host "This is Windows PowerShell $($PSVersionTable.PSVersion); if Developer Mode is already on, try pwsh."
+    }
     exit 1
 }
 Write-Info "Symlinks can be created ✓"
@@ -232,6 +238,7 @@ function New-DotfileSymlink {
     } catch {
         Write-Error "  ✗ Failed to link $Source : $_"
         Write-Warn "    Enable Developer Mode (Settings > For Developers) or run as Administrator."
+        $script:linkFailures++
     }
 }
 
@@ -293,6 +300,10 @@ public class Wallpaper {
 }
 
 Write-Host ""
+if ($script:linkFailures -gt 0) {
+    Write-Error "$($script:linkFailures) link(s) failed -- see above. Their originals are in $backupDir."
+    exit 1
+}
 Write-Info "✓ Installation complete!"
 Write-Host ""
 Write-Host "Next steps:"

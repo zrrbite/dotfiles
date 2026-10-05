@@ -69,10 +69,12 @@ re-run safe: by default it only installs what's missing.
   they're missing.
 - **Homebrew.** The installer installs it if missing, but Homebrew asks for
   the user's password. Run the installer in a terminal where the human can
-  type it, or have them install Homebrew first.
+  type it, or have them install Homebrew first. If they did, the installer
+  finds it in `/opt/homebrew` or `/usr/local` even when it isn't on the
+  agent's PATH yet.
 - **Git identity on a fresh machine.** With no old `~/.gitconfig` there's
-  nothing to carry over, and `verify.sh` will FAIL on identity until it exists.
-  Create it before or after:
+  nothing to carry over. **Create it before running the installer**:
+  otherwise its closing `verify.sh` fails on identity and the installer exits 1.
   ```bash
   git config -f ~/.gitconfig.local user.name  "Martin Kjeldsen"
   git config -f ~/.gitconfig.local user.email "<ask the human>"
@@ -100,10 +102,13 @@ are symlinks to the Debian one). They use `sudo`, so the human types the
 password.
 
 What the installer does, in order:
-1. Packages.
-2. Backs up configs it will replace to `~/.config-backup-<timestamp>/`.
-3. Carries git identity into `~/.gitconfig.local`.
-4. Creates `~/.config` and `~/.claude` as real directories.
+1. Packages. A failed brew install is recorded, not fatal.
+2. Carries git identity into `~/.gitconfig.local`.
+3. Backs up the configs it will replace to `~/.config-backup-<timestamp>/`
+   (the `CONFIGS_TO_BACKUP` list in the script), deleting an original only
+   once its copy succeeded.
+4. Creates `~/.config`, `~/.config/fastfetch` and `~/.claude` as real
+   directories.
 5. Stows the packages in `scripts/packages.sh`.
 6. Starts services.
 7. Runs `scripts/verify.sh` and ends with a problem summary.
@@ -111,7 +116,9 @@ What the installer does, in order:
 ### Human-only, after the installer (macOS)
 
 - Grant **Accessibility** to **AeroSpace** and **AutoRaise**: System Settings
-  → Privacy & Security → Accessibility.
+  → Privacy & Security → Accessibility. AutoRaise runs as a brew service, so
+  if it isn't offered there, add its binary with **+**:
+  `$(brew --prefix autoraise)/bin/AutoRaise`.
 - Launch AeroSpace once (it starts at login after that). It starts sketchybar
   and borders.
 - First-launch prompts: Ghostty asks about notifications, and oh-my-zsh may
@@ -148,7 +155,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 
 | Package | Platforms | Work-safe? | Notes |
 |---|---|---|---|
-| `nvim` | all | ✅ | Full IDE config. TypeScript needs `npm i -g typescript-language-server typescript`. Installs plugins on first launch. |
+| `nvim` | all | ✅ | Full IDE config. Installs plugins from GitHub on first launch and needs a C compiler and `make` for treesitter. TypeScript needs `npm i -g typescript-language-server typescript`. |
 | `starship` | all | ✅ | Prompt only. |
 | `tmux` | mac, Linux | ✅ | `Ctrl+a` prefix. |
 | `clang` | all | ✅ with care | `~/.clang-format`/`~/.clang-tidy` are only fallbacks. A repo's own config wins, but a work repo *without* one would pick up Allman/Unreal Engine style. |
@@ -250,8 +257,10 @@ time:
 .\stow_windows.ps1 git
 ```
 
-It knows `git`, `clang`, `nvim`, `starship`, `bash`, `fastfetch`, `glazewm`,
-`zebar` and `claude` (skills only; `CLAUDE.md` is never linked). An existing
+It knows `git`, `clang`, `nvim`, `starship`, `bash` (with `.minttyrc`),
+`fastfetch`, `glazewm`, `zebar` and `claude` (skills only; `CLAUDE.md` is
+never linked). The symlink check also runs in `-DryRun`, so a preview warns if
+the real run would stop. An existing
 real file is moved to `<target>.bak-<timestamp>` only as the link is created,
 and moved back if the link fails.
 
@@ -259,6 +268,15 @@ Notes:
 - `bash` replaces `~\.bashrc`, which aliases `cat`, `find` and `ps` and
   initialises starship, fzf and zoxide. Ask first, and install those tools
   before linking it.
+- `starship` only changes Git Bash, through `.bashrc-windows`. No PowerShell
+  profile is shipped. For PowerShell, add `Invoke-Expression (&starship init
+  powershell)` to `$PROFILE` if the human wants it.
+- `nvim` needs a C compiler and `make` (treesitter parsers, fzf-native) plus
+  network access to GitHub on first launch: `scoop install gcc make`, or
+  expect `:checkhealth` errors. The same applies on macOS/Linux, where the
+  installers provide them.
+- Line endings: `.gitattributes` forces LF on checkout, so the hooks and
+  `.bashrc-windows` work even with Git for Windows' `core.autocrlf=true`.
 - The GlazeWM cheatsheet keybind (`glazewm/.glzr/glazewm/config.yaml`) calls
   `C:/dev/dotfiles.git/scripts/glazewm-cheatsheet.ps1`. Clone there, or edit
   that path.
@@ -327,7 +345,8 @@ What the shared file still changes, and how to undo each item in
 | `core.hooksPath = ~/.git-hooks` | Global hooks run in **every** repo, and each repo's own `.git/hooks` stop running. Hook managers that set a repo-local `core.hooksPath` (husky, lefthook) still win. | See below. |
 | `core.excludesFile` → `.gitignore-global` | Ignores `*.pdf` and `*.zip` in every repo, so such files silently never get added. | `[core] excludesFile = ~/.gitignore-work` |
 | `diff.noprefix = true` | Diffs without `a/` and `b/` prefixes, which some patch tooling rejects. | `[diff] noprefix = false` |
-| `diff.tool`, `merge.tool` = `meld` | meld is installed on Linux only. | `nvimdiff` on macOS |
+| `diff.tool`, `merge.tool` = `meld` | meld is installed on Linux and by `install_windows.ps1`, not on macOS. | `nvimdiff` on macOS (or `scoop install meld` on Windows) |
+| `interactive.diffFilter = delta` | `git add -p` breaks without delta. | install delta |
 | `core.editor = nvim`, `core.pager = delta` | Commit and diff break if these tools are missing. | install them, or override |
 | `pull.rebase`, `rebase.autoStash`, `push.default = current` | Different defaults from stock git. Harmless, but surprising. | as needed |
 

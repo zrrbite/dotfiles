@@ -60,7 +60,7 @@ Installs CLI development tools only (no GUI/Wayland):
 
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./install_darwin.sh --with-desktop
+cd ~/dotfiles && ./install_darwin.sh                   # add --with-desktop on a fresh machine
 ```
 
 Needs Command Line Tools first (`xcode-select --install`). Afterwards, grant
@@ -221,7 +221,7 @@ with an AI agent, point it at `AGENTS.md`.
 | Package | Description |
 |---------|-------------|
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
-| `alacritty` | GPU-accelerated terminal with Nord theme (primary on macOS) |
+| `alacritty` | GPU-accelerated terminal with Nord theme (second terminal on macOS) |
 | `ghostty` | Native-UI terminal on trial alongside Alacritty (macOS) - same Nord config, adds ligatures and images |
 | `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
 | `cava`  | Audio visualizer with Nord gradient theme |

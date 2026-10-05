@@ -1,0 +1,7 @@
+# Check every text file out with LF line endings, on every OS.
+#
+# Without this, Git for Windows (core.autocrlf=true by default) checks out
+# CRLF. The hooks in git/.git-hooks then fail on "\r" in every repo that
+# core.hooksPath points at, blocking commits; .bashrc-windows breaks the same
+# way. PowerShell reads LF scripts fine. Binary files are detected by "auto".
+* text=auto eol=lf

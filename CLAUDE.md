@@ -267,7 +267,9 @@ stow list.
 - Per-package control, same workflow as `stow` on Linux
 - Backs up existing non-symlink files before overwriting
 - Skips already-correct symlinks
-- Supports all universal packages: git, clang, nvim, starship, bash
+- Packages: git (plus .gitignore-global), clang, nvim, starship, bash (plus
+  .minttyrc), fastfetch, glazewm, zebar, claude (skills only). `-DryRun` previews;
+  it probes symlink rights first and restores a file if its link fails
 
 ## Starting New C++ Projects
 

@@ -92,6 +92,16 @@ FAILURES=()
 [ "$DRY_RUN" = true ] && warn "DRY RUN -- nothing will be changed"
 [ "$WITH_DESKTOP" = true ] && warn "--with-desktop: wallpaper and Dock/Finder settings WILL be overwritten"
 
+# Homebrew may be installed but not on this shell's PATH -- e.g. the human ran
+# its installer and the agent's shell predates the shellenv line it adds to
+# ~/.zprofile. Load it from the standard locations before deciding it's
+# missing, rather than running the Homebrew installer a second time.
+if ! command -v brew &> /dev/null; then
+    for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+        [ -x "$b" ] && eval "$("$b" shellenv)" && break
+    done
+fi
+
 # Install Homebrew if not present
 if ! command -v brew &> /dev/null; then
     info "Installing Homebrew..."
@@ -185,9 +195,11 @@ BREW_CASKS=(
 # install only what is missing unless --upgrade was asked for.
 if [ "$UPGRADE" = true ]; then
     info "Installing Homebrew packages (--upgrade: existing packages may be upgraded)..."
-    run brew install "${BREW_PACKAGES[@]}"
+    run brew install "${BREW_PACKAGES[@]}" \
+        || FAILURES+=("brew install failed for one or more of: ${BREW_PACKAGES[*]}")
     info "Installing Homebrew casks..."
-    run brew install --cask "${BREW_CASKS[@]}"
+    run brew install --cask "${BREW_CASKS[@]}" \
+        || FAILURES+=("brew install failed for one or more of: ${BREW_CASKS[*]}")
 else
     INSTALLED_FORMULAE="$(brew list --formula -1 2>/dev/null || true)"
     MISSING_FORMULAE=()
@@ -199,7 +211,8 @@ else
 
     if [ ${#MISSING_FORMULAE[@]} -gt 0 ]; then
         info "Installing missing packages: ${MISSING_FORMULAE[*]}"
-        run brew install "${MISSING_FORMULAE[@]}"
+        run brew install "${MISSING_FORMULAE[@]}" \
+            || FAILURES+=("brew install failed for one or more of: ${MISSING_FORMULAE[*]}")
     else
         info "All Homebrew packages already installed (use --upgrade to update them)"
     fi
@@ -214,7 +227,8 @@ else
 
     if [ ${#MISSING_CASKS[@]} -gt 0 ]; then
         info "Installing missing casks: ${MISSING_CASKS[*]}"
-        run brew install --cask "${MISSING_CASKS[@]}"
+        run brew install --cask "${MISSING_CASKS[@]}" \
+            || FAILURES+=("brew install failed for one or more of: ${MISSING_CASKS[*]}")
     else
         info "All Homebrew casks already installed"
     fi
@@ -273,6 +287,15 @@ CONFIGS_TO_BACKUP=(
     ~/.tmux.conf
     ~/.config/aerospace/aerospace.toml
     ~/.config/sketchybar
+    ~/.config/AutoRaise
+    ~/.clang-tidy
+    ~/.git-hooks
+    ~/.gitignore-global
+    # Claude Code creates ~/.claude itself; an existing skills/ or CLAUDE.md
+    # would otherwise make `stow claude` conflict.
+    ~/.claude/CLAUDE.md
+    ~/.claude/skills
+    ~/.claude/hooks
 )
 
 # `[ ! -L ]` only tests the final path component, so a path that reaches a real
@@ -394,7 +417,8 @@ fi
 # after stowing, or AutoRaise starts before ~/.config/AutoRaise/config exists
 # and comes up with defaults instead.
 info "Starting AutoRaise service (focus follows mouse)..."
-run_ok brew services start dimentium/autoraise/autoraise
+run brew services start dimentium/autoraise/autoraise \
+    || FAILURES+=("AutoRaise service did not start: brew services start dimentium/autoraise/autoraise")
 
 # Desktop settings are opt-in. They overwrite the wallpaper and restart Dock and
 # Finder, which is right on a fresh machine and unwelcome on a re-run.
