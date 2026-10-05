@@ -120,6 +120,27 @@ alias grep='grep --color=auto'
 # a MacBook sleeping when the lid is closed. Plugged in, lid open.
 alias roast='"$HOME/Development/bullet-ble.git/build/bullet-console" --usb'
 
+# ------------------------------------------------------------- files, images --
+# y -- yazi, the terminal file manager (yazi/.config/yazi). Unlike plain
+# `yazi`, quitting with q leaves this shell in the directory you browsed to.
+# The wrapper from yazi's docs; `builtin cd` because zoxide wraps cd.
+y() {
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
+}
+
+# chafa -- images in the terminal. In Ghostty it draws the real image (kitty
+# graphics protocol); elsewhere it falls back to coloured blocks. Same
+# aliases as bash/.bashrc-arch.
+alias chafa-ascii='chafa --format symbols --symbols ascii --colors none -s 60x20'
+alias chafa-block='chafa --format symbols --symbols block -s 60x20'
+# fimg -- fuzzy-find images below here, previewing each as you move
+alias fimg='fd -e png -e jpg -e jpeg -e gif -e webp -e bmp -e heic | fzf --preview "chafa -s \${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES} {}"'
+
 # ---------------------------------------------------------------------- tmux --
 # t        -- tmux session named after the current directory, started in it
 # t name   -- attach to session "name", creating it if it doesn't exist

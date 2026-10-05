@@ -141,6 +141,14 @@ BREW_PACKAGES=(
     bash-completion@2
     stow
     tmux
+    # Terminal file manager (Finder replacement) and terminal image viewer.
+    # yazi's previews use ffmpeg (video), poppler (PDF), 7zz (archives),
+    # fd/rg/fzf/zoxide (search and jump) -- all installed here as well.
+    yazi
+    chafa
+    ffmpeg
+    poppler
+    sevenzip
 
     # CLI utilities
     btop

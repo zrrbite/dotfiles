@@ -179,6 +179,10 @@ stow list.
   it keeps the cursor on the keyboard-focused window so AutoRaise does not
   immediately steal focus back. Needs Accessibility permission.
 - **alacritty**: Cross-platform terminal with Nord theme (`alt-shift-enter`)
+- **yazi**: Terminal file manager (Finder replacement), macOS and Arch. `y` in
+  zsh launches it and leaves the shell where you quit. No theme file: the
+  default theme uses ANSI colours, which the terminals map to Nord. Config keys
+  are written against yazi 26.9's preset; they were renamed between releases
 - **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
   (`alt-enter`) since the same day.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,

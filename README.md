@@ -715,19 +715,30 @@ tldr -u         # update cache (run once after install)
 
 ### yazi - Modern File Manager
 
-Fast file manager with image previews and vim-like navigation:
+A fast file manager with image previews and vim-like navigation, on macOS and
+Arch. It's the Finder replacement here. Config: `yazi/.config/yazi/yazi.toml`.
 
 ```bash
-yazi            # launch in current directory
+y               # launch here; quitting leaves your shell where you browsed to
+yazi            # same, but your shell stays put
 ```
 
-**Key bindings:**
-- `hjkl` - Navigate (vim-style)
-- `space` - Select files
-- `y` - Copy
-- `d` - Cut
-- `p` - Paste
-- `q` - Quit
+Image previews are real images in Ghostty, including inside tmux
+(`allow-passthrough` is on). Alacritty shows a blocky fallback.
+
+**Key bindings** (checked against yazi 26.9's own keymap; `~` shows them all):
+- `h` `j` `k` `l` - up a folder / down / up / into
+- `Enter` / `o` - open with the default app
+- `Space` - select; `v` - visual (range) select
+- `y` - copy, `x` - cut, `p` - paste (`P` overwrites)
+- `d` - **move to Trash**, `D` - **delete permanently**
+- `r` - rename, `a` - create (end with `/` for a folder)
+- `.` - show/hide hidden files
+- `s` - search names (fd), `S` - search contents (ripgrep), `f` - filter
+- `z` - fuzzy-jump (fzf), `Z` - jump with zoxide
+- `c` - copy a path or filename to the clipboard
+- `t` - new tab, `1`-`9` - switch tab
+- `q` - quit
 
 ### fd - Better Find
 
@@ -760,7 +771,8 @@ Much faster than grep, respects `.gitignore`, and has smart case sensitivity.
 
 ### chafa - Terminal Image Viewer
 
-View images directly in the terminal:
+View images directly in the terminal (macOS and Arch). In Ghostty `chafa`
+draws the actual image; elsewhere it uses coloured blocks:
 
 ```bash
 chafa-ascii image.jpg   # ASCII art mode (alias)
