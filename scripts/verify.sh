@@ -8,6 +8,8 @@
 #   With no arguments, checks the packages the installer for this OS stows.
 #   Pass a list to check only those -- e.g. on a work machine that applied a
 #   subset:  scripts/verify.sh nvim starship tmux ghostty
+#   `claude-skills` checks the claude package without CLAUDE.md, for machines
+#   where it is deliberately left out (see doc/applying-the-setup.md).
 #
 # What "applied" means for a package: `stow -n` against $HOME has nothing left
 # to link and no conflicts. That is stow's own view, so it accounts for
@@ -54,11 +56,16 @@ command -v stow >/dev/null 2>&1 || { fail "stow is not installed -- nothing else
 
 # -- Packages -----------------------------------------------------------------
 for pkg in "${PACKAGES[@]}"; do
+    stow_args=()
+    if [ "$pkg" = claude-skills ]; then
+        pkg=claude
+        stow_args=(--ignore='CLAUDE\.md')
+    fi
     if [ ! -d "$DOTFILES_DIR/$pkg" ]; then
         fail "$pkg: no such package in the repo"
         continue
     fi
-    out="$(stow -n -v -d "$DOTFILES_DIR" -t "$HOME" "$pkg" 2>&1)"
+    out="$(stow -n -v "${stow_args[@]}" -d "$DOTFILES_DIR" -t "$HOME" "$pkg" 2>&1)"
     if echo "$out" | grep -q -E 'CONFLICT|cannot stow|existing target'; then
         fail "$pkg: conflicts with files already in \$HOME (see: stow -n -v -t ~ $pkg)"
     elif echo "$out" | grep -q '^LINK:'; then

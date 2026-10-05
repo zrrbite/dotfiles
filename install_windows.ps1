@@ -148,7 +148,7 @@ function Initialize-GitconfigLocal {
     if ((Test-Path $source) -and -not (Get-Item $source -Force).LinkType -and
         (Get-Command git -ErrorAction SilentlyContinue)) {
         # Same key list as scripts/seed-gitconfig-local.sh and stow_windows.ps1.
-        $lines = @(& git config -f $source --get-regexp '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$)' 2>$null)
+        $lines = @(& git config -f $source --get-regexp '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$|core\.hookspath$|core\.excludesfile$)' 2>$null)
     }
     if ($lines.Count -eq 0) {
         Write-Warn "No existing git identity to carry over. Create ~\.gitconfig.local:"

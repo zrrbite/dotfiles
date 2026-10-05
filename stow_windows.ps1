@@ -54,7 +54,7 @@ function Initialize-GitconfigLocal {
     $lines = @()
     if ((Test-Path $source) -and -not (Get-Item $source -Force).LinkType -and
         (Get-Command git -ErrorAction SilentlyContinue)) {
-        $keys = '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$)'
+        $keys = '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$|core\.hookspath$|core\.excludesfile$)'
         $lines = @(& git config -f $source --get-regexp $keys 2>$null)
     }
     if ($lines.Count -eq 0) {

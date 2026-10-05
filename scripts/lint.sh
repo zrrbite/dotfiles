@@ -113,16 +113,39 @@ check_stow() {
     return 0
 }
 
+# Every tracked file with a shebang must be committed executable (mode 100755).
+# install_debian.sh was committed 100644 and stayed that way: `./install_wsl.sh`
+# failed with "Permission denied" on every machine until a container test ran
+# it. Git stores the bit, so check the index, not the working tree.
+check_exec_bits() {
+    local offenders="" mode path
+    while read -r mode _ _ path; do
+        [ "$mode" = 100644 ] || continue
+        [ -f "$path" ] || continue
+        [ "$(head -c2 "$path")" = "#!" ] && offenders="$offenders $path"
+    done < <(git ls-files -s)
+    if [ -n "$offenders" ]; then
+        fail "exec bits: these have a shebang but are not executable in git:"
+        for f in $offenders; do echo "    $f"; done
+        echo "    Fix: git update-index --chmod=+x <file>"
+        return 1
+    fi
+    info "exec bits: every script with a shebang is executable"
+}
+
 case "${1:-all}" in
     shellcheck) check_shellcheck || STATUS=1 ;;
     stow)       check_stow || STATUS=1 ;;
+    exec)       check_exec_bits || STATUS=1 ;;
     all)
         check_shellcheck || STATUS=1
         echo ""
         check_stow || STATUS=1
+        echo ""
+        check_exec_bits || STATUS=1
         ;;
     *)
-        fail "Unknown check: $1 (expected shellcheck, stow, or nothing)"
+        fail "Unknown check: $1 (expected shellcheck, stow, exec, or nothing)"
         exit 2
         ;;
 esac

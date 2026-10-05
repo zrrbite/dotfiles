@@ -18,8 +18,14 @@ fi
 
 info "Starting dotfiles installation..."
 
+# Steps that fail without stopping the script are collected here and reported
+# at the end, so a partial install can't pass for a finished one.
+FAILURES=()
+
 # Core packages
 PACKAGES=(
+    # Build tools: makepkg (for yay and every AUR package) needs these
+    base-devel
     # Window manager & display
     hyprland
     hyprpaper
@@ -59,12 +65,12 @@ PACKAGES=(
     blueman
 
     # Communication
-    discord_arch_electron
     deltachat-desktop
 
     # Utilities
     stow
-    rofi-wayland
+    # rofi 2.0 supports Wayland natively; rofi-wayland no longer exists.
+    rofi
     chafa
     glow
     wl-clipboard
@@ -93,8 +99,7 @@ PACKAGES=(
     openssh
     ripgrep
     fd
-    clang
-    clangd
+    clang          # also provides clangd
     gdb
     gdb-dashboard
     code
@@ -119,10 +124,15 @@ PACKAGES=(
 )
 
 info "Installing packages..."
-sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
+# One pacman call for everything: a single unknown name fails the whole call,
+# so it is recorded rather than allowed to stop the script under `set -e`
+# before anything is linked. Check names with `pacman -Si <name>`.
+sudo pacman -S --needed --noconfirm "${PACKAGES[@]}" \
+    || FAILURES+=("pacman -S failed -- check the PACKAGES names with pacman -Si")
 
 # AUR packages (requires yay)
 AUR_PACKAGES=(
+    discord_arch_electron
     google-chrome
     slack-desktop
     zoom
@@ -137,13 +147,21 @@ AUR_PACKAGES=(
 # Install yay if not present
 if ! command -v yay &> /dev/null; then
     info "Installing yay (AUR helper)..."
-    git clone https://aur.archlinux.org/yay.git /tmp/yay
-    cd /tmp/yay && makepkg -si --noconfirm
+    # makepkg needs base-devel; it is in PACKAGES above.
+    if git clone https://aur.archlinux.org/yay.git /tmp/yay \
+        && (cd /tmp/yay && makepkg -si --noconfirm); then
+        :
+    else
+        FAILURES+=("yay (AUR helper) failed to build -- AUR packages skipped")
+    fi
     rm -rf /tmp/yay
 fi
 
-info "Installing AUR packages..."
-yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+if command -v yay &> /dev/null; then
+    info "Installing AUR packages..."
+    yay -S --needed --noconfirm "${AUR_PACKAGES[@]}" \
+        || FAILURES+=("yay -S failed for one or more AUR packages")
+fi
 
 # Determine dotfiles location
 DOTFILES_DIR="${HOME}/dotfiles"
@@ -167,9 +185,6 @@ fi
 cd "$DOTFILES_DIR"
 
 # Backup existing configs
-# Failures that do not stop the script, reported at the end.
-FAILURES=()
-
 BACKUP_DIR="${HOME}/.config-backup-$(date +%Y%m%d-%H%M%S)"
 CONFIGS_TO_BACKUP=(
     ~/.config/foot
@@ -191,7 +206,14 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-format
     ~/.clang-tidy
     ~/.gdbinit
+    ~/.bashrc
     ~/.bash_profile
+    ~/.tmux.conf
+    ~/.git-hooks
+    ~/.gitignore-global
+    ~/.claude/CLAUDE.md
+    ~/.claude/skills
+    ~/.claude/hooks
     ~/.local/share/wallpapers
 )
 
@@ -241,7 +263,8 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-arch" "$HOME/.bash_profile"
 # Created before stow runs: a missing target directory gets "folded" into one
 # symlink into the repo, and then Claude Code (~/.claude) or any app writing
 # under ~/.config writes into the working tree. scripts/verify.sh checks this.
-mkdir -p "$HOME/.config" "$HOME/.claude"
+# fastfetch too: it is in the backup list above, so it is gone by now.
+mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
 
 # An explicit list rather than every directory: the repo also holds macOS
 # packages (aerospace, sketchybar, autoraise, ghostty, zsh) and Windows ones

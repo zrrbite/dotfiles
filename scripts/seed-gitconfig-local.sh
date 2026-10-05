@@ -9,7 +9,10 @@
 # (gpg.*, commit/tag.gpgsign), and network and repo-routing settings a work
 # machine typically has (http.*/https.* proxy and certificates, includeIf --
 # often where a work email lives -- url.*.insteadOf, core.autocrlf,
-# core.sshCommand). Never overwrites an existing ~/.gitconfig.local.
+# core.sshCommand), and an existing core.hooksPath / core.excludesFile -- so a
+# machine that already had its own global hooks or ignore file keeps them
+# instead of silently switching to this repo's. Never overwrites an existing
+# ~/.gitconfig.local.
 # stow_windows.ps1 and install_windows.ps1 carry the same key list.
 #
 # Usage: scripts/seed-gitconfig-local.sh [--dry-run]
@@ -44,7 +47,7 @@ if [ -f "$SOURCE" ]; then
         "$DOTFILES_DIR"/*) ;;
         *)
             keys="$(git config -f "$SOURCE" --get-regexp \
-                '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$)' || true)"
+                '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$|core\.hookspath$|core\.excludesfile$)' || true)"
             ;;
     esac
 fi
