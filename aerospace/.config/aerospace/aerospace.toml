@@ -103,6 +103,9 @@ alt-shift-q = 'close'
 
 # Launch Alacritty (matches alt+enter in GlazeWM → terminal)
 alt-enter = 'exec-and-forget open -na Alacritty'
+# Ghostty, on trial alongside Alacritty. `open -na` is what Ghostty's own help
+# recommends on macOS; its `+new-window` action is Linux-only.
+alt-shift-enter = 'exec-and-forget open -na Ghostty'
 
 # Reload config (matches alt+shift+r in GlazeWM)
 alt-shift-r = 'reload-config'

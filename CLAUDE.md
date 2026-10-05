@@ -169,7 +169,12 @@ stow list.
   `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
   it keeps the cursor on the keyboard-focused window so AutoRaise does not
   immediately steal focus back. Needs Accessibility permission.
-- **alacritty**: Cross-platform terminal with Nord theme
+- **alacritty**: Cross-platform terminal with Nord theme (`alt-enter`)
+- **ghostty**: On trial alongside Alacritty since 2026-10-05 (`alt-shift-enter`).
+  `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,
+  opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
+  protocol and a native window. Alacritty stays until the trial is decided;
+  don't remove either one without asking
 
 **Windows 10/11:**
 - **Git, Neovim, Clang, Starship**: All work identically to Linux/macOS
@@ -217,6 +222,11 @@ stow list.
 - **alacritty**: GPU-accelerated terminal with Nord theme
   - macOS primary terminal
   - Optional on Arch/WSL (foot is default on Arch)
+
+- **ghostty**: Native-UI GPU terminal, on trial on macOS alongside Alacritty
+  - Config is `config.ghostty`; check edits with `ghostty +validate-config`
+  - Keeps a block cursor (`shell-integration-features = no-cursor`) and leaves
+    Option alone, because the Danish layout types `{ } [ ] | @ $` with it
 
 - **claude**: Claude Code global skills (stowed to `~/.claude/skills/`)
   - `/review` - Code review current diff for bugs, security issues, style violations

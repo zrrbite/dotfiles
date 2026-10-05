@@ -212,6 +212,7 @@ stow */        # everything
 |---------|-------------|
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
 | `alacritty` | GPU-accelerated terminal with Nord theme (primary on macOS) |
+| `ghostty` | Native-UI terminal on trial alongside Alacritty (macOS) - same Nord config, adds ligatures and images |
 | `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
