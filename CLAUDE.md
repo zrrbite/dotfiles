@@ -47,12 +47,21 @@ Never put identity or credentials back into the tracked file.
 ```
 
 ### Managing Configs with Stow (Linux/macOS)
+Run from the repo root, always with `-t ~`. The repo may not be cloned at
+`~/dotfiles`, and without `-t` stow links into the repo's parent directory.
 ```bash
-stow <package>        # Enable a package (creates symlinks)
-stow -D <package>     # Remove a package's symlinks
-stow -R <package>     # Re-stow (useful after adding files)
-stow */               # Stow all packages
+stow -n -v -t ~ <package>   # Preview: what would be linked, any conflicts
+stow -t ~ <package>         # Enable a package (creates symlinks)
+stow -D -t ~ <package>      # Remove a package's symlinks
+stow -R -t ~ <package>      # Re-stow (useful after adding files)
+./reload.sh                 # git pull + re-stow this OS's packages + reload the desktop
+scripts/verify.sh           # Read-only: is everything applied? Exit 0 = yes
 ```
+Which packages each OS gets is defined once, in `scripts/packages.sh`. The
+installers, `verify.sh` and `reload.sh` all read it, so add a package there.
+Create `~/.config` and `~/.claude` before stowing on a fresh machine;
+otherwise stow links those whole directories into the repo, and apps write
+into the working tree. The installers do this, and `verify.sh` checks it.
 
 ### Managing Configs on Windows
 ```powershell
@@ -204,7 +213,8 @@ stow list.
   - Batch fixes: `Space+cf` (C++)
 
 - **git**: Extensive git aliases (`git cf` for formatting), global hooks for code quality
-  - Uses meld for diff/merge (Arch/WSL) or built-in tools (macOS)
+  - Uses meld for diff/merge. meld isn't installed on macOS, so set
+    `diff.tool`/`merge.tool = nvimdiff` in `~/.gitconfig.local` there
   - Global hooks at `~/.git-hooks/` (automatically symlinked via stow, applies to all repos)
   - **Pre-commit hook**: Enforces clang-format on C++ files
   - **Pre-push hook**: Runs clang-tidy on changed files before push
@@ -221,7 +231,7 @@ stow list.
   - Four quality gates: Prettier (pre-commit) → TypeScript + ESLint + Vitest (pre-push)
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
-  - macOS primary terminal
+  - Second terminal on macOS (`alt-shift-enter`); Ghostty is the default
   - Optional on Arch/WSL (foot is default on Arch)
 
 - **ghostty**: Native-UI GPU terminal, on trial on macOS alongside Alacritty

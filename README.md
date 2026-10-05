@@ -63,6 +63,10 @@ git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install_darwin.sh --with-desktop
 ```
 
+Needs Command Line Tools first (`xcode-select --install`). Afterwards, grant
+Accessibility to AeroSpace and AutoRaise. The script ends by running
+`scripts/verify.sh`, and exits non-zero if anything failed.
+
 The script is safe to re-run: by default it installs only missing packages and
 leaves your desktop settings alone.
 
@@ -84,7 +88,7 @@ Preview any run first:
 
 Installs via Homebrew:
 - All CLI tools from WSL setup
-- Alacritty terminal with Nord theme
+- Ghostty (default, `alt-enter`) and Alacritty (`alt-shift-enter`), both Nord
 - Platform-specific tools (lldb instead of gdb)
 - AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland
 - sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)
@@ -131,11 +135,12 @@ cd ~/dotfiles && ./reload.sh
 ```
 
 This will:
-- Pull latest changes from git
-- Re-stow all packages (picks up new files)
-- Reload Hyprland config
-- Reload waybar
-- Source bashrc for current terminal
+- Pull latest changes from git (fast-forward only)
+- Re-stow this OS's packages from `scripts/packages.sh` (picks up new files)
+- Reload the desktop: AeroSpace and sketchybar on macOS, Hyprland and waybar on Arch
+
+Then open a new shell for shell config changes. It works wherever the repo is
+cloned.
 
 ## What's Included
 
@@ -201,10 +206,15 @@ If you prefer to install selectively:
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow foot      # just terminal
-stow hypr      # just hyprland
-stow */        # everything
+mkdir -p ~/.config ~/.claude   # so stow never links these whole dirs into the repo
+stow -n -v -t ~ foot           # preview
+stow -t ~ foot                 # just terminal
+stow -t ~ hypr                 # just hyprland
+scripts/verify.sh foot hypr    # check
 ```
+
+The per-OS package lists are in `scripts/packages.sh`. To set up a machine
+with an AI agent, point it at `AGENTS.md`.
 
 ## Packages
 
