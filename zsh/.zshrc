@@ -119,3 +119,28 @@ alias grep='grep --color=auto'
 # -s (prevent system sleep) is valid only on AC power, and NOTHING here stops
 # a MacBook sleeping when the lid is closed. Plugged in, lid open.
 alias roast='"$HOME/Development/bullet-ble.git/build/bullet-console" --usb'
+
+# ---------------------------------------------------------------------- tmux --
+# t        -- tmux session named after the current directory, started in it
+# t name   -- attach to session "name", creating it if it doesn't exist
+# One terminal window with a session per project, instead of a terminal window
+# per project spread across workspaces. Sessions outlive the window: close it,
+# open a new one, `t` again.
+#
+# Inside tmux it switches the current client rather than nesting tmux in
+# tmux. tmux forbids "." and ":" in session names, so they become "_"
+# (dotfiles.git -> dotfiles_git).
+t() {
+    command -v tmux >/dev/null 2>&1 || { echo "t: tmux is not installed" >&2; return 1; }
+    local name="${1:-${PWD:t}}"
+    name="${name//[.:]/_}"
+    if [ -n "$TMUX" ]; then
+        tmux has-session -t "=$name" 2>/dev/null || tmux new-session -d -s "$name" -c "$PWD"
+        tmux switch-client -t "=$name"
+    else
+        tmux new-session -A -s "$name" -c "$PWD"
+    fi
+}
+# Tab-complete existing session names.
+_t() { compadd -- ${(f)"$(tmux list-sessions -F '#S' 2>/dev/null)"} }
+(( $+functions[compdef] )) && compdef _t t
