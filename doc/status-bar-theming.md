@@ -16,17 +16,21 @@ repo, so it is not Nord-themed. Theming it would mean vendoring a widget pack.
 
 ## The colour contract
 
-Every module on the right side of the bar is a **solid Nord accent pill with
-dark `#2e3440` text**. The accent identifies the module at a glance:
+Every module on the right side of the bar has one Nord accent that identifies
+it at a glance. **Waybar** draws it as a solid accent pill with dark `#2e3440`
+text. **Sketchybar** draws it *tinted*: the accent at 20% alpha behind icon and
+text in the full accent. The solid pills read as clunky on macOS; tinted was
+picked from four live variants on 2026-10-05. The accents themselves are the
+same on both bars:
 
 | Module | Accent | Hex | State override |
 |---|---|---|---|
 | cpu | nord14 green | `#a3be8c` | — |
 | memory | nord15 purple | `#b48ead` | — |
 | network | nord9 blue | `#81a1c1` | disconnected → nord11 red `#bf616a` |
-| volume | nord13 yellow | `#ebcb8b` | muted → nord3 grey `#4c566a`, light text |
+| volume | nord13 yellow | `#ebcb8b` | muted → nord3 grey `#4c566a`, light text (sketchybar: 40% grey wash, since 20% vanishes) |
 | battery | nord14 green | `#a3be8c` | charging → nord13 yellow; <20% → nord11 red |
-| clock | nord10 indigo | `#5e81ac` | — |
+| clock | nord10 indigo | `#5e81ac` | sketchybar: indigo tint, nord8 cyan text, because indigo text is too dark to read |
 
 Left side is unfilled: the focused workspace gets a nord10 indigo pill, and the
 front-app name is a bare bold `#eceff4` label with no background, led by the
@@ -49,9 +53,9 @@ JetBrainsMono Nerd Font Bold at 13pt for labels and 15pt for icons, in 26pt
 pills. Waybar sets `font-size: 13px`, so labels match; icons run two points
 larger because Nerd Font glyphs read small next to digits at the same size.
 
-Everything is Bold. Regular labels look noticeably thin here — dark text on a
-saturated fill optically thins its strokes, the reverse of the light-on-dark
-case waybar mostly deals with.
+Everything is Bold. Regular labels looked noticeably thin on the old solid
+fills (dark text on a saturated fill optically thins its strokes), and Bold
+also keeps the tinted accent text legible against the bar.
 
 Only `Regular` and `Bold` are styles of the base family. JetBrains ships the
 other weights as *separate families*, so Medium is
@@ -63,22 +67,24 @@ The bar stays 32pt tall. `aerospace.toml` sets `gaps.outer.top = 44`, which is
 the 32pt bar plus the same 12pt margin used on the other three sides — so
 changing the bar height means changing that gap too, or windows will sit wrong.
 
-### Deviation: dark text everywhere
+### Deviation: tinted instead of solid
 
-Waybar is internally inconsistent. `#cpu`, `#pulseaudio` and `#temperature` set
-`color: #2e3440`, but `#memory` and `#network` omit it and inherit light
-`#d8dee9`. Light-on-green is roughly 1.4:1 contrast — legible only because you
-already know what it says.
+The two bars no longer match pixel for pixel. Sketchybar's tint is
+`0x33RRGGBB`, the accent's RGB at 20% alpha. `sketchybarrc` and each stateful
+plugin define a one-line `tint` helper for it. To bring waybar in line, give
+each module `background: rgba(<accent>, 0.2)` and `color: <accent>`.
 
-Sketchybar normalises to dark text on every saturated fill, about 8:1. If you
-ever want them byte-identical, change waybar rather than sketchybar.
+Waybar was also internally inconsistent: `#cpu`, `#pulseaudio` and
+`#temperature` set `color: #2e3440`, but `#memory` and `#network` inherit light
+`#d8dee9`, which is about 1.4:1 contrast on green. Fixing that is part of the
+same change.
 
 ## Where colours live in sketchybar
 
 Split by whether the colour is fixed or depends on state:
 
 - **`sketchybarrc`** — the Nord palette, bar appearance, per-item padding, and
-  each module's *default* fill. Static styling only.
+  each module's *default* colours. Static styling only.
 - **`plugins/*.sh`** — colours that change with state. A plugin re-sends
   `background.color`, `icon.color` and `label.color` on every tick, so it owns
   its module's appearance whenever more than one state exists.
@@ -87,8 +93,16 @@ This is why `volume.sh`, `network.sh` and `battery.sh` each redeclare the Nord
 values they need at the top. The `--set` in `sketchybarrc` only supplies the
 colour used before the first tick.
 
-Adding a module with no states? Set the fill in `sketchybarrc` and leave the
-plugin to set `icon`/`label` only, as `cpu.sh` and `memory.sh` do.
+Adding a module with no states? Set `icon.color`, `label.color` and
+`background.color="$(tint $ACCENT)"` in `sketchybarrc`, and leave the plugin to
+set `icon`/`label` only, as `cpu.sh` and `memory.sh` do.
+
+**Icons are written by codepoint when in doubt.** The battery and clock icons
+were empty strings from the commit that added sketchybar. The Nerd Font glyphs
+were lost on the way into the file, and the solid fills hid it. Material
+Design icons live at `U+F0000` and above (`nf-md-battery_*` is
+`U+F0079`–`U+F0084`, `nf-md-clock_outline` is `U+F0150`). Check with
+`grep -n 'ICON=""'` or `od -c` that a glyph actually landed.
 
 ## Sketchybar constraints worth knowing
 

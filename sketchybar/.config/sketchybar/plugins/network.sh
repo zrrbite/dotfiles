@@ -1,9 +1,12 @@
 #!/bin/bash
 
 # Nord
-NORD0=0xff2e3440
 NORD9=0xff81a1c1
 NORD11=0xffbf616a
+
+# Tinted style: the item's accent at 20% alpha behind text in the full accent,
+# instead of a solid accent fill with dark text. tint 0xffRRGGBB -> 0x33RRGGBB
+tint() { echo "0x33${1:4}"; }
 
 # The `airport` CLI was gutted in macOS 14.4 (prints only a deprecation
 # warning, no data), so SSID comes from networksetup instead.
@@ -61,6 +64,6 @@ fi
 sketchybar --set "$NAME" \
     icon="$ICON" \
     label="$LABEL" \
-    icon.color=$NORD0 \
-    label.color=$NORD0 \
-    background.color="$COLOR"
+    icon.color="$COLOR" \
+    label.color="$COLOR" \
+    background.color="$(tint "$COLOR")"

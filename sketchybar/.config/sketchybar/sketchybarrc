@@ -113,36 +113,43 @@ sketchybar --add item front_app left \
         script="$PLUGIN_DIR/front_app.sh" \
     --subscribe front_app front_app_switched
 
+# -- Right side: tinted pills --
+# Each item is its accent at 20% alpha behind text in the full accent (see
+# doc/status-bar-theming.md). Items whose colour changes with state (battery,
+# volume, network) get theirs from their plugin; the rest are set here.
+tint() { echo "0x33${1:4}"; }
+
 # -- Clock (right) --
+# Cyan rather than the contract's nord10 indigo: indigo text is too dark to
+# read on the bar. The tint underneath is still indigo.
 sketchybar --add item clock right \
     --set clock \
         update_freq=30 \
-        icon="" \
-        background.color=$NORD10 \
+        icon="󰅐" \
+        icon.color=$NORD8 \
+        label.color=$NORD8 \
+        background.color="$(tint $NORD10)" \
         script="$PLUGIN_DIR/clock.sh"
 
 # -- Battery (right) --
-# Fill colour is set by the plugin: green / yellow charging / red low
+# Colours are set by the plugin: green / yellow charging / red low
 sketchybar --add item battery right \
     --set battery \
         update_freq=120 \
-        background.color=$NORD14 \
         script="$PLUGIN_DIR/battery.sh"
 
 # -- Volume (right) --
-# Fill colour is set by the plugin: yellow / grey when muted
+# Colours are set by the plugin: yellow / grey when muted
 sketchybar --add item volume right \
     --set volume \
         update_freq=5 \
-        background.color=$NORD13 \
         script="$PLUGIN_DIR/volume.sh"
 
 # -- Network (right) --
-# Fill colour is set by the plugin: blue / red when disconnected
+# Colours are set by the plugin: blue / red when disconnected
 sketchybar --add item network right \
     --set network \
         update_freq=10 \
-        background.color=$NORD9 \
         script="$PLUGIN_DIR/network.sh"
 
 # -- Memory (right) --
@@ -150,7 +157,9 @@ sketchybar --add item memory right \
     --set memory \
         update_freq=10 \
         icon="󰍛" \
-        background.color=$NORD15 \
+        icon.color=$NORD15 \
+        label.color=$NORD15 \
+        background.color="$(tint $NORD15)" \
         script="$PLUGIN_DIR/memory.sh"
 
 # -- CPU (right) --
@@ -161,7 +170,9 @@ sketchybar --add item cpu right \
     --set cpu \
         update_freq=10 \
         icon="󰻠" \
-        background.color=$NORD14 \
+        icon.color=$NORD14 \
+        label.color=$NORD14 \
+        background.color="$(tint $NORD14)" \
         script="$PLUGIN_DIR/cpu.sh"
 
 # Force initial update
