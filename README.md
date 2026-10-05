@@ -373,11 +373,14 @@ git push --no-verify
 
 **Pre-push (Quality Gates):**
 - Detects: `package.json` AND `tsconfig.json` exist
-- Runs sequentially:
+- Runs sequentially, **each only if `package.json` defines that script**:
   1. Type checking: `npm run type-check`
   2. Linting: `npm run lint`
-  3. Tests: `npm run test:run` (if script exists)
-- Blocks push if any check fails
+  3. Tests: `npm run test:run`
+- A repo that defines none of them pushes untouched. The hook is global, so it
+  must not get in the way of repos that never opted in
+- Blocks push if any check that does run fails, or if `node_modules` is
+  missing when there is something to run
 
 **When TypeScript pre-commit blocks:**
 ```bash

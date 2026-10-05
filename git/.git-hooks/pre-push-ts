@@ -1,6 +1,11 @@
 #!/bin/bash
 # TypeScript/JavaScript pre-push hook
-# Runs type checking and linting before push
+# Runs type checking, linting and tests before push -- each only if the repo's
+# package.json defines the script for it.
+#
+# This hook is global (core.hooksPath), so it runs in every TypeScript repo,
+# not just ones made by bootstrap-ts-project.sh. A repo that defines none of
+# type-check / lint / test:run is not opted in, and pushes untouched.
 
 echo "Running pre-push checks..."
 
@@ -10,73 +15,89 @@ if [ ! -f "tsconfig.json" ]; then
     exit 0
 fi
 
-# Check if node_modules exists
+# Does package.json define this npm script? Reads the "scripts" object with
+# node, so a dependency or config key that happens to be called "lint" does
+# not count. Without node, approximates the same thing in text: join the file
+# onto one line, cut out the "scripts": { ... } block, and look for the key
+# only inside it. That is fooled only by a script whose command contains "}".
+has_script() {
+    if command -v node >/dev/null 2>&1; then
+        node -e 'const s = require("./package.json").scripts || {};
+                 process.exit(Object.prototype.hasOwnProperty.call(s, process.argv[1]) ? 0 : 1)' "$1" 2>/dev/null
+    else
+        tr -d '\n' < package.json 2>/dev/null \
+            | grep -o '"scripts"[[:space:]]*:[[:space:]]*{[^}]*}' \
+            | grep -q "\"$1\"[[:space:]]*:"
+    fi
+}
+
+CHECKS=()
+for script in type-check lint test:run; do
+    if has_script "$script"; then
+        CHECKS+=("$script")
+    else
+        echo "  - No \"$script\" script in package.json, skipping"
+    fi
+done
+
+if [ ${#CHECKS[@]} -eq 0 ]; then
+    echo "  No pre-push checks defined. Proceeding with push..."
+    exit 0
+fi
+
+# Check if node_modules exists -- only now, since there is something to run
 if [ ! -d "node_modules" ]; then
     echo "Error: node_modules not found. Run 'npm install' first."
     exit 1
 fi
 
-# Type checking
-echo "  → Type checking with tsc..."
-if ! npm run type-check &> /tmp/tsc-output.txt; then
-    echo ""
-    echo "╔════════════════════════════════════════════════════════╗"
-    echo "║   TYPE ERRORS DETECTED!                               ║"
-    echo "╚════════════════════════════════════════════════════════╝"
-    echo ""
-    cat /tmp/tsc-output.txt
-    echo ""
-    echo "Fix type errors before pushing."
-    echo ""
-    echo "To bypass (not recommended):"
-    echo "  git push --no-verify"
-    echo ""
-    exit 1
-fi
-echo "  ✓ Type checking passed"
+OUTPUT="$(mktemp -t pre-push-ts.XXXXXX)"
+trap 'rm -f "$OUTPUT"' EXIT
 
-# Linting
-echo "  → Linting..."
-if ! npm run lint &> /tmp/lint-output.txt; then
-    echo ""
-    echo "╔════════════════════════════════════════════════════════╗"
-    echo "║   LINT ERRORS DETECTED!                               ║"
-    echo "╚════════════════════════════════════════════════════════╝"
-    echo ""
-    cat /tmp/lint-output.txt
-    echo ""
-    echo "Fix lint errors before pushing."
-    echo ""
-    echo "Some errors may be auto-fixable:"
-    echo "  npm run lint:fix"
-    echo ""
-    echo "To bypass (not recommended):"
-    echo "  git push --no-verify"
-    echo ""
-    exit 1
-fi
-echo "  ✓ Linting passed"
-
-# Testing (if package.json has test script)
-if grep -q '"test:run"' package.json 2>/dev/null; then
-    echo "  → Running tests with Vitest..."
-    if ! npm run test:run &> /tmp/vitest-output.txt; then
+# run_check <script> <progress> <banner> <advice...>
+run_check() {
+    local script="$1" progress="$2" banner="$3"
+    shift 3
+    echo "  → $progress..."
+    if ! npm run "$script" &> "$OUTPUT"; then
         echo ""
         echo "╔════════════════════════════════════════════════════════╗"
-        echo "║   TEST FAILURES DETECTED!                             ║"
+        printf "║   %-53s║\n" "$banner"
         echo "╚════════════════════════════════════════════════════════╝"
         echo ""
-        cat /tmp/vitest-output.txt
+        cat "$OUTPUT"
         echo ""
-        echo "Fix failing tests before pushing."
+        for line in "$@"; do
+            echo "$line"
+        done
         echo ""
         echo "To bypass (not recommended):"
         echo "  git push --no-verify"
         echo ""
         exit 1
     fi
-    echo "  ✓ Tests passed"
-fi
+}
+
+for script in "${CHECKS[@]}"; do
+    case "$script" in
+        type-check)
+            run_check type-check "Type checking with tsc" "TYPE ERRORS DETECTED!" \
+                "Fix type errors before pushing."
+            echo "  ✓ Type checking passed"
+            ;;
+        lint)
+            run_check lint "Linting" "LINT ERRORS DETECTED!" \
+                "Fix lint errors before pushing." "" \
+                "Some errors may be auto-fixable:" "  npm run lint:fix"
+            echo "  ✓ Linting passed"
+            ;;
+        test:run)
+            run_check test:run "Running tests" "TEST FAILURES DETECTED!" \
+                "Fix failing tests before pushing."
+            echo "  ✓ Tests passed"
+            ;;
+    esac
+done
 
 echo ""
 echo "✓ All pre-push checks passed. Proceeding with push..."

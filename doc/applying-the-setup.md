@@ -200,11 +200,12 @@ the hooks enforce Martin's own rules everywhere:
 - `pre-commit-ts` runs `npm run format:check` when that script exists.
 - `pre-push` runs clang-tidy on changed C++ files when `compile_commands.json`
   exists.
-- `pre-push-ts` runs `npm run type-check` and `npm run lint` in any repo with
-  `package.json` and `tsconfig.json`, **without checking those scripts exist**.
-  It runs `npm run test:run` only when that script exists, and it fails when
-  `node_modules` is missing. **This will block pushes in work TypeScript
-  repos.**
+- `pre-push-ts`, in any repo with `package.json` and `tsconfig.json`, runs
+  each of `npm run type-check`, `lint` and `test:run` **that the repo defines**,
+  and skips the rest. A repo that defines none of them pushes untouched.
+  Otherwise, a failing check or a missing `node_modules` blocks the push. This
+  bites only work repos whose `lint` or `type-check` scripts exist but don't
+  pass locally, or that need a setup step first.
 
 Ask the human whether they want the hooks at work. If not, put `[core]
 hooksPath = ~/.git-hooks-none` in `~/.gitconfig.local` and leave that
