@@ -284,6 +284,15 @@ for pkg in "${STOW_PACKAGES[@]}"; do
 done
 
 
+# tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
+# tmux/.tmux.conf if present; pinned to a release tag.
+if [ ! -d "$HOME/.tmux/plugins/tmux-resurrect" ]; then
+    info "Installing tmux-resurrect..."
+    git clone -q --depth 1 --branch v4.0.0 \
+        https://github.com/tmux-plugins/tmux-resurrect "$HOME/.tmux/plugins/tmux-resurrect" \
+        || FAILURES+=("tmux-resurrect clone failed; tmux works without it")
+fi
+
 echo ""
 info "Verifying..."
 "$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")

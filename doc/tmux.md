@@ -45,6 +45,9 @@ lists every binding.
 | Enter copy mode | `Ctrl+a` `[` |
 | Move / page / search | `j` `k`, `Ctrl+u` `Ctrl+d`, `g` `G`, `/` |
 | Select / copy / leave | `v` / `y` / `q`. Paste with `⌘V`. |
+| **Surviving a reboot** (tmux-resurrect) | |
+| Save every session now | `Ctrl+a` `Ctrl+s` |
+| Restore the last save | `Ctrl+a` `Ctrl+r` |
 | **Other** | |
 | tmux command prompt | `Ctrl+a` `:` |
 | Reload the config | `Ctrl+a` `r` |
@@ -56,6 +59,10 @@ Gotchas:
   `⌘ ←`: Ghostty and Alacritty send Home, which works in tmux.
 - **Last-session isn't `Ctrl+a` `L`**, tmux's default, because `L` resizes
   here. It's `Tab`.
+- **Sessions survive closing the terminal, but not a reboot,** unless you
+  saved them. Save with `Ctrl+a` `Ctrl+s` before restarting. After the
+  reboot, start tmux (`t`) and press `Ctrl+a` `Ctrl+r`. Saving is manual;
+  the auto-save plugin, tmux-continuum, isn't installed.
 - **Config changes don't reach running sessions.** Reload with `Ctrl+a` `r`.
   Terminal features such as colour need a detach and reattach as well.
 

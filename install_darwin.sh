@@ -403,6 +403,15 @@ run stow -t "$HOME" -R --ignore='config\.jsonc' fastfetch || FAILURES+=("stow fa
 # into $HOME -- not through a folded link over the repo's tracked config.jsonc.
 run ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
 
+# tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
+# tmux/.tmux.conf if present; pinned to a release tag.
+if [ ! -d "$HOME/.tmux/plugins/tmux-resurrect" ]; then
+    info "Installing tmux-resurrect..."
+    run git clone -q --depth 1 --branch v4.0.0 \
+        https://github.com/tmux-plugins/tmux-resurrect "$HOME/.tmux/plugins/tmux-resurrect" \
+        || FAILURES+=("tmux-resurrect clone failed; tmux works without it")
+fi
+
 # oh-my-zsh, which zsh/.zshrc loads when present. Cloned rather than run
 # through its install.sh, because that script rewrites ~/.zshrc -- which is
 # the stowed file from this repo.

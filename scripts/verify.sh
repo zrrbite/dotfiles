@@ -135,6 +135,15 @@ if [ "$(realpath "$HOME/.gitconfig" 2>/dev/null)" = "$REPO_REAL/git/.gitconfig" 
     done
 fi
 
+# -- tmux plugin ----------------------------------------------------------------
+if command -v tmux >/dev/null 2>&1; then
+    if [ -f "$HOME/.tmux/plugins/tmux-resurrect/resurrect.tmux" ]; then
+        pass "tmux-resurrect installed"
+    else
+        warn "tmux-resurrect missing: sessions won't survive a reboot (the installers clone it)"
+    fi
+fi
+
 # -- Running services (macOS desktop) -----------------------------------------
 if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     for proc in AeroSpace sketchybar borders; do
