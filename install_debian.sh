@@ -100,8 +100,9 @@ else
     info "Starship already installed"
 fi
 
-# Install zoxide
-if ! command -v zoxide &> /dev/null; then
+# Install zoxide. Its installer puts it in ~/.local/bin, which only the stowed
+# .bashrc adds to PATH -- so check there too, or every re-run reinstalls it.
+if ! command -v zoxide &> /dev/null && [ ! -x "$HOME/.local/bin/zoxide" ]; then
     info "Installing zoxide..."
     curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 else

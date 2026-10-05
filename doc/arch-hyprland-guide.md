@@ -120,7 +120,7 @@ For a quick, pre-configured setup instead of manual configuration, use the [dotf
 
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./install.sh
+cd ~/dotfiles && ./install_arch.sh
 ```
 
 This installs all packages and symlinks configs for:
@@ -134,7 +134,8 @@ This installs all packages and symlinks configs for:
 - **Git** config with aliases
 - Audio via pipewire
 
-After install, log out and select Hyprland as your session.
+After install, reboot and log in on TTY1: Hyprland starts automatically
+(`bash/.bash_profile-arch`). There is no display manager to pick a session in.
 
 See `~/dotfiles/README.md` for key bindings (`Super + F1` shows all) and how to manage configs with GNU Stow.
 

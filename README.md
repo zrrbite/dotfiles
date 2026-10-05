@@ -42,7 +42,8 @@ The install script will:
 - Setup Hyprland compositor
 - Enable audio (pipewire)
 
-Then log out and select Hyprland as your session.
+Then reboot. Hyprland starts automatically when you log in on TTY1
+(`bash/.bash_profile-arch`); there is no display manager.
 
 ### WSL (Ubuntu/Debian) - CLI Only
 

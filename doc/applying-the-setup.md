@@ -29,7 +29,8 @@ app-state directory is a symlink into the repo, that the repo is clean, that
 git identity is set and doesn't come from the tracked file, and, on macOS,
 that the desktop services are running. It ends by listing what only a person
 can confirm, such as Accessibility permissions. On Path B, pass the packages
-you applied: `scripts/verify.sh nvim starship tmux`.
+you applied: `scripts/verify.sh nvim starship tmux`. If you linked
+`claude` without `CLAUDE.md`, name it `claude-skills` there.
 
 On Windows there is no verify script yet; [Path C](#path-c-windows) lists the
 checks.
@@ -83,6 +84,25 @@ re-run safe: by default it only installs what's missing.
   git config -f ~/.gitconfig.local merge.tool nvimdiff
   ```
 
+### Prerequisites (Linux)
+
+- **sudo.** Both installers call `sudo`; the human types the password.
+- **Git identity on a fresh machine**, before the installer, as on macOS but
+  with a Linux credential helper:
+  ```bash
+  git config -f ~/.gitconfig.local user.name  "Martin Kjeldsen"
+  git config -f ~/.gitconfig.local user.email "<ask the human>"
+  git config -f ~/.gitconfig.local credential.helper "cache --timeout=86400"   # or `store` (plaintext)
+  ```
+- **Arch with an NVIDIA GPU:** the driver, kernel parameters and mkinitcpio
+  are a human, hardware-specific job. Follow `doc/arch-hyprland-guide.md`
+  ("Bare Metal Differences") *before* the installer. The guide's
+  `env =` lines for Hyprland would go into the shared, tracked
+  `hypr/.config/hypr/hyprland.conf`, which changes every machine. Don't
+  commit them; tell the human.
+- **Arch:** Hyprland starts on login on TTY1 (`bash/.bash_profile-arch`).
+  There is no display manager, so after the installer: reboot, log in on TTY1.
+
 ### Run
 
 ```bash
@@ -135,16 +155,16 @@ Martin's choices. Apply packages one at a time.
 
 Find out the following and report it before changing anything:
 
-| Question | macOS | Windows |
-|---|---|---|
-| Is the user an admin? | `id -Gn \| grep -qw admin` | `whoami /groups` and look for Administrators |
-| Is the machine managed (MDM)? | `profiles status -type enrollment` | Settings → Accounts → Access work or school |
-| Package manager present? | `command -v brew` | `scoop --version`, `winget --version` |
-| Existing git config, with origins | `git config --list --show-origin --show-scope` | same |
-| Existing global hooks | `git config --global --get core.hooksPath` | same |
-| Do work repos use hook managers? | look for `.husky/`, `lefthook.yml`, `.pre-commit-config.yaml` | same |
-| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,ghostty,aerospace,sketchybar}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
-| Proxy or blocked downloads? | `env \| grep -i proxy`; does `curl -I https://github.com` work? | same, in PowerShell |
+| Question | macOS | Linux | Windows |
+|---|---|---|---|
+| Is the user an admin? | `id -Gn \| grep -qw admin` | `sudo -n true` or `id -nG \| grep -qwE 'sudo\|wheel'` | `whoami /groups` and look for Administrators |
+| Is the machine managed? | `profiles status -type enrollment` | ask; look for config management (e.g. `/etc/puppetlabs`, `/etc/chef`, a `realm` join) | Settings → Accounts → Access work or school |
+| Package manager present? | `command -v brew` | `apt` / `pacman`; `command -v stow` | `scoop --version`, `winget --version` |
+| Existing git config, with origins | `git config --list --show-origin --show-scope` | same | same |
+| Existing global hooks | `git config --global --get core.hooksPath` | same | same |
+| Do work repos use hook managers? | look for `.husky/`, `lefthook.yml`, `.pre-commit-config.yaml` | same | same |
+| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,ghostty,aerospace,sketchybar}` | `ls -la ~/.bashrc ~/.gitconfig ~/.tmux.conf ~/.gdbinit ~/.config/{nvim,starship.toml}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
+| Proxy or blocked downloads? | `env \| grep -i proxy`; does `curl -I https://github.com` work? | same | same, in PowerShell |
 
 If the machine is managed, installing casks into `/Applications`, granting
 Accessibility, or running Scoop's installer may be blocked. Say so up front.
@@ -158,6 +178,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `nvim` | all | ✅ | Full IDE config. Installs plugins from GitHub on first launch and needs a C compiler and `make` for treesitter. TypeScript needs `npm i -g typescript-language-server typescript`. |
 | `starship` | all | ✅ | Prompt only. |
 | `tmux` | mac, Linux | ✅ | `Ctrl+a` prefix. |
+| `gdb` | Linux | ✅ | `~/.gdbinit`. It has hardcoded `/home/zrrbite` paths, so on another user account those lines do nothing. |
 | `clang` | all | ✅ with care | `~/.clang-format`/`~/.clang-tidy` are only fallbacks. A repo's own config wins, but a work repo *without* one would pick up Allman/Unreal Engine style. |
 | `ghostty` | mac | ✅ | Default terminal (`alt-enter`), Nord. `ghostty` cask. |
 | `alacritty` | mac (Linux optional) | ✅ | Second terminal (`alt-shift-enter`), same Nord config. Only one of the two is needed. |
@@ -345,7 +366,7 @@ What the shared file still changes, and how to undo each item in
 | `core.hooksPath = ~/.git-hooks` | Global hooks run in **every** repo, and each repo's own `.git/hooks` stop running. Hook managers that set a repo-local `core.hooksPath` (husky, lefthook) still win. | See below. |
 | `core.excludesFile` → `.gitignore-global` | Ignores `*.pdf` and `*.zip` in every repo, so such files silently never get added. | `[core] excludesFile = ~/.gitignore-work` |
 | `diff.noprefix = true` | Diffs without `a/` and `b/` prefixes, which some patch tooling rejects. | `[diff] noprefix = false` |
-| `diff.tool`, `merge.tool` = `meld` | meld is installed on Linux and by `install_windows.ps1`, not on macOS. | `nvimdiff` on macOS (or `scoop install meld` on Windows) |
+| `diff.tool`, `merge.tool` = `meld` | Installed by `install_arch.sh` and `install_windows.ps1`, not by `install_debian.sh` or on macOS. | `nvimdiff`, or install meld |
 | `interactive.diffFilter = delta` | `git add -p` breaks without delta. | install delta |
 | `core.editor = nvim`, `core.pager = delta` | Commit and diff break if these tools are missing. | install them, or override |
 | `pull.rebase`, `rebase.autoStash`, `push.default = current` | Different defaults from stock git. Harmless, but surprising. | as needed |
@@ -377,6 +398,7 @@ The `claude` package holds `CLAUDE.md` (personal working rules), `hooks/` and
 ```bash
 mkdir -p ~/.claude
 stow -n -v -t ~ --ignore='CLAUDE\.md' claude   # preview: skills + hooks only
+scripts/verify.sh claude-skills                 # after linking: checks it without CLAUDE.md
 ```
 
 On Windows, `stow_windows.ps1 claude` and `install_windows.ps1` link only
