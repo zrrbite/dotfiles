@@ -64,6 +64,10 @@ git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install_darwin.sh                   # add --with-desktop on a fresh machine
 ```
 
+`--with-desktop` also makes Finder bearable (hidden files, extensions, path
+bar, list view, no `.DS_Store` on network or USB drives). Run that part on
+its own, or undo it, with `scripts/finder-defaults.sh [--undo]`.
+
 Needs Command Line Tools first (`xcode-select --install`). Afterwards, grant
 Accessibility to AeroSpace and AutoRaise. The script ends by running
 `scripts/verify.sh`, and exits non-zero if anything failed.

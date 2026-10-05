@@ -453,7 +453,10 @@ if [ "$WITH_DESKTOP" = true ]; then
 
     # Hide desktop icons
     run defaults write com.apple.finder CreateDesktop -bool false
-    run_ok killall Finder
+    # Hidden files, extensions, path and status bars, list view, no .DS_Store
+    # on network or USB drives. Also runnable alone; --undo reverts it. It
+    # restarts Finder itself.
+    run "$DOTFILES_DIR/scripts/finder-defaults.sh"
 
     # Set wallpaper (skull, matching Windows)
     WALLPAPER="$DOTFILES_DIR/hypr/.local/share/wallpapers/pexels-ahmedadly-1270184.jpg"

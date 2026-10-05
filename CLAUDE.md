@@ -56,6 +56,7 @@ stow -D -t ~ <package>      # Remove a package's symlinks
 stow -R -t ~ <package>      # Re-stow (useful after adding files)
 ./reload.sh                 # git pull + re-stow this OS's packages + reload the desktop
 scripts/verify.sh           # Read-only: is everything applied? Exit 0 = yes
+scripts/finder-defaults.sh  # macOS: Finder settings (--dry-run, --undo); part of --with-desktop
 ```
 Which packages each OS gets is defined once, in `scripts/packages.sh`. The
 installers, `verify.sh` and `reload.sh` all read it, so add a package there.
