@@ -1,11 +1,11 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-# Layout: the directory and git as two rounded Nord pills, then the
+# Layout: the directory as bold blue text, git as a rounded Nord pill, then the
 # language/tool modules starship detects in the current directory, the last
 # command's duration when it was slow, and the prompt character on its own
 # line. The per-module tables below keep the Nerd Font symbol preset; only the
-# modules named here change their look. Colours follow the Nord contract in
-# doc/status-bar-theming.md: nord10 indigo for "where", nord8 cyan for git.
+# modules named here change their look. The directory was a filled pill
+# too; it read as a highlight, so it is plain text.
 #
 # The git pill is two modules: git_branch opens it and git_status closes it,
 # so the status markers sit inside. git_status always renders in a repo
@@ -88,7 +88,8 @@ symbol = " "
 
 [directory]
 read_only = " 󰌾"
-format = "[](nord10)[ $path$read_only ](fg:nord6 bg:nord10)[](nord10) "
+format = "[$path$read_only]($style) "
+style = "bold nord9"
 truncation_length = 3
 truncation_symbol = "…/"
 

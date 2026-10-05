@@ -102,9 +102,9 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **git**: Git config and hooks (fully portable)
 - **clang**: clang-format/clang-tidy configs (fully portable)
 - **nvim**: Neovim full IDE setup (fully portable)
-- **starship**: Shell prompt (fully portable). Nord palette defined in the file;
-  the directory and git pills are built from module `format` strings, and
-  git_branch opens the git pill that git_status closes
+- **starship**: Shell prompt (fully portable). Nord palette defined in the file.
+  The directory is plain bold text; the git pill is built from module
+  `format` strings, with git_branch opening it and git_status closing it
 - **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
 - **tmux**: Terminal multiplexer, `Ctrl+a` prefix and Nord status line. Stowed
   and installed on Arch, Debian/WSL/Raspbian and macOS; not on Windows.
