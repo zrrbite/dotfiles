@@ -31,8 +31,16 @@ dark `#2e3440` text**. The accent identifies the module at a glance:
 Left side is unfilled: the focused workspace gets a nord10 indigo pill, and the
 front-app name is a bare bold `#eceff4` label with no background.
 
+Each workspace pill shows its number and an icon per app on it, drawn with
+[sketchybar-app-font](https://github.com/kvndrsslr/sketchybar-app-font).
+Empty workspaces are hidden unless focused, and the highlight fades between
+workspaces instead of jumping. Waybar does neither yet — a deliberate macOS
+lead, not a contract change: the colours are the same.
+
 The bar itself is `#2e3440` at 90% opacity (`0xe62e3440` in sketchybar's ARGB
-notation) so the blur behind it reads, with a nord3 `#4c566a` border.
+notation) so the blur behind it reads, with a 1px nord3 `#4c566a` border. It
+floats: 12pt in from the screen sides to line up with AeroSpace's outer gaps,
+8pt down from the top, corners rounded at 10pt, with a shadow.
 
 ### Sizing
 
@@ -50,9 +58,11 @@ other weights as *separate families*, so Medium is
 `JetBrainsMono Nerd Font:Medium:13.0` — the latter resolves to a fallback face
 silently, with no error and no obvious visual tell.
 
-The bar stays 32pt tall. `aerospace.toml` sets `gaps.outer.top = 44`, which is
-the 32pt bar plus the same 12pt margin used on the other three sides — so
-changing the bar height means changing that gap too, or windows will sit wrong.
+The bar stays 32pt tall and sits at `y_offset=8`, so its bottom edge is at
+40pt. `aerospace.toml` sets `gaps.outer.top = 52`: that 40 plus the same 12pt
+margin used on the other three sides. Changing the bar height **or** its
+offset means changing that gap too, or windows will sit under the bar or leave
+a hole above themselves.
 
 ### Deviation: dark text everywhere
 
@@ -91,8 +101,8 @@ Things waybar does with CSS that sketchybar cannot:
   the whole pill instead. Faking a true underline needs a second thin item per
   workspace.
 - **The bar border is not per-edge either.** `border_width` on `--bar` outlines
-  the whole bar. Flush against the top of the screen, the bottom edge is
-  effectively all you see, which is close enough to waybar's `border-bottom`.
+  the whole bar. Now that the bar floats, all four edges show — waybar still
+  has only a `border-bottom`.
 - **Padding is per-component, not a box.** Waybar's `padding: 0 10px` becomes
   `icon.padding_left=8`, `icon.padding_right=4`, `label.padding_right=8` in
   sketchybar's `--default`. Item-level `padding_left/right` is the *gap between*
@@ -112,14 +122,34 @@ handled. On `sketchybar --reload` or a fresh login no event has fired yet, so
 both were empty: no workspace highlighted, no app name, until you happened to
 switch something.
 
-Both plugins now fall back to querying AeroSpace directly:
+Both plugins (`front_app.sh` and `spaces.sh`) fall back to querying AeroSpace
+directly:
 
 ```bash
 FOCUSED="${FOCUSED_WORKSPACE:-$(aerospace list-workspaces --focused)}"
 APP="${INFO:-$(aerospace list-windows --focused --format '%{app-name}')}"
 ```
 
-Apply the same pattern to any new event-driven item. The event wiring itself is
+Apply the same pattern to any new event-driven item.
+
+**All workspace pills are driven by one hidden item.** `spaces.sh` runs on the
+`spaces` item, asks AeroSpace for every window once, and sets all nine pills in
+one animated `sketchybar` call. The pills themselves have no script. Opening or
+closing a window changes the icons without a workspace switch, which is why
+`spaces` also subscribes to `front_app_switched`.
+
+**App icons come from a vendored map.** `plugins/icon_map.sh` is the release
+asset from sketchybar-app-font, copied in unmodified. It turns an app name into
+a ligature like `:slack:`, and must come from the same release as the installed
+font, or newer icons render as their literal name. Unknown apps get
+`:default:`. To update both:
+
+```bash
+brew upgrade --cask font-sketchybar-app-font
+V=$(brew list --cask --versions font-sketchybar-app-font | awk '{print $2}')
+curl -fsSL -o ~/.config/sketchybar/plugins/icon_map.sh \
+  "https://github.com/kvndrsslr/sketchybar-app-font/releases/download/v$V/icon_map.sh"
+``` The event wiring itself is
 in `aerospace.toml` under `exec-on-workspace-change`, which triggers the
 sketchybar event — if a workspace pill stops updating on switch, check there
 before suspecting the plugin.

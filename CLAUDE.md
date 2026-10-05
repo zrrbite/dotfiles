@@ -139,7 +139,9 @@ stow list.
 
 **macOS:**
 - **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
-- **sketchybar**: Nord-themed status bar with workspace indicators (auto-launched by AeroSpace).
+- **sketchybar**: Nord-themed floating status bar; workspace pills show app icons
+  (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
+  (auto-launched by AeroSpace).
   Shares waybar's colour contract — see `doc/status-bar-theming.md`
 - **autoraise**: focus-follows-mouse. AeroSpace has no setting for this, so AutoRaise
   (`brew tap dimentium/autoraise`) supplies it, configured in
