@@ -158,6 +158,10 @@ BREW_PACKAGES=(
 
 BREW_CASKS=(
     font-jetbrains-mono-nerd-font
+    # App icons in the sketchybar workspace pills. Its version must match the
+    # vendored sketchybar/.config/sketchybar/plugins/icon_map.sh -- a newer
+    # font with an older map still works, the reverse renders names as text.
+    font-sketchybar-app-font
     nikitabobko/tap/aerospace
     alacritty
 )

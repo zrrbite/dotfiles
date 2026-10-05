@@ -71,6 +71,14 @@ make clean
   shared by waybar and sketchybar, sketchybar's constraints versus waybar CSS,
   and how to add or restyle a module.
 
+### Setting up a machine
+
+- **[applying-the-setup.md](applying-the-setup.md)** — for an AI agent (or a
+  person) applying this repo to a new machine, especially a work one: what to
+  check first, which packages are safe, and why `git` and `claude/CLAUDE.md`
+  must not be applied as-is.
+- **[arch-hyprland-guide.md](arch-hyprland-guide.md)** — see above.
+
 ### Editors and workflow
 
 - **[nvim-tutorial.md](nvim-tutorial.md)** — Neovim setup walkthrough.

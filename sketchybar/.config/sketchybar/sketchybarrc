@@ -24,6 +24,8 @@ BAR_BG=0xe62e3440
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 # Bar appearance
+# Pinned edge-to-edge at the top. aerospace.toml's gaps.outer.top = 44 is this
+# 32pt height plus a 12pt gap -- change the height and that gap must follow.
 sketchybar --bar \
     position=top \
     height=32 \
@@ -59,25 +61,39 @@ sketchybar --default \
     background.drawing=on
 
 # -- AeroSpace workspaces (left) --
+# Number as the icon, the apps on that workspace as the label, drawn with
+# sketchybar-app-font. All styling that changes with state (focus, icons,
+# hidden when empty) is set by plugins/spaces.sh, which drives every item from
+# the one hidden `spaces` item below.
 sketchybar --add event aerospace_workspace_change
 
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item "space.$sid" left \
-        --subscribe "space.$sid" aerospace_workspace_change \
         --set "space.$sid" \
-            icon.drawing=off \
-            background.color=$NORD10 \
-            background.border_color=$NORD8 \
-            background.border_width=0 \
-            background.drawing=off \
-            label="$sid" \
+            icon="$sid" \
+            icon.color=$NORD4 \
+            icon.font="JetBrainsMono Nerd Font:Bold:13.0" \
+            icon.padding_left=8 \
+            icon.padding_right=8 \
             label.color=$NORD4 \
-            label.font="JetBrainsMono Nerd Font:Bold:13.0" \
-            label.padding_left=8 \
+            label.font="sketchybar-app-font:Regular:14.0" \
+            label.padding_left=0 \
             label.padding_right=8 \
-            click_script="aerospace workspace $sid" \
-            script="$PLUGIN_DIR/aerospace.sh $sid"
+            label.y_offset=-1 \
+            background.color=0x005e81ac \
+            background.drawing=on \
+            click_script="aerospace workspace $sid"
 done
+
+# Opening, closing or moving a window changes the icons without changing the
+# workspace, so front_app_switched matters as much as the workspace event.
+sketchybar --add item spaces left \
+    --set spaces \
+        drawing=off \
+        updates=on \
+        script="$PLUGIN_DIR/spaces.sh" \
+    --subscribe spaces aerospace_workspace_change front_app_switched \
+        space_windows_change system_woke
 
 # -- Front app name (center-left) --
 # Unfilled bold label, like waybar's #window
