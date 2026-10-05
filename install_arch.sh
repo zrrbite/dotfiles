@@ -192,6 +192,12 @@ CONFIGS_TO_BACKUP=(
     ~/.local/share/wallpapers
 )
 
+# git/.gitconfig carries no identity or credential helper; those live in
+# ~/.gitconfig.local, which it includes last. Carry the existing ones over
+# before ~/.gitconfig is backed up and replaced, so a machine keeps its own
+# identity (a work laptop keeps its work email).
+"$DOTFILES_DIR/scripts/seed-gitconfig-local.sh"
+
 backup_needed=false
 for config in "${CONFIGS_TO_BACKUP[@]}"; do
     if [ -e "$config" ] && [ ! -L "$config" ]; then

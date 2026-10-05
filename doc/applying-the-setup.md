@@ -15,10 +15,11 @@ The repo's own `CLAUDE.md` describes how the repo is laid out and how to work
    copying them to a backup directory. `install_windows.ps1` also changes the
    desktop wallpaper whether you asked or not. Apply packages one at a time
    instead, using the steps below.
-2. **Never overwrite git identity or credentials.** `git/.gitconfig` hardcodes
-   Martin's personal name and email and sets `credential.helper = store`, which
-   keeps credentials in plaintext. On a work machine, a stowed `.gitconfig`
-   would sign every commit with a personal email. See [Git](#git).
+2. **Never overwrite git identity or credentials.** `git/.gitconfig` carries
+   neither. They belong in `~/.gitconfig.local`, which it includes last.
+   **Create that file before linking `git`.** Otherwise the machine's existing
+   identity disappears with the old `~/.gitconfig`, and the next commit fails or
+   picks up whatever git guesses. See [Git](#git).
 3. **Do not stow `claude/.claude/CLAUDE.md` at work.** It tells the agent to
    write tasks into Martin's private `zrrbite/todo` repo and push them. At work
    that would leak work details into a personal GitHub repo. The skills are
@@ -64,7 +65,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `fastfetch` | all | ✅ | On macOS, stow with `--ignore='config\.jsonc'` and link `config-darwin.jsonc` in its place (see `CLAUDE.md`). |
 | `aerospace`, `sketchybar`, `autoraise` | mac | ✅ needs permissions | The desktop stack. See [macOS desktop](#macos-desktop). |
 | `glazewm`, `zebar` | Windows | ✅ | The Windows desktop stack. Linked by `install_windows.ps1` only, not by `stow_windows.ps1`. |
-| `git` | all | ❌ not as-is | Personal identity, plaintext credentials, global hooks. See [Git](#git). |
+| `git` | all | ⚠️ after `~/.gitconfig.local` | Identity and credentials come from `~/.gitconfig.local`; create it first. Global hooks and a global ignore still apply. See [Git](#git). |
 | `claude` | all | ⚠️ skills only | See [Claude Code](#claude-code). |
 | `bash` | per-OS variants | ⚠️ ask | Linked by the installers to `~/.bashrc`; check for existing content first. |
 | `hypr`, `foot`, `waybar`, `rofi`, `mako`, `wlogout`, `cava`, `gtk`, `mimeapps`, `discord` | Arch | n/a | Linux desktop only. |
@@ -139,49 +140,56 @@ Requires Windows 11, or Windows 10 with Developer Mode, for symlinks.
   `glazewm\.glzr\glazewm\config.yaml` → `~\.glzr\glazewm\config.yaml`, and
   `zebar\.glzr\zebar\settings.json` → `~\.glzr\zebar\settings.json`.
   Starting GlazeWM at login is not automated.
-- Do not link `git` with `stow_windows.ps1` at work. See [Git](#git).
+- `stow_windows.ps1 git` creates `~\.gitconfig.local` from the existing
+  `~\.gitconfig` before replacing it. Check what it carried over. See [Git](#git).
 
 ## Git
 
-**Do not stow or link `git/.gitconfig` on a work machine.** It hardcodes the
-personal identity, has no hook for a local override, and changes behaviour
-work repos may depend on:
+`git/.gitconfig` is shared by every machine and holds **no identity and no
+credential helper**. Its last line includes `~/.gitconfig.local`, so anything
+set there overrides the repo file, including `core.hooksPath` and
+`core.excludesFile`. Git silently ignores the include if the file is missing,
+and the machine then has no identity at all.
 
-| Setting | Effect at work |
-|---|---|
-| `user.name`, `user.email` | Martin's **personal** address on work commits. |
-| `credential.helper = store` | Credentials in plaintext in `~/.git-credentials`. |
-| `core.hooksPath = ~/.git-hooks` | Global hooks run in **every** repo, and the repo's own `.git/hooks` stop running. Hook managers that set a repo-local `core.hooksPath` (husky, lefthook) still win. |
-| `core.excludesFile` → `.gitignore-global` | Ignores `*.pdf` and `*.zip` in every repo, so such files silently never get added. |
-| `diff.noprefix = true` | Diffs without `a/` and `b/` prefixes, which some patch tooling rejects. |
-| `pull.rebase`, `rebase.autoStash`, `push.default = current` | Different defaults from stock git. Harmless, but surprising. |
+**Before linking `git`, create `~/.gitconfig.local`:**
 
-To get the aliases and the delta pager without those risks, leave the work
-`~/.gitconfig` in charge and include the repo file at the **top**, so the work
-values below it win:
-
-```ini
-[include]
-    path = ~/Development/dotfiles/git/.gitconfig
-
-# Everything below overrides the include. Keep the work identity here.
-[user]
-    name = <work name>
-    email = <work email>
-
-# An empty helper clears the inherited `store`; Windows uses `manager`.
-[credential]
-    helper =
-    helper = osxkeychain
-
-# Point at a work ignore file, or drop this section to inherit *.pdf/*.zip.
-[core]
-    excludesFile = ~/.gitignore-work
+```bash
+# Carries user.*, credential.*, gpg.* and commit/tag signing over from the
+# existing ~/.gitconfig. Never overwrites an existing ~/.gitconfig.local.
+scripts/seed-gitconfig-local.sh --dry-run    # preview
+scripts/seed-gitconfig-local.sh
 ```
 
-Check the result with `git config --show-origin --get-regexp
-'user\.|credential\.|core\.hooksPath|core\.excludesFile'`. Every identity and
-credential line must come from the work file.
+`install_darwin.sh`, `install_arch.sh`, `install_debian.sh`,
+`install_windows.ps1` and `stow_windows.ps1 git` all run the same step
+themselves. If nothing was carried over (fresh machine, or `~/.gitconfig`
+already points into this repo), write it by hand:
+
+```bash
+git config -f ~/.gitconfig.local user.name  "<work name>"
+git config -f ~/.gitconfig.local user.email "<work email>"
+git config -f ~/.gitconfig.local credential.helper osxkeychain   # Windows: manager
+```
+
+Then link `git` and check where each value comes from. `--includes` is
+required, because `--global` alone does not follow includes:
+
+```bash
+git config --global --includes --show-origin --get-regexp \
+  '^(user\.|credential\.|core\.hookspath|core\.excludesfile)'
+```
+
+Identity and credential lines must come from `~/.gitconfig.local`.
+
+What the shared file still changes, and how to undo each item in
+`~/.gitconfig.local` if work needs it:
+
+| Setting | Effect | Override in `~/.gitconfig.local` |
+|---|---|---|
+| `core.hooksPath = ~/.git-hooks` | Global hooks run in **every** repo, and each repo's own `.git/hooks` stop running. Hook managers that set a repo-local `core.hooksPath` (husky, lefthook) still win. | See below. |
+| `core.excludesFile` → `.gitignore-global` | Ignores `*.pdf` and `*.zip` in every repo, so such files silently never get added. | `[core] excludesFile = ~/.gitignore-work` |
+| `diff.noprefix = true` | Diffs without `a/` and `b/` prefixes, which some patch tooling rejects. | `[diff] noprefix = false` |
+| `pull.rebase`, `rebase.autoStash`, `push.default = current` | Different defaults from stock git. Harmless, but surprising. | as needed |
 
 **Global hooks.** The include still sets `core.hooksPath = ~/.git-hooks`, and
 the hooks enforce Martin's own rules everywhere:
@@ -195,12 +203,12 @@ the hooks enforce Martin's own rules everywhere:
 - `pre-push-ts` runs `npm run type-check` and `npm run lint` in any repo with
   `package.json` and `tsconfig.json`, **without checking those scripts exist**.
   It runs `npm run test:run` only when that script exists, and it fails when
-  `node_modules` is missing. **This will
-  block pushes in work TypeScript repos.**
+  `node_modules` is missing. **This will block pushes in work TypeScript
+  repos.**
 
-Ask the human whether they want the hooks at work. If not, add `[core]
-hooksPath = ~/.git-hooks-none` after the include and leave that directory
-absent. Note that this also stops each repo's own `.git/hooks` from running. If
+Ask the human whether they want the hooks at work. If not, put `[core]
+hooksPath = ~/.git-hooks-none` in `~/.gitconfig.local` and leave that
+directory absent. Note that this also stops each repo's own `.git/hooks` from running. If
 work repos rely on those, the human has to decide between the two.
 
 ## Claude Code
@@ -226,7 +234,8 @@ ship a `settings.json`.
 - macOS desktop: `sketchybar --reload`, `aerospace reload-config`. Then check
   that the bar shows workspace pills with app icons and that windows sit 12pt
   below it.
-- Git: the `--show-origin` command above.
+- Git: the `--show-origin` command above, and a test commit in a scratch repo
+  showing the expected author.
 - Open `nvim` and run `:checkhealth`.
 
 ## Undo

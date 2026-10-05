@@ -15,8 +15,14 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 
 **Setting up another machine (especially a work one)?** Read
 `doc/applying-the-setup.md` first. The installers assume Martin's personal
-machines: they replace `~/.gitconfig` (personal identity, plaintext
-credentials, global hooks) and `~/.zshrc`.
+machines: they replace `~/.gitconfig` (global hooks, a global ignore) and
+`~/.zshrc`.
+
+**Git identity is per-machine.** `git/.gitconfig` has no `[user]` and no
+credential helper; it includes `~/.gitconfig.local` last, which holds both.
+`scripts/seed-gitconfig-local.sh` creates that file from an existing
+`~/.gitconfig`, and every installer runs it before replacing `~/.gitconfig`.
+Never put identity or credentials back into the tracked file.
 
 ## Commands
 
