@@ -38,7 +38,7 @@ SELECTED=$(echo "$MENU" | rofi -dmenu -i -p "Useful Commands" -theme-str 'window
 # If something was selected, copy the command part to clipboard
 if [ -n "$SELECTED" ]; then
     # Extract just the command (before the •)
-    COMMAND=$(echo "$SELECTED" | sed 's/ •.*//')
+    COMMAND="${SELECTED%% •*}"
     echo -n "$COMMAND" | wl-copy
     notify-send "Command Copied" "$COMMAND" -t 2000
 fi

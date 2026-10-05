@@ -106,10 +106,35 @@ chore/cleanup-old-configs
 
 Before committing:
 
-1. **Stow the package** to test symlinks work
-2. **Reload configs** (Hyprland, bash, etc.)
-3. **Verify no broken configs** (check for syntax errors)
-4. **Test on a clean system** if possible (VM or separate machine)
+1. **Run `./scripts/lint.sh`** — shellcheck over every tracked shell script,
+   plus a stow dry-run against a throwaway target that fails if a package would
+   drop a bare file into `$HOME`
+2. **Stow the package** to test symlinks work
+3. **Reload configs** (Hyprland, bash, etc.)
+4. **Verify no broken configs** (check for syntax errors)
+5. **Test on a clean system** if possible (VM or separate machine)
+
+Either check can be run alone: `./scripts/lint.sh shellcheck`, `./scripts/lint.sh stow`.
+
+## CI
+
+`.github/workflows/ci.yml` runs on pushes to `master`, on pull requests, and on
+demand. Three jobs:
+
+| Job | What it catches |
+|-----|-----------------|
+| `lint` | Runs `scripts/lint.sh` — shellcheck findings and `$HOME`-littering stow packages |
+| `parse-installers` | `bash -n` over every installer; syntax errors in scripts that only ever run on a fresh machine |
+| `powershell` | PSScriptAnalyzer **Error**-severity findings in the Windows scripts |
+
+The shellcheck gate is set to `--severity=style`, the strictest level, because
+the repo is clean at it today. Rather than lower the bar for a new finding,
+either fix it or add a targeted `# shellcheck disable=SCxxxx` with a comment
+saying why — there are a few of those already, each explaining itself.
+
+PSScriptAnalyzer is deliberately limited to `Error`. The Windows installers use
+`Write-Host` throughout, which is correct for a script whose job is to narrate
+its progress, but PSScriptAnalyzer rates every call a Warning.
 
 ## Merging PRs (For Collaborators)
 

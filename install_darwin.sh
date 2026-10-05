@@ -119,6 +119,7 @@ BREW_PACKAGES=(
     bash
     bash-completion@2
     stow
+    tmux
 
     # CLI utilities
     btop
@@ -142,6 +143,10 @@ BREW_PACKAGES=(
     # lldb ships inside the llvm formula; there is no `lldb` formula, and naming
     # one makes the whole `brew install` below fail under `set -e`.
     llvm
+    # nvim's ts_ls setup shells out to typescript-language-server, which is an
+    # npm package -- so node is a hard dependency of the TypeScript IDE support,
+    # not an optional extra. Installed globally below.
+    node
 
     # Status bar + window borders (pairs with AeroSpace)
     sketchybar
@@ -201,6 +206,20 @@ fi
 # Remove Gatekeeper quarantine from Alacritty (unsigned cask)
 run_ok xattr -cr /Applications/Alacritty.app
 
+# TypeScript language server. nvim names `typescript-language-server` as ts_ls's
+# cmd, so without this the TypeScript half of the nvim setup silently does
+# nothing. npm is only missing here if the node install above was skipped.
+if command -v npm >/dev/null 2>&1; then
+    if npm ls -g --depth=0 typescript-language-server >/dev/null 2>&1; then
+        info "typescript-language-server already installed"
+    else
+        info "Installing typescript-language-server..."
+        run npm install -g typescript-language-server typescript
+    fi
+else
+    warn "npm not found -- skipping typescript-language-server (nvim's ts_ls will not start)"
+fi
+
 # Determine dotfiles location
 DOTFILES_DIR="${HOME}/dotfiles"
 
@@ -233,6 +252,7 @@ CONFIGS_TO_BACKUP=(
     ~/.bashrc
     ~/.bash_profile
     ~/.zshrc
+    ~/.tmux.conf
     ~/.config/aerospace/aerospace.toml
     ~/.config/sketchybar
 )
@@ -293,7 +313,7 @@ run ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 # stow's conflict reports go to stderr and are worth seeing, so they are not
 # silenced -- a hidden failure here means a config silently missing from $HOME.
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise zsh claude)
+STOW_PACKAGES=(git clang nvim starship alacritty aerospace sketchybar autoraise zsh tmux claude)
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
     run stow -t "$HOME" -R "$pkg" || warn "  Failed to stow $pkg (see stow output above)"

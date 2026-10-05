@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Nord palette
+# Nord palette. Kept complete rather than trimmed to what is currently
+# referenced, so restyling means picking a name instead of looking up a hex.
+# shellcheck disable=SC2034
 NORD0=0xff2e3440
 NORD1=0xff3b4252
 NORD2=0xff434c5e
@@ -60,9 +62,9 @@ sketchybar --default \
 sketchybar --add event aerospace_workspace_change
 
 for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid \
+    sketchybar --add item "space.$sid" left \
+        --subscribe "space.$sid" aerospace_workspace_change \
+        --set "space.$sid" \
             icon.drawing=off \
             background.color=$NORD10 \
             background.border_color=$NORD8 \

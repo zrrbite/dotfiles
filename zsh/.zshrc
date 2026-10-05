@@ -82,3 +82,17 @@ fi
 # ------------------------------------------------------------------ aliases --
 # Only additive ones. ls, cat, find and ps are deliberately left alone.
 alias grep='grep --color=auto'
+
+# The roast console. --usb is baked in because that is the only mode worth a
+# shortcut; --demo and --replay are typed deliberately.
+#
+# DO NOT wrap this in caffeinate. The console forks its own
+# `caffeinate -dimsu -w <its pid>` on --usb, so the Mac stays awake for exactly
+# as long as the roast runs and the assertion dies with it -- even on a crash
+# or a kill -9, because -w is watching the pid. An outer caffeinate would
+# outlive a console that exited early and leave the machine awake for nothing.
+#
+# Two things caffeinate cannot do, worth knowing before a twelve-minute roast:
+# -s (prevent system sleep) is valid only on AC power, and NOTHING here stops
+# a MacBook sleeping when the lid is closed. Plugged in, lid open.
+alias roast='"$HOME/Development/bullet-ble.git/build/bullet-console" --usb'

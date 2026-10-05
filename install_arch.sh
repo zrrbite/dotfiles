@@ -76,6 +76,7 @@ PACKAGES=(
     satty
     wf-recorder
     btop
+    tmux
     fzf
     zoxide
     bat

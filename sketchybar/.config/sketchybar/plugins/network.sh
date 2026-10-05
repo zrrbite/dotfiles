@@ -9,14 +9,30 @@ NORD11=0xffbf616a
 # warning, no data), so SSID comes from networksetup instead.
 WIFI_DEV=$(networksetup -listallhardwareports | awk '/Wi-Fi/{getline; print $2}')
 
+# Connectivity is decided by whether the interface HAS AN ADDRESS, never by
+# whether its name is readable. macOS 15+ gates the SSID behind Location
+# Services, and a CLI binary like sketchybar cannot hold that grant, so every
+# source lies while Wi-Fi is perfectly up:
+#   networksetup -getairportnetwork  -> "You are not associated with an AirPort network."
+#   system_profiler SPAirPortDataType -> "<redacted>"
+#   ipconfig getsummary en0           -> "SSID : <redacted>"
+# Keying off the SSID meant an empty name fell through to the wired branch,
+# which skips the Wi-Fi device by design -- so a connected laptop reported
+# "Disconnected". The SSID is now only a label for a link already known good.
+WIFI_IP=""
 SSID=""
 if [ -n "$WIFI_DEV" ]; then
-    SSID=$(networksetup -getairportnetwork "$WIFI_DEV" 2>/dev/null | sed -n 's/^Current Wi-Fi Network: //p')
+    WIFI_IP=$(ipconfig getifaddr "$WIFI_DEV" 2>/dev/null)
+    if [ -n "$WIFI_IP" ]; then
+        SSID=$(networksetup -getairportnetwork "$WIFI_DEV" 2>/dev/null | sed -n 's/^Current Wi-Fi Network: //p')
+        [ "$SSID" = "<redacted>" ] && SSID=""
+    fi
 fi
 
-if [ -n "$SSID" ]; then
+if [ -n "$WIFI_IP" ]; then
     ICON="󰖩"
-    LABEL="$SSID"
+    # Falls back to the IP when macOS withholds the network name.
+    LABEL="${SSID:-$WIFI_IP}"
     COLOR=$NORD9
 else
     # Fall back to a wired interface. Enumerate them rather than assuming
