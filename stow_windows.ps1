@@ -24,6 +24,42 @@ function Write-Info { Write-Host "  [+] $args" -ForegroundColor Green }
 function Write-Warn { Write-Host "  [!] $args" -ForegroundColor Yellow }
 function Write-Err  { Write-Host "  [-] $args" -ForegroundColor Red }
 
+# git\.gitconfig carries no identity or credential helper; those live in
+# ~\.gitconfig.local, which it includes last. Carry the existing ones over
+# before ~\.gitconfig is replaced, so a machine keeps its own identity (a work
+# laptop keeps its work email). Mirrors scripts/seed-gitconfig-local.sh.
+function Initialize-GitconfigLocal {
+    $localCfg = Join-Path $env:USERPROFILE ".gitconfig.local"
+    $source = Join-Path $env:USERPROFILE ".gitconfig"
+    if (Test-Path $localCfg) {
+        Write-Info "~\.gitconfig.local already exists -- leaving it alone"
+        return
+    }
+    $lines = @()
+    if ((Test-Path $source) -and -not (Get-Item $source -Force).LinkType -and
+        (Get-Command git -ErrorAction SilentlyContinue)) {
+        $lines = @(& git config -f $source --get-regexp '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$)' 2>$null)
+    }
+    if ($lines.Count -eq 0) {
+        Write-Warn "No existing git identity to carry over. Create ~\.gitconfig.local:"
+        Write-Warn '  git config -f ~/.gitconfig.local user.name  "Your Name"'
+        Write-Warn '  git config -f ~/.gitconfig.local user.email "you@example.com"'
+        Write-Warn '  git config -f ~/.gitconfig.local credential.helper manager'
+        return
+    }
+    foreach ($line in $lines) {
+        $key, $value = $line -split ' ', 2
+        # Windows PowerShell drops empty-string arguments to native commands,
+        # so a key with no value cannot be copied faithfully. Say so instead.
+        if ([string]::IsNullOrEmpty($value)) {
+            Write-Warn "Not copied (empty value): $key"
+            continue
+        }
+        & git config -f $localCfg --add $key $value
+        Write-Info "Carried over to ~\.gitconfig.local: $key"
+    }
+}
+
 $dotfilesDir = Split-Path -Parent $PSCommandPath
 $homeDir = $env:USERPROFILE
 
@@ -88,6 +124,10 @@ foreach ($pkg in $Packages) {
 
 $action = if ($Delete) { "Unstowing" } else { "Stowing" }
 Write-Host "$action packages: $($Packages -join ', ')" -ForegroundColor Cyan
+
+if (-not $Delete -and $Packages -contains 'git') {
+    Initialize-GitconfigLocal
+}
 
 foreach ($pkg in $Packages) {
     Write-Host ""

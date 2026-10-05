@@ -1,8 +1,15 @@
-# This is Git's per-user configuration file.
-[user]
-# Update with your own name and email
-	name = Martin Kjeldsen
-	email = kjeldsen@gmail.com
+# This is Git's per-user configuration file, shared by every machine.
+#
+# Nothing per-machine lives here: no identity, no credential helper. Those go
+# in ~/.gitconfig.local, which is included at the very END of this file so it
+# overrides anything below -- including hooksPath and excludesFile, if a
+# machine (a work laptop, say) needs different ones. A missing file is
+# silently ignored. scripts/seed-gitconfig-local.sh creates it from an
+# existing ~/.gitconfig; by hand:
+#
+#   git config -f ~/.gitconfig.local user.name  "Your Name"
+#   git config -f ~/.gitconfig.local user.email "you@example.com"
+#   git config -f ~/.gitconfig.local credential.helper osxkeychain  # Windows: manager
 
 [alias]
 
@@ -166,9 +173,6 @@ sort = -committerdate
 [mergetool]
 keepBackup = false
 
-[credential]
-helper = store
-
 [pull]
 rebase = true
 
@@ -222,14 +226,6 @@ ui = auto
 # [difftool "vscode"]
 # cmd = code --wait --diff $LOCAL $REMOTE
 
-# Windows: Credential helper
-# [credential]
-# helper = wincred
-
-# macOS: Credential helper
-# [credential]
-# helper = osxkeychain
-
 # P4Merge (cross-platform)
 # [merge]
 # tool = p4merge
@@ -245,3 +241,10 @@ ui = auto
 # insteadOf = https://github.com/
 # [url "https://internal-git.company.com/"]
 # insteadOf = https://external-mirror.com/
+
+##############################
+# Per-machine overrides. Keep this LAST: later values win, so anything in
+# ~/.gitconfig.local beats everything above.
+##############################
+[include]
+path = ~/.gitconfig.local
