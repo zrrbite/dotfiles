@@ -13,6 +13,9 @@ Cross-platform personal dotfiles supporting:
 
 Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows uses native PowerShell symlinks.
 
+`AGENTS.md` points non-Claude agents at this file and
+`doc/applying-the-setup.md`; keep its three repeated rules in sync with them.
+
 **Setting up another machine (especially a work one)?** Read
 `doc/applying-the-setup.md` first. The installers assume Martin's personal
 machines: they replace `~/.gitconfig` (global hooks, a global ignore) and
