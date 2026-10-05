@@ -33,6 +33,15 @@ url="$2"
 # local_ref and remote_ref are part of that stdin format but unused here.
 # shellcheck disable=SC2034
 while read -r local_ref local_sha remote_ref remote_sha; do
+    # A branch deletion (`git push origin --delete x`) arrives with an all-zero
+    # local sha. There is nothing to check, and building "$remote_sha..000…"
+    # from it makes git print "fatal: Invalid revision range". Matching on
+    # "no non-zero digit" rather than 40 zeros also covers SHA-256 repos.
+    case "$local_sha" in
+        *[!0]*) ;;
+        *) continue ;;
+    esac
+
     # If remote_sha is all zeros, it's a new branch - check all commits
     if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
         # New branch - check last 10 commits, or the whole history when it
