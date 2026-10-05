@@ -5,8 +5,12 @@
 # with the repo's portable version. The repo file includes ~/.gitconfig.local
 # last, so whatever lands here overrides it.
 #
-# Copies only what is per-machine: user.*, credential.*, gpg.*, and the
-# commit/tag signing switches. Never overwrites an existing ~/.gitconfig.local.
+# Copies only what is per-machine: identity (user.*), credentials, signing
+# (gpg.*, commit/tag.gpgsign), and network and repo-routing settings a work
+# machine typically has (http.*/https.* proxy and certificates, includeIf --
+# often where a work email lives -- url.*.insteadOf, core.autocrlf,
+# core.sshCommand). Never overwrites an existing ~/.gitconfig.local.
+# stow_windows.ps1 and install_windows.ps1 carry the same key list.
 #
 # Usage: scripts/seed-gitconfig-local.sh [--dry-run]
 #        (DRY_RUN=true in the environment works too, for the installers)
@@ -40,7 +44,7 @@ if [ -f "$SOURCE" ]; then
         "$DOTFILES_DIR"/*) ;;
         *)
             keys="$(git config -f "$SOURCE" --get-regexp \
-                '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$)' || true)"
+                '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$)' || true)"
             ;;
     esac
 fi

@@ -1,5 +1,6 @@
 ﻿# Windows dotfiles installation script
-# Requires: Windows 10 (Developer Mode) or Windows 11
+# Requires the right to create symlinks: Developer Mode (Windows 10 and 11) or
+# an elevated shell. Checked before anything is changed.
 # Run: powershell -ExecutionPolicy Bypass -File install_windows.ps1
 
 #Requires -Version 5.1
@@ -12,25 +13,31 @@ function Write-Error { Write-Host "[ERROR] $args" -ForegroundColor Red }
 Write-Info "Starting Windows dotfiles installation..."
 Write-Host ""
 
-# Check Windows version
-$winver = [System.Environment]::OSVersion.Version
-$isWin11 = ($winver.Major -eq 10 -and $winver.Build -ge 22000) -or ($winver.Major -gt 10)
-
-# Check Developer Mode (Windows 10 only)
-if (-not $isWin11) {
-    Write-Warn "Windows 10 detected. Checking Developer Mode..."
-    $devMode = Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -ErrorAction SilentlyContinue
-    if (-not $devMode -or $devMode.AllowDevelopmentWithoutDevLicense -ne 1) {
-        Write-Error "Developer Mode is required on Windows 10 for symlinks"
-        Write-Host ""
-        Write-Host "Enable Developer Mode:"
-        Write-Host "  Settings > Update & Security > For Developers > Developer Mode"
-        Write-Host ""
-        Write-Host "Then re-run this script."
-        exit 1
-    }
-    Write-Info "Developer Mode enabled ✓"
+# Can this account create symlinks? Every config below is a symlink, so test
+# it directly in a scratch directory rather than inferring it from the Windows
+# version: Windows 11 also needs Developer Mode for a non-admin user, and a
+# managed machine may have it locked off. Nothing has been changed yet if this
+# fails.
+$probeDir = Join-Path ([IO.Path]::GetTempPath()) ("dotfiles-probe-" + [guid]::NewGuid())
+New-Item -ItemType Directory -Path $probeDir | Out-Null
+Set-Content -Path (Join-Path $probeDir "target") -Value "probe"
+$canLink = $true
+try {
+    New-Item -ItemType SymbolicLink -Path (Join-Path $probeDir "link") -Target (Join-Path $probeDir "target") -ErrorAction Stop | Out-Null
+} catch {
+    $canLink = $false
+} finally {
+    Remove-Item $probeDir -Recurse -Force -ErrorAction SilentlyContinue
 }
+if (-not $canLink) {
+    Write-Error "This account cannot create symlinks, so nothing was changed."
+    Write-Host ""
+    Write-Host "Enable Developer Mode (Windows 10 and 11):"
+    Write-Host "  Settings > System > For developers > Developer Mode"
+    Write-Host "or run this script from an elevated shell. On a managed machine this may need IT."
+    exit 1
+}
+Write-Info "Symlinks can be created ✓"
 
 # Install Scoop if not present
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
@@ -134,7 +141,8 @@ function Initialize-GitconfigLocal {
     $lines = @()
     if ((Test-Path $source) -and -not (Get-Item $source -Force).LinkType -and
         (Get-Command git -ErrorAction SilentlyContinue)) {
-        $lines = @(& git config -f $source --get-regexp '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$)' 2>$null)
+        # Same key list as scripts/seed-gitconfig-local.sh and stow_windows.ps1.
+        $lines = @(& git config -f $source --get-regexp '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$)' 2>$null)
     }
     if ($lines.Count -eq 0) {
         Write-Warn "No existing git identity to carry over. Create ~\.gitconfig.local:"
@@ -164,6 +172,8 @@ $needsBackup = $false
 
 $configFiles = @(
     "$homeDir\.gitconfig",
+    "$homeDir\.gitignore-global",
+    "$homeDir\.claude\skills",
     "$homeDir\.clang-format",
     "$homeDir\.clang-tidy",
     "$homeDir\.bashrc",
@@ -231,6 +241,8 @@ Write-Info "Linking configuration files..."
 # Git config and hooks
 New-DotfileSymlink "git\.gitconfig" "$homeDir\.gitconfig"
 New-DotfileSymlink "git\.git-hooks" "$homeDir\.git-hooks"
+# .gitconfig points core.excludesFile here
+New-DotfileSymlink "git\.gitignore-global" "$homeDir\.gitignore-global"
 
 # Clang configs
 New-DotfileSymlink "clang\.clang-format" "$homeDir\.clang-format"
