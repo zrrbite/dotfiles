@@ -1,39 +1,52 @@
 #!/bin/bash
+#
+# Pull the latest dotfiles, re-stow this OS's packages, and reload the
+# desktop pieces that need telling. Safe to re-run. Works wherever the repo
+# is cloned: it stows from its own directory into $HOME.
 
-# Colors for output
+set -uo pipefail
+
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-echo -e "${BLUE}🔄 Reloading dotfiles...${NC}"
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$DOTFILES_DIR" || exit 1
+# shellcheck source=scripts/packages.sh
+source "$DOTFILES_DIR/scripts/packages.sh"
 
-# Git pull latest changes
-echo -e "${GREEN}[1/5]${NC} Pulling latest changes from git..."
-git pull
+case "$(uname -s)" in
+    Darwin) OS=darwin; PACKAGES=("${PACKAGES_DARWIN[@]}") ;;
+    Linux)
+        if [ -f /etc/arch-release ]; then OS=arch; PACKAGES=("${PACKAGES_ARCH[@]}")
+        else OS=debian; PACKAGES=("${PACKAGES_DEBIAN[@]}"); fi ;;
+    *) echo "Unsupported OS"; exit 1 ;;
+esac
 
-# Re-stow all packages (in case new files were added)
-echo -e "${GREEN}[2/5]${NC} Re-stowing all packages..."
-for dir in */; do
-    if [ -d "$dir" ] && [ "$dir" != ".git/" ]; then
-        pkg="${dir%/}"
-        stow -R "$pkg" 2>/dev/null
-    fi
+echo -e "${BLUE}Reloading dotfiles ($OS)...${NC}"
+
+echo -e "${GREEN}[1/3]${NC} Pulling latest changes..."
+# --ff-only: never create a merge commit or start a rebase behind your back.
+git pull --ff-only || echo -e "${YELLOW}  pull failed -- continuing with the local checkout${NC}"
+
+echo -e "${GREEN}[2/3]${NC} Re-stowing packages (picks up newly added files)..."
+for pkg in "${PACKAGES[@]}"; do
+    stow -d "$DOTFILES_DIR" -t "$HOME" -R "$pkg" || echo -e "${YELLOW}  failed: $pkg${NC}"
 done
 
-# Reload Hyprland config
-echo -e "${GREEN}[3/5]${NC} Reloading Hyprland..."
-hyprctl reload
+echo -e "${GREEN}[3/3]${NC} Reloading the desktop..."
+case "$OS" in
+    darwin)
+        command -v aerospace >/dev/null && aerospace reload-config
+        command -v sketchybar >/dev/null && sketchybar --reload
+        ;;
+    arch)
+        command -v hyprctl >/dev/null && hyprctl reload
+        if command -v waybar >/dev/null; then pkill waybar; (waybar >/dev/null 2>&1 &); fi
+        ;;
+    debian) echo "  (no desktop on this platform)" ;;
+esac
 
-# Reload waybar
-echo -e "${GREEN}[4/5]${NC} Reloading waybar..."
-pkill waybar
-waybar &
-
-# Source bashrc (for current terminal)
-echo -e "${GREEN}[5/5]${NC} Sourcing bashrc..."
-# shellcheck source=/dev/null  # ~/.bashrc is a symlink chosen per platform
-source ~/.bashrc
-
-echo -e "${BLUE}✅ Dotfiles reloaded!${NC}"
-echo ""
-echo "Note: Open a new terminal to see all bash changes"
+echo -e "${BLUE}Done.${NC} Open a new shell to pick up shell config changes."
+echo "Check the result: $DOTFILES_DIR/scripts/verify.sh"

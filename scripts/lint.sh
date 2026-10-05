@@ -68,7 +68,9 @@ check_shellcheck() {
     info "shellcheck: checking ${#files[@]} scripts"
     # --severity=style is the strictest level; the repo is clean at it today, so
     # anything less would let new findings in unnoticed.
-    if shellcheck --severity=style --format=gcc "${files[@]}"; then
+    # -x follows `source` into files named by a `# shellcheck source=` comment
+    # (e.g. scripts/packages.sh), resolved from the repo root, where this runs.
+    if shellcheck -x --severity=style --format=gcc "${files[@]}"; then
         info "shellcheck: clean"
         return 0
     fi

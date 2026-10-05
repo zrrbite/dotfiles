@@ -194,6 +194,9 @@ fi
 cd "$DOTFILES_DIR"
 
 # Backup existing configs
+# Failures that do not stop the script, reported at the end.
+FAILURES=()
+
 BACKUP_DIR="${HOME}/.config-backup-$(date +%Y%m%d-%H%M%S)"
 CONFIGS_TO_BACKUP=(
     ~/.config/nvim
@@ -225,8 +228,14 @@ if [ "$backup_needed" = true ]; then
     mkdir -p "$BACKUP_DIR"
     for config in "${CONFIGS_TO_BACKUP[@]}"; do
         if [ -e "$config" ] && [ ! -L "$config" ]; then
-            cp -r "$config" "$BACKUP_DIR/" 2>/dev/null || true
-            rm -rf "$config"
+            # Only delete the original once the copy has succeeded; otherwise
+            # leave it in place and let stow report the conflict.
+            if cp -r "$config" "$BACKUP_DIR/"; then
+                rm -rf "$config"
+            else
+                warn "  Backup of $config failed -- leaving it in place"
+                FAILURES+=("backup of $config failed; it was left in place")
+            fi
         fi
     done
 fi
@@ -255,15 +264,35 @@ ln -sf "$DOTFILES_DIR/bash/.bashrc-${BASHRC_VARIANT}" "$HOME/.bashrc"
 ln -sf "$DOTFILES_DIR/bash/.bash_profile-${BASH_PROFILE_VARIANT}" "$HOME/.bash_profile"
 
 # Stow universal packages (no GUI/Wayland stuff)
+# Created before stow runs: a missing target directory gets "folded" into one
+# symlink into the repo, and then Claude Code (~/.claude) or any app writing
+# under ~/.config writes into the working tree. scripts/verify.sh checks this.
+mkdir -p "$HOME/.config" "$HOME/.claude"
 info "Stowing packages..."
-STOW_PACKAGES=(git clang gdb nvim starship tmux claude)
+# shellcheck source=scripts/packages.sh
+source "$DOTFILES_DIR/scripts/packages.sh"
+STOW_PACKAGES=("${PACKAGES_DEBIAN[@]}")
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
-    stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
+    # -t: the repo need not live at ~/dotfiles. stderr is left visible -- a
+    # hidden conflict here means a config silently missing from $HOME.
+    if ! stow -t "$HOME" -R "$pkg"; then
+        warn "  Failed to stow $pkg"
+        FAILURES+=("stow $pkg failed (see: stow -n -v -t ~ $pkg)")
+    fi
 done
 
+
 echo ""
-info "Installation complete! (platform=$PLATFORM, arch=$ARCH)"
+info "Verifying..."
+"$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")
+echo ""
+if [ "${#FAILURES[@]}" -gt 0 ]; then
+    warn "Finished with ${#FAILURES[@]} problem(s):"
+    for f in "${FAILURES[@]}"; do warn "  - $f"; done
+else
+    info "Installation complete! (platform=$PLATFORM, arch=$ARCH)"
+fi
 echo ""
 echo "Next steps:"
 echo "  1. Restart your terminal or run: source ~/.bashrc"
@@ -279,3 +308,7 @@ echo "  - duf, git-delta$([ -n "$PROCS_ARCH" ] && echo ", procs")"
 echo "  - neovim, git, clang, gdb"
 echo "  - starship prompt"
 echo ""
+echo "Check the result: $DOTFILES_DIR/scripts/verify.sh"
+
+[ "${#FAILURES[@]}" -gt 0 ] && exit 1
+exit 0

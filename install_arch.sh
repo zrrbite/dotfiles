@@ -167,6 +167,9 @@ fi
 cd "$DOTFILES_DIR"
 
 # Backup existing configs
+# Failures that do not stop the script, reported at the end.
+FAILURES=()
+
 BACKUP_DIR="${HOME}/.config-backup-$(date +%Y%m%d-%H%M%S)"
 CONFIGS_TO_BACKUP=(
     ~/.config/foot
@@ -211,8 +214,14 @@ if [ "$backup_needed" = true ]; then
     mkdir -p "$BACKUP_DIR"
     for config in "${CONFIGS_TO_BACKUP[@]}"; do
         if [ -e "$config" ] && [ ! -L "$config" ]; then
-            cp -r "$config" "$BACKUP_DIR/" 2>/dev/null || true
-            rm -rf "$config"
+            # Only delete the original once the copy has succeeded; otherwise
+            # leave it in place and let stow report the conflict.
+            if cp -r "$config" "$BACKUP_DIR/"; then
+                rm -rf "$config"
+            else
+                warn "  Backup of $config failed -- leaving it in place"
+                FAILURES+=("backup of $config failed; it was left in place")
+            fi
         fi
     done
 fi
@@ -229,13 +238,25 @@ info "Creating Arch-specific bash config symlinks..."
 ln -sf "$DOTFILES_DIR/bash/.bashrc-arch" "$HOME/.bashrc"
 ln -sf "$DOTFILES_DIR/bash/.bash_profile-arch" "$HOME/.bash_profile"
 
-# Stow all packages (except bash, handled above)
-info "Stowing all packages..."
-for dir in */; do
-    if [ -d "$dir" ] && [ "$dir" != ".git/" ] && [ "$dir" != "bash/" ]; then
-        pkg="${dir%/}"
-        info "  Stowing $pkg..."
-        stow -R "$pkg" 2>/dev/null || warn "  Failed to stow $pkg"
+# Created before stow runs: a missing target directory gets "folded" into one
+# symlink into the repo, and then Claude Code (~/.claude) or any app writing
+# under ~/.config writes into the working tree. scripts/verify.sh checks this.
+mkdir -p "$HOME/.config" "$HOME/.claude"
+
+# An explicit list rather than every directory: the repo also holds macOS
+# packages (aerospace, sketchybar, autoraise, ghostty, zsh) and Windows ones
+# (glazewm, zebar) that have no business in an Arch $HOME. bash is linked above.
+info "Stowing packages..."
+# shellcheck source=scripts/packages.sh
+source "$DOTFILES_DIR/scripts/packages.sh"
+STOW_PACKAGES=("${PACKAGES_ARCH[@]}")
+for pkg in "${STOW_PACKAGES[@]}"; do
+    info "  Stowing $pkg..."
+    # -t: the repo need not live at ~/dotfiles. stderr is left visible -- a
+    # hidden conflict here means a config silently missing from $HOME.
+    if ! stow -t "$HOME" -R "$pkg"; then
+        warn "  Failed to stow $pkg"
+        FAILURES+=("stow $pkg failed (see: stow -n -v -t ~ $pkg)")
     fi
 done
 
@@ -243,8 +264,17 @@ done
 info "Enabling audio services..."
 systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null || true
 
+
 echo ""
-info "Installation complete!"
+info "Verifying..."
+"$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")
+echo ""
+if [ "${#FAILURES[@]}" -gt 0 ]; then
+    warn "Finished with ${#FAILURES[@]} problem(s):"
+    for f in "${FAILURES[@]}"; do warn "  - $f"; done
+else
+    info "Installation complete!"
+fi
 echo ""
 echo "Next steps:"
 echo "  1. Reboot (or log out and back in)"
@@ -259,3 +289,7 @@ echo "  Super + Shift+V - Clipboard history"
 echo "  Super + Shift+S - Screenshot region"
 echo "  Super + F1     - Show all keybinds"
 echo ""
+echo "Check the result: $DOTFILES_DIR/scripts/verify.sh"
+
+[ "${#FAILURES[@]}" -gt 0 ] && exit 1
+exit 0

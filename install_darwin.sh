@@ -78,6 +78,17 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
 fi
 
 info "Starting macOS dotfiles installation..."
+
+# Command Line Tools provide git and the compilers Homebrew needs. Installing
+# them pops up a GUI dialog that a script (or an agent) cannot click through,
+# so stop and say so rather than failing halfway.
+if ! xcode-select -p >/dev/null 2>&1; then
+    error "Command Line Tools are missing. Run: xcode-select --install -- then re-run this script."
+fi
+
+# Steps that fail without stopping the script are collected here and reported
+# at the end, so "installation complete" is never printed over a failure.
+FAILURES=()
 [ "$DRY_RUN" = true ] && warn "DRY RUN -- nothing will be changed"
 [ "$WITH_DESKTOP" = true ] && warn "--with-desktop: wallpaper and Dock/Finder settings WILL be overwritten"
 
@@ -302,8 +313,15 @@ if [ "$backup_needed" = true ]; then
     for config in "${CONFIGS_TO_BACKUP[@]}"; do
         if needs_backup "$config"; then
             info "  Backing up $config"
-            run_ok cp -r "$config" "$BACKUP_DIR/"
-            run rm -rf "$config"
+            # Only delete the original once the copy has succeeded. Otherwise
+            # leave it in place: stow will then report a conflict for it,
+            # which is recoverable, where a lost config is not.
+            if run cp -R "$config" "$BACKUP_DIR/"; then
+                run rm -rf "$config"
+            else
+                warn "  Backup of $config failed -- leaving it in place"
+                FAILURES+=("backup of $config failed; it was left in place")
+            fi
         fi
     done
 else
@@ -326,10 +344,25 @@ run ln -sf "$DOTFILES_DIR/bash/.bash_profile-darwin" "$HOME/.bash_profile"
 # stow's conflict reports go to stderr and are worth seeing, so they are not
 # silenced -- a hidden failure here means a config silently missing from $HOME.
 info "Stowing packages..."
-STOW_PACKAGES=(git clang nvim starship alacritty ghostty aerospace sketchybar autoraise zsh tmux claude)
+
+# Directories that must exist *before* stow runs. When a target directory is
+# missing, stow "folds" it: it links the whole directory into the repo instead
+# of the files inside it. On a fresh Mac that turns ~/.config into a symlink
+# into this repo, so every app writing its config would write into the working
+# tree. The same goes for ~/.claude (Claude Code's history and settings), and
+# for ~/.config/fastfetch, where the macOS config is linked in below.
+# scripts/verify.sh checks that none of these ended up as a symlink.
+run mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
+
+# shellcheck source=scripts/packages.sh
+source "$DOTFILES_DIR/scripts/packages.sh"
+STOW_PACKAGES=("${PACKAGES_DARWIN[@]}")
 for pkg in "${STOW_PACKAGES[@]}"; do
     info "  Stowing $pkg..."
-    run stow -t "$HOME" -R "$pkg" || warn "  Failed to stow $pkg (see stow output above)"
+    if ! run stow -t "$HOME" -R "$pkg"; then
+        warn "  Failed to stow $pkg (see stow output above)"
+        FAILURES+=("stow $pkg failed (conflict? see: stow -n -v -t ~ $pkg)")
+    fi
 done
 
 # fastfetch is stowed separately, ignoring config.jsonc, because the macOS
@@ -340,11 +373,21 @@ done
 # Note: stow anchors --ignore patterns at both ends itself, so writing
 # '^config\.jsonc$' here silently matches nothing and the conflict returns.
 info "  Stowing fastfetch (config.jsonc handled separately)..."
-run stow -t "$HOME" -R --ignore='config\.jsonc' fastfetch || warn "  Failed to stow fastfetch"
+run stow -t "$HOME" -R --ignore='config\.jsonc' fastfetch || FAILURES+=("stow fastfetch failed")
 
-# Symlink macOS-specific fastfetch config (Apple logo instead of Arch)
-run mkdir -p "$HOME/.config/fastfetch"
+# Symlink macOS-specific fastfetch config (Apple logo instead of Arch).
+# ~/.config/fastfetch was created as a real directory above, so this writes
+# into $HOME -- not through a folded link over the repo's tracked config.jsonc.
 run ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+
+# oh-my-zsh, which zsh/.zshrc loads when present. Cloned rather than run
+# through its install.sh, because that script rewrites ~/.zshrc -- which is
+# the stowed file from this repo.
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    info "Installing oh-my-zsh (clone only; ~/.zshrc stays the repo's)..."
+    run git clone --depth=1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh" \
+        || FAILURES+=("oh-my-zsh clone failed; zsh still works without it")
+fi
 
 # Focus follows mouse. Started as a launchd service rather than from AeroSpace's
 # after-startup-command so it survives restarting AeroSpace. This has to run
@@ -381,16 +424,31 @@ else
     info "Skipping desktop settings (pass --with-desktop to apply them)"
 fi
 
+# The same read-only check an agent or person would run afterwards. Its
+# failures (an unlinked package, no git identity, a folder folded into the
+# repo) count as installer failures.
+if [ "$DRY_RUN" != true ]; then
+    echo ""
+    info "Verifying..."
+    "$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")
+fi
+
 echo ""
 if [ "$DRY_RUN" = true ]; then
     info "Dry run complete -- nothing was changed."
+elif [ "${#FAILURES[@]}" -gt 0 ]; then
+    warn "macOS installation finished with ${#FAILURES[@]} problem(s):"
+    for f in "${FAILURES[@]}"; do warn "  - $f"; done
 else
     info "macOS installation complete!"
 fi
 echo ""
 echo "Next steps:"
-echo "  1. Restart your terminal or run: source ~/.bashrc"
-echo "  2. Open Alacritty (Command+Space, type 'Alacritty')"
+echo "  1. Open a new terminal (zsh is the login shell; ~/.zshrc is linked)"
+echo "  2. alt+enter opens Ghostty once AeroSpace is running"
+echo "  3. Grant Accessibility to AeroSpace AND AutoRaise:"
+echo "     System Settings > Privacy & Security > Accessibility"
+echo "  4. Check the result: $DOTFILES_DIR/scripts/verify.sh"
 echo ""
 echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
@@ -401,9 +459,6 @@ echo "  - AeroSpace tiling WM (alt+hjkl focus, alt+1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
 echo "  - AutoRaise (focus follows mouse, like Hyprland)"
-echo ""
-echo "NOTE: AutoRaise needs Accessibility permission before it will work:"
-echo "  System Settings > Privacy & Security > Accessibility > enable AutoRaise"
 echo ""
 if [ "$WITH_DESKTOP" = true ]; then
     echo "Desktop:"
@@ -417,10 +472,16 @@ echo "AeroSpace tiling WM:"
 echo "  - Starts at login automatically"
 echo "  - Keybinds match GlazeWM (Windows) and Hyprland (Linux):"
 echo "    alt+hjkl focus, alt+shift+hjkl move, alt+1-9 workspaces"
-echo "    alt+enter Alacritty, alt+shift+q close, alt+f fullscreen"
+echo "    alt+enter Ghostty, alt+shift+enter Alacritty, alt+shift+q close, alt+f fullscreen"
 echo "    alt+tab cycle windows, alt+v toggle split direction"
 echo "    alt+r resize mode, alt+shift+r reload config"
 echo "  - Grant Accessibility permission when prompted"
 echo ""
 echo "Note: You may need to grant terminal permissions in System Preferences"
 echo ""
+
+# Non-zero exit when something failed, so a caller (a person's shell history,
+# or an agent) can't mistake a partial install for a finished one.
+if [ "$DRY_RUN" != true ] && [ "${#FAILURES[@]}" -gt 0 ]; then
+    exit 1
+fi
