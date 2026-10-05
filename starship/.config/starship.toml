@@ -1,5 +1,61 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# Layout: the directory as bold blue text, git as a rounded Nord pill, then the
+# language/tool modules starship detects in the current directory, the last
+# command's duration when it was slow, and the prompt character on its own
+# line. The per-module tables below keep the Nerd Font symbol preset; only the
+# modules named here change their look. The directory was a filled pill
+# too; it read as a highlight, so it is plain text.
+#
+# The git pill is two modules: git_branch opens it and git_status closes it,
+# so the status markers sit inside. git_status always renders in a repo
+# (its markers are optional), so the pill is always closed.
+format = """
+$directory\
+$git_branch\
+$git_status\
+$git_state\
+$all\
+$cmd_duration\
+$line_break\
+$character"""
+
+palette = "nord"
+
+[palettes.nord]
+nord0 = "#2E3440"
+nord1 = "#3B4252"
+nord2 = "#434C5E"
+nord3 = "#4C566A"
+nord4 = "#D8DEE9"
+nord6 = "#ECEFF4"
+nord7 = "#8FBCBB"
+nord8 = "#88C0D0"
+nord9 = "#81A1C1"
+nord10 = "#5E81AC"
+nord11 = "#BF616A"
+nord12 = "#D08770"
+nord13 = "#EBCB8B"
+nord14 = "#A3BE8C"
+nord15 = "#B48EAD"
+
+[character]
+success_symbol = "[❯](bold nord8)"
+error_symbol = "[❯](bold nord11)"
+vimcmd_symbol = "[❮](bold nord14)"
+
+[cmd_duration]
+min_time = 2_000
+format = "[ $duration]($style) "
+style = "nord13"
+
+[git_status]
+format = "([$all_status$ahead_behind ](fg:nord13 bg:nord1))[](nord1) "
+
+[git_state]
+format = "[ $state( $progress_current/$progress_total)]($style) "
+style = "bold nord12"
+
 [aws]
 symbol = " "
 
@@ -32,6 +88,10 @@ symbol = " "
 
 [directory]
 read_only = " 󰌾"
+format = "[$path$read_only]($style) "
+style = "bold nord9"
+truncation_length = 3
+truncation_symbol = "…/"
 
 [docker_context]
 symbol = " "
@@ -56,6 +116,7 @@ symbol = " "
 
 [git_branch]
 symbol = " "
+format = "[](nord1)[ $symbol$branch ](fg:nord8 bg:nord1)"
 
 [git_commit]
 tag_symbol = '  '

@@ -3,7 +3,10 @@
 
 [window]
 padding = { x = 10, y = 10 }
-decorations = "full"
+# Buttonless: no title bar or traffic lights, which only waste space under a
+# tiling WM, but macOS keeps the rounded corners. Linux ignores it ("None"
+# there would drop the server-side frame too).
+decorations = "Buttonless"
 opacity = 0.95
 startup_mode = "Windowed"
 

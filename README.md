@@ -227,7 +227,7 @@ stow */        # everything
 | `nvim`  | Neovim IDE setup - LSP, treesitter, telescope (C++ focused) |
 | `rofi`  | App launcher with Nord theme |
 | `sketchybar` | macOS status bar - shares waybar's Nord colour contract |
-| `starship` | Minimal shell prompt with Nerd Font icons |
+| `starship` | Shell prompt: Nord colours, git branch pill, Nerd Font icons |
 | `tmux`  | Terminal multiplexer - Nord status line, Ctrl+a prefix, vi keys and copy mode |
 | `zsh`   | macOS login shell config - oh-my-zsh + starship, deduplicated PATH |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
