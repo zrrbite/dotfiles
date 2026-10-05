@@ -65,13 +65,25 @@ alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
-# Resize
-alt-u = 'resize width -50'
-alt-p = 'resize width +50'
-alt-o = 'resize height +50'
-alt-i = 'resize height -50'
+# Resize. 'smart' resizes along the parent container's own orientation and
+# 'smart-opposite' across it, so these keep working after alt-v flips a
+# container to vertical -- an explicit 'width' in a v_tiles container silently
+# does nothing, which reads as "resize is broken for this window".
+alt-u = 'resize smart -50'
+alt-p = 'resize smart +50'
+alt-o = 'resize smart-opposite +50'
+alt-i = 'resize smart-opposite -50'
 
-# Enter resize mode (HJKL to resize, escape to exit)
+# Undo a squeezed layout. AeroSpace sizes tiles without knowing an app's
+# minimum window size: it assigns the tile, the app refuses to shrink below
+# its floor, and the oversized window then overlaps its neighbour or hangs off
+# the screen edge -- AeroSpace does not re-flow the others to compensate.
+# Measured floors on this setup: Slack 668px wide, Discord 800px. Squeeze a
+# 3440px workspace so either falls under that and the row visibly breaks.
+# Equal thirds (~1125px) are safely above both, so balancing always recovers.
+alt-b = 'balance-sizes'
+
+# Enter resize mode (HJKL to resize, b to balance, escape to exit)
 alt-r = 'mode resize'
 
 # Toggle tiling direction (matches alt+v in GlazeWM)
@@ -125,9 +137,10 @@ alt-shift-f = 'move-workspace-to-monitor next'
 
 # Resize mode (matches GlazeWM resize binding mode)
 [mode.resize.binding]
-h = 'resize width -50'
-j = 'resize height +50'
-k = 'resize height -50'
-l = 'resize width +50'
+h = 'resize smart -50'
+j = 'resize smart-opposite +50'
+k = 'resize smart-opposite -50'
+l = 'resize smart +50'
+b = 'balance-sizes'
 esc = 'mode main'
 enter = 'mode main'
