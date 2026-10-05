@@ -25,7 +25,7 @@ Four processes, started three different ways:
 |---|---|---|
 | AeroSpace | Tiles windows, owns the keybinds | `start-at-login = true` |
 | sketchybar | Status bar | AeroSpace `after-startup-command` |
-| borders | Glow around the active window | AeroSpace `after-startup-command` |
+| borders | 5pt rounded border: cyan on the active window, grey on the rest | AeroSpace `after-startup-command` |
 | AutoRaise | Focus follows mouse | launchd service (`brew services`) |
 
 AutoRaise is deliberately *not* in `after-startup-command`. As a launchd service

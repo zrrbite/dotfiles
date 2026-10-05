@@ -96,14 +96,19 @@ sketchybar --add item spaces left \
         space_windows_change system_woke
 
 # -- Front app name (center-left) --
-# Unfilled bold label, like waybar's #window
+# Unfilled bold label, like waybar's #window, led by the app's icon from the
+# same sketchybar-app-font as the workspace pills.
 sketchybar --add item front_app left \
     --set front_app \
-        icon.drawing=off \
+        icon.font="sketchybar-app-font:Regular:14.0" \
+        icon.color=$NORD6 \
+        icon.padding_left=8 \
+        icon.padding_right=6 \
+        icon.y_offset=-1 \
         background.drawing=off \
         label.color=$NORD6 \
         label.font="JetBrainsMono Nerd Font:Bold:13.0" \
-        label.padding_left=8 \
+        label.padding_left=0 \
         label.padding_right=8 \
         script="$PLUGIN_DIR/front_app.sh" \
     --subscribe front_app front_app_switched

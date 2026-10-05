@@ -6,7 +6,10 @@ start-at-login = true
 after-login-command = []
 after-startup-command = [
     'exec-and-forget sketchybar',
-    'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=8.0'
+    # 5pt rounded rather than 8pt square: thinner than the 12pt gaps so it
+    # outlines a window instead of framing it. hidpi draws at retina
+    # resolution, so the rounded corners aren't jagged.
+    'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=5.0 style=round hidpi=on'
 ]
 
 # Focus-follows-mouse comes from AutoRaise, which AeroSpace cannot do itself.

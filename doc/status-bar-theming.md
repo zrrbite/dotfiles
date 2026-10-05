@@ -29,7 +29,8 @@ dark `#2e3440` text**. The accent identifies the module at a glance:
 | clock | nord10 indigo | `#5e81ac` | — |
 
 Left side is unfilled: the focused workspace gets a nord10 indigo pill, and the
-front-app name is a bare bold `#eceff4` label with no background.
+front-app name is a bare bold `#eceff4` label with no background, led by the
+app's icon from the same sketchybar-app-font as the workspace pills.
 
 Each workspace pill shows its number and an icon per app on it, drawn with
 [sketchybar-app-font](https://github.com/kvndrsslr/sketchybar-app-font).
