@@ -77,9 +77,31 @@ CF_VERSION="$("$CF" --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)"
 # mysterious.
 echo "Checking C++ code formatting (clang-format $CF_VERSION)..."
 
-# Run git-clang-format to check if staged changes are formatted
-# --diff mode shows what would change, returns non-zero if formatting needed
-OUTPUT=$(git clang-format --binary "$CF" --staged --diff)
+# A repository's first commit has no HEAD, and `git clang-format --staged`
+# diffs against HEAD: it prints "fatal: bad revision 'HEAD'" and checks
+# nothing. It won't take the empty tree instead (it wants a commit). Every line
+# of a first commit is new anyway, so format each staged file whole and diff it
+# against itself. Output mimics git clang-format's, so the handling below is
+# shared. Style comes from the nearest .clang-format, as with git clang-format.
+first_commit_diff() {
+    local f d out=""
+    while IFS= read -r f; do
+        [ -z "$f" ] && continue
+        if ! d="$(diff -u --label "a/$f" --label "b/$f" \
+                <(git show ":$f") <(git show ":$f" | "$CF" --assume-filename="$f"))"; then
+            out+="diff --git a/$f b/$f"$'\n'"$d"$'\n'
+        fi
+    done <<< "$STAGED_FILES"
+    [ -n "$out" ] && printf '%s' "$out" || echo "clang-format did not modify any files"
+}
+
+# --diff mode shows what would change. stderr is kept, so an error lands in
+# OUTPUT and fails the check below instead of reading as "all formatted".
+if git rev-parse --verify --quiet HEAD >/dev/null; then
+    OUTPUT=$(git clang-format --binary "$CF" --staged --diff 2>&1)
+else
+    OUTPUT=$(first_commit_diff 2>&1)
+fi
 
 # Check if there are formatting issues
 if echo "$OUTPUT" | grep -q "no modified files to format" || echo "$OUTPUT" | grep -q "clang-format did not modify any files"; then
@@ -125,7 +147,11 @@ EOF
     echo ""
     exit 1
 else
-    # No differences detected or other case
-    echo -e "${GREEN}✓ All staged C++ files are properly formatted${NC}"
-    exit 0
+    # Neither "nothing to format" nor a diff: something went wrong. Before,
+    # this branch passed -- which is how a first commit's
+    # "fatal: bad revision 'HEAD'" was reported as "properly formatted".
+    echo -e "${RED}Error: could not check formatting:${NC}"
+    echo "$OUTPUT"
+    echo -e "${YELLOW}Bypass once if you must: git commit --no-verify${NC}"
+    exit 1
 fi
