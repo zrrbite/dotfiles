@@ -139,6 +139,11 @@ Pull the latest changes and reload everything:
 cd ~/dotfiles && ./reload.sh
 ```
 
+**Raycast script commands** live in `scripts/raycast/`. Raycast doesn't read
+them from a fixed place: add the folder once, in Settings → Extensions → + →
+Add Script Directory. `tmux session` there is `t` from anywhere. It switches
+the open tmux window to a session, or creates one in the folder zoxide finds.
+
 Coming from an older version? Save your git identity to `~/.gitconfig.local`
 **before** pulling, and re-run the installer to pick up new tools. See
 [Updating a machine](doc/applying-the-setup.md#updating-a-machine-that-already-has-it).
