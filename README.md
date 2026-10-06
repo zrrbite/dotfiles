@@ -750,7 +750,8 @@ Image previews are real images in Ghostty, including inside tmux
 - `s` - search names (fd), `S` - search contents (ripgrep), `f` - filter
 - `z` - fuzzy-jump (fzf), `Z` - jump with zoxide
 - `c` - copy a path or filename to the clipboard
-- `t` - new tab, `1`-`9` - switch tab
+- `t` `t` - new tab (`t` `r` renames it), `1`-`9` - switch tab
+- `Y` - cancel a copy or cut
 - `q` - quit
 
 ### fd - Better Find
