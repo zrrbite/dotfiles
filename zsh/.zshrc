@@ -96,6 +96,11 @@ bindkey '^[^?'  backward-kill-word   # Option-Backspace
 bindkey '^U'    backward-kill-line   # Cmd-Backspace: to line start, as in macOS
                                      # (zsh's default ^U clears the whole line)
 
+# direnv: loads a folder's .envrc on cd and unloads it on leaving (env vars, a
+# Python venv via `use venv`, see direnv/.config/direnv/direnvrc). An .envrc
+# runs only after `direnv allow`, and again after each edit.
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
+
 # ---------------------------------------------------------------- ssh-agent --
 if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" >/dev/null

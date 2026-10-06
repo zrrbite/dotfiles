@@ -1,2 +1,5 @@
 *.pdf
 *.zip
+
+# direnv's per-project cache (layout python etc.); the .envrc itself is up to each repo
+.direnv/

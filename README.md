@@ -139,6 +139,10 @@ Pull the latest changes and reload everything:
 cd ~/dotfiles && ./reload.sh
 ```
 
+**direnv** (macOS): a project's `.envrc` loads on `cd` and unloads on
+leaving. For a Python project, `echo 'use venv' > .envrc && direnv allow`
+activates its `.venv`. The helper is in `direnv/.config/direnv/direnvrc`.
+
 **Raycast script commands** live in `scripts/raycast/`. Raycast doesn't read
 them from a fixed place: add the folder once, in Settings → Extensions → + →
 Add Script Directory. `tmux session` there is `t` from anywhere. It switches

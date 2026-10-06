@@ -147,6 +147,7 @@ BREW_PACKAGES=(
     yazi
     chafa
     glow       # Markdown rendering, for yazi's preview pane
+    direnv     # per-folder environments (.envrc), e.g. auto-activating a .venv
     # zsh: grey suggestions from history, green/red command highlighting
     zsh-autosuggestions
     zsh-syntax-highlighting

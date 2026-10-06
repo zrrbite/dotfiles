@@ -23,6 +23,30 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: direnv — per-project environments
+
+### On other machines
+- **macOS:** re-run the installer (installs `direnv`, stows the `direnv`
+  package), then open a new shell.
+- **Per project, not in this repo:** an `.envrc` lives in each project. On
+  Martin's main Mac, `tilt-hydrometer-analysis`, `chess` and `llm-price-watch`
+  each have one containing `use venv`, approved with `direnv allow`, and
+  listed in that repo's `.git/info/exclude`, so it isn't committed. Repeat
+  that on another machine if wanted: one line per project, then
+  `direnv allow`.
+- **Linux:** not wired up yet. zsh is only the macOS shell here; the bash
+  configs would need `eval "$(direnv hook bash)"`.
+
+### What changed
+- **direnv:** `cd` into a folder with an approved `.envrc` loads it; leaving
+  unloads it. The hook is in `zsh/.zshrc`.
+- **`use venv [dir]`** (in `direnv/.config/direnv/direnvrc`) activates
+  `./.venv`, or a given virtualenv. starship shows it in the prompt.
+- **Quieter output:** `direnv.toml` hides the per-variable diff on each `cd`.
+- `.direnv/` is added to the global gitignore.
+
+---
+
 ## 2026-10-06: yazi extras — git status, Markdown preview, yazi inside nvim
 
 ### On other machines

@@ -1,0 +1,17 @@
+# direnv helpers, available in every .envrc.
+#
+#   use venv          activate ./.venv
+#   use venv ../env   activate a virtualenv somewhere else
+#
+# Exports VIRTUAL_ENV and puts its bin/ first on PATH, which is all
+# `source bin/activate` really does. direnv undoes both on leaving the folder.
+# starship then shows the venv in the prompt.
+use_venv() {
+    local dir="${1:-.venv}"
+    if [ ! -f "$dir/bin/activate" ]; then
+        log_error "use venv: no virtualenv at $dir (create one: python3 -m venv $dir)"
+        return 1
+    fi
+    export VIRTUAL_ENV="$(cd "$dir" && pwd)"
+    PATH_add "$VIRTUAL_ENV/bin"
+}

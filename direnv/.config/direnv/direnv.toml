@@ -1,0 +1,7 @@
+# direnv settings. Helpers (`use venv`) are in direnvrc beside this file.
+[global]
+# Print "direnv: loading .envrc" but not the long list of every variable
+# that changed on each cd.
+hide_env_diff = true
+# Warn if an .envrc takes longer than this to load.
+warn_timeout = "10s"
