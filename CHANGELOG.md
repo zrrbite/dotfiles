@@ -23,6 +23,34 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: Hyprland config is now `hyprland.lua` (needs 0.55+)
+
+### On other machines
+- **Arch, do first:** `pacman -Q hyprland` must say 0.55 or newer. Older
+  Hyprland can't read the new file and will start unconfigured.
+- **Arch:** pull, then `cd ~/dotfiles && stow -R hypr wlogout` so the
+  dangling `~/.config/hypr/hyprland.conf` link goes and `hyprland.lua` is
+  linked. Then log out and back in on TTY1 (the autostart block only runs
+  at launch), and restart hypridle (`pkill hypridle; hypridle &`).
+- If a real (non-symlink) `~/.config/hypr/hyprland.conf` is left over, the
+  Lua file wins anyway; delete it once the new config is confirmed.
+
+### What changed
+- **`hypr/.config/hypr/hyprland.lua`** replaces `hyprland.conf`, which is
+  deleted. Same settings, binds (77 before, 77 after), autostart, workspace
+  presets and window rules. Every call checked against the Hyprland v0.56.2
+  source and the hyprland-wiki Lua pages. 0.57 stops reading `.conf` files.
+- Dropped `dwindle:pseudotile`: 0.56.2 has no such option; `SUPER+P`
+  pseudotiles without it.
+- Binds carry descriptions, because `hyprctl binds` (`SUPER+F1`) shows Lua
+  binds as `__lua` otherwise.
+- **hypridle.conf** and **wlogout**'s logout action: `hyprctl dispatch`
+  takes the Lua form under a Lua config (`'hl.dsp.dpms({ action =
+  "disable" })'`, `'hl.dsp.exit()'`). The old `dpms off` / `exit` forms
+  are rejected.
+
+---
+
 ## 2026-10-06: Hyprland config fixes that apply now (0.56)
 
 ### On other machines
