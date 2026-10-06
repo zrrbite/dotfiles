@@ -60,7 +60,8 @@ Then:
 2. **`scripts/verify.sh`.** Fix any FAIL. When everything passes, it records
    this commit as the machine's sync point.
 3. **Reload what's running:**
-   - open a new shell;
+   - open a new shell (on Arch, WSL and Raspbian that's also what brings in
+     the bash `t` command, since `~/.bashrc` links into the repo);
    - Ghostty: `⌘⇧,`;
    - `aerospace reload-config` and `sketchybar --reload`;
    - tmux: `Ctrl+a` `r`, then detach and reattach (needed for the colour and
@@ -152,12 +153,13 @@ Then:
 - **macOS text-editing keys** in zsh, Ghostty and Alacritty, working inside
   tmux too: ⌘ ←/→ line start/end, ⌥ ←/→ words, ⌥⌫, ⌘⌫. (`0ec0241`)
 - **tmux:**
-  - `t` command;
+  - `t` command, in zsh and, since `6497280`, in bash on Arch, WSL and
+    Raspbian;
   - `Ctrl+a` `Tab` for the last session, `Ctrl+a` ⌘ ←/→ to cycle sessions;
   - 24-bit colour;
   - image passthrough;
   - tmux-resurrect.
-  (`496c370`, `45514b4`, `f8ae3da`, `cc510f6`, `96708cd`)
+  (`496c370`, `45514b4`, `f8ae3da`, `cc510f6`, `96708cd`, `6497280`)
   Reference and learning plan: `doc/tmux.md`.
 - **yazi**, a terminal file manager (launch with `y`), and **chafa** for
   terminal images (`fimg`). (`a80e0da`)
