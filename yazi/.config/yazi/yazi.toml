@@ -25,3 +25,25 @@ show_hidden    = false         # `.` toggles
 max_width     = 1200           # Retina: the 600x900 default looks soft
 max_height    = 1800
 image_quality = 90
+
+# -- Plugins ------------------------------------------------------------------
+# Declared in package.toml, pinned to a revision. `ya pkg install` fetches
+# them; the installers run it. Setup syntax is from each plugin's README at
+# that revision.
+
+# git.yazi: git status in the file list (setup in init.lua).
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"
+
+# piper.yazi + glow: render Markdown in the preview pane instead of showing
+# raw text. -w=$w wraps to the pane's width.
+[[plugin.prepend_previewers]]
+url = "*.md"
+run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dark "$1"'

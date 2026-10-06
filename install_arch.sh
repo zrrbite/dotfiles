@@ -283,6 +283,14 @@ for pkg in "${STOW_PACKAGES[@]}"; do
     fi
 done
 
+# yazi plugins (git status column, Markdown preview) are declared in
+# yazi/.config/yazi/package.toml but not committed; fetch them now that the
+# config is linked.
+if command -v ya >/dev/null 2>&1; then
+    info "Installing yazi plugins..."
+    ya pkg install || FAILURES+=("ya pkg install failed; yazi works, minus its plugins")
+fi
+
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
 # tmux/.tmux.conf if present; pinned to a release tag.
 if [ ! -d "$HOME/.tmux/plugins/tmux-resurrect" ]; then

@@ -739,6 +739,15 @@ yazi            # same, but your shell stays put
 Image previews are real images in Ghostty, including inside tmux
 (`allow-passthrough` is on). Alacritty shows a blocky fallback.
 
+Extras, as plugins declared in `yazi/.config/yazi/package.toml` and
+installed by `ya pkg install` (the installers run it):
+- a **git status sign** beside each file in a repo;
+- **Markdown rendered** in the preview pane, through glow.
+
+**In nvim:** `Space` `-` opens yazi at the current file, `Space` `_` at the
+project root (yazi.nvim). Pick a file and it opens in nvim. neo-tree is still
+on `Space` `e`.
+
 **Key bindings** (checked against yazi 26.9's own keymap; `~` shows them all):
 - `h` `j` `k` `l` - up a folder / down / up / into
 - `Enter` / `o` - open with the default app

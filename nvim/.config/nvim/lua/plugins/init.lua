@@ -25,6 +25,27 @@ return {
     },
   },
 
+  -- yazi as a file picker inside nvim, with the same keys as in the terminal.
+  -- Lives alongside neo-tree (<leader>e) rather than replacing it.
+  {
+    "mikavilpas/yazi.nvim",
+    event = "VeryLazy",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    keys = {
+      { "<leader>-", "<cmd>Yazi<cr>", desc = "Yazi at the current file" },
+      { "<leader>_", "<cmd>Yazi cwd<cr>", desc = "Yazi at the project root" },
+    },
+    opts = {
+      open_for_directories = false,  -- keep neo-tree's handling of `nvim somedir`
+      keymaps = {
+        -- Needs GNU realpath (`grealpath`, from coreutils), which macOS
+        -- lacks; not worth coreutils for one keymap. `false` disables it,
+        -- and the health check then stops warning.
+        copy_relative_path_to_selected_files = false,
+      },
+    },
+  },
+
   -- Fuzzy finder
   {
     "nvim-telescope/telescope.nvim",

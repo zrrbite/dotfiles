@@ -146,6 +146,7 @@ BREW_PACKAGES=(
     # fd/rg/fzf/zoxide (search and jump) -- all installed here as well.
     yazi
     chafa
+    glow       # Markdown rendering, for yazi's preview pane
     # zsh: grey suggestions from history, green/red command highlighting
     zsh-autosuggestions
     zsh-syntax-highlighting
@@ -413,6 +414,14 @@ run stow -t "$HOME" -R --ignore='config\.jsonc' fastfetch || FAILURES+=("stow fa
 # ~/.config/fastfetch was created as a real directory above, so this writes
 # into $HOME -- not through a folded link over the repo's tracked config.jsonc.
 run ln -sf "$DOTFILES_DIR/fastfetch/.config/fastfetch/config-darwin.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+
+# yazi plugins (git status column, Markdown preview) are declared in
+# yazi/.config/yazi/package.toml but not committed; fetch them now that the
+# config is linked.
+if command -v ya >/dev/null 2>&1; then
+    info "Installing yazi plugins..."
+    run ya pkg install || FAILURES+=("ya pkg install failed; yazi works, minus its plugins")
+fi
 
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
 # tmux/.tmux.conf if present; pinned to a release tag.

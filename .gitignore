@@ -2,3 +2,7 @@
 
 # zsh completion caches (zsh writes these next to .zshrc under ZDOTDIR)
 .zcompdump*
+
+# yazi plugins are fetched from yazi/.config/yazi/package.toml by `ya pkg install`.
+yazi/.config/yazi/plugins/
+yazi/.config/yazi/flavors/

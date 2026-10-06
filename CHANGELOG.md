@@ -23,6 +23,26 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: yazi extras — git status, Markdown preview, yazi inside nvim
+
+### On other machines
+- **Re-run the installer.** macOS gets `glow`. Both macOS and Arch run
+  `ya pkg install`, which fetches the yazi plugins pinned in
+  `yazi/.config/yazi/package.toml`. They are gitignored, not committed.
+- **nvim:** open it once. lazy.nvim installs yazi.nvim, pinned in
+  `lazy-lock.json`. `:checkhealth yazi` should be all OK.
+- `scripts/verify.sh` warns if the yazi plugins are missing.
+
+### What changed
+- **git.yazi:** a git status sign per file, set up in the new
+  `yazi/.config/yazi/init.lua` plus fetchers in `yazi.toml`.
+- **piper.yazi + glow:** Markdown is rendered in the preview pane.
+- **yazi.nvim:** `Space` `-` (current file) and `Space` `_` (project root),
+  alongside neo-tree. Its relative-path keymap is disabled: it needs GNU
+  `grealpath`, which macOS lacks.
+
+---
+
 ## 2026-10-05 (late): tmux status bar and auto-save
 
 ### On other machines

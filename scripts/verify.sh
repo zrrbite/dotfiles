@@ -159,6 +159,21 @@ if [ "$(realpath "$HOME/.gitconfig" 2>/dev/null)" = "$REPO_REAL/git/.gitconfig" 
     done
 fi
 
+# -- yazi plugins ----------------------------------------------------------------
+YAZI_PKG="$DOTFILES_DIR/yazi/.config/yazi/package.toml"
+if [ -f "$YAZI_PKG" ] && [ "$(realpath "$HOME/.config/yazi" 2>/dev/null)" = "$REPO_REAL/yazi/.config/yazi" ]; then
+    missing=""
+    while read -r dep; do
+        name="${dep##*:}"
+        [ -d "$HOME/.config/yazi/plugins/$name.yazi" ] || missing="$missing $name"
+    done < <(sed -n 's/^use = "\(.*\)"$/\1/p' "$YAZI_PKG")
+    if [ -n "$missing" ]; then
+        warn "yazi plugins not installed:$missing -- run: ya pkg install"
+    else
+        pass "yazi plugins installed"
+    fi
+fi
+
 # -- tmux plugin ----------------------------------------------------------------
 if command -v tmux >/dev/null 2>&1; then
     if [ -f "$HOME/.tmux/plugins/tmux-resurrect/resurrect.tmux" ]; then
