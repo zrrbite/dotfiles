@@ -56,11 +56,8 @@ make clean
   comparison of tiling window managers and what this repo ships.
 - **[hyprland.md](hyprland.md)** — the Linux setup: `SUPER`-based keybindings,
   the dwindle layout, and why this config does *not* match the other two.
-- **[arch-hyprland-guide.md](arch-hyprland-guide.md)** — installing Arch and
-  Hyprland from scratch, on bare metal or in VirtualBox: install media,
-  `archinstall`, post-install, desktop packages, NVIDIA, troubleshooting. Its
-  inline config snippets date from December 2025; where they differ from the
-  stow packages, the packages are what this repo actually ships.
+- **Arch + Hyprland installation guide** — lives in the archinstall repo:
+  [arch-hyprland-guide.md](https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md). This repo keeps only a pointer.
 - **[aerospace-macos.md](aerospace-macos.md)** — using the tiling window manager
   on macOS: keybindings, layouts, and the gotchas (accordion, restarts losing
   window placement, where focus-follows-mouse actually comes from).
@@ -77,7 +74,7 @@ make clean
   person) applying this repo to a new machine, especially a work one: what to
   check first, which packages are safe, and why `git` and `claude/CLAUDE.md`
   must not be applied as-is.
-- **[arch-hyprland-guide.md](arch-hyprland-guide.md)** — see above.
+- **[Arch + Hyprland install guide](https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md)** (archinstall repo) — see above.
 
 ### Editors and workflow
 

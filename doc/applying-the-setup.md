@@ -100,11 +100,16 @@ re-run safe: by default it only installs what's missing.
   git config -f ~/.gitconfig.local credential.helper "cache --timeout=86400"   # or `store` (plaintext)
   ```
 - **Arch with an NVIDIA GPU:** the driver, kernel parameters and mkinitcpio
-  are a human, hardware-specific job. Follow `doc/arch-hyprland-guide.md`
-  ("Bare Metal Differences") *before* the installer. The guide's
-  `env =` lines for Hyprland would go into the shared, tracked
-  `hypr/.config/hypr/hyprland.conf`, which changes every machine. Don't
-  commit them; tell the human.
+  are a human, hardware-specific job. Follow the Arch guide in the archinstall repo
+  (https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md)
+  ("Bare Metal Differences") *before* the installer. Its NVIDIA settings
+  for Hyprland would go into the shared, tracked config under
+  `hypr/.config/hypr/`, which changes every machine. Don't commit them;
+  tell the human.
+- **Hyprland 0.57 drops `hyprland.conf`.** These dotfiles' Hyprland config
+  is still in that format; Arch ships 0.56 as of 2026-10-06. Until it's
+  migrated to `hyprland.lua` (see Martin's TODO), a 0.57 upgrade leaves
+  Hyprland unconfigured. Check `pacman -Q hyprland` and tell the human.
 - **Arch:** Hyprland starts on login on TTY1 (`bash/.bash_profile-arch`).
   There is no display manager, so after the installer: reboot, log in on TTY1.
 

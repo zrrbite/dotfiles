@@ -23,6 +23,25 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: Arch guide lives in archinstall; Hyprland 0.57 warning
+
+### On other machines
+- Nothing to run.
+- **Arch: watch for Hyprland 0.57.** It stops reading `hyprland.conf`,
+  which is what `hypr/` still uses (Arch is on 0.56.2 as of today). Until
+  the config is migrated to `hyprland.lua`, hold the upgrade or expect an
+  unconfigured desktop.
+
+### What changed
+- `doc/arch-hyprland-guide.md` is now a pointer to the maintained guide in
+  [archinstall](https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md).
+  The copy here was the December version, adopted this morning, and had
+  fallen ~360 lines behind. It's kept in git history (`248f0c1`).
+- `doc/README.md` and `doc/applying-the-setup.md` point there, and the
+  setup doc warns about 0.57.
+
+---
+
 ## 2026-10-06: Linux catches up — tp, y, direnv in bash; prefix f fixed
 
 ### On other machines
