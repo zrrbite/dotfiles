@@ -165,3 +165,38 @@ t() {
 # Tab-complete existing session names.
 _t() { compadd -- ${(f)"$(tmux list-sessions -F '#S' 2>/dev/null)"} }
 (( $+functions[compdef] )) && compdef _t t
+
+# tp -- project picker: fuzzy-find a folder under ~/Development (or the
+# space-separated dirs in $TP_ROOTS) and open its tmux session via `t`, so
+# the session gets the same name `t` would give it there. Also bound to
+# prefix f in tmux, which runs this in a popup (tmux/.tmux.conf).
+tp() {
+    command -v fzf >/dev/null 2>&1 || { echo "tp: fzf is not installed" >&2; return 1; }
+    local root dir
+    dir="$(
+        for root in ${=TP_ROOTS:-$HOME/Development}; do
+            find "$root" -mindepth 1 -maxdepth 1 -type d ! -name '.*' 2>/dev/null
+        done | sed "s|^$HOME/|~/|" | sort |
+        fzf --reverse --prompt='project> ' --height=100% \
+            --preview 'eza -1 --group-directories-first --icons=always "${HOME}/$(echo {} | cut -c3-)" 2>/dev/null || ls "${HOME}/$(echo {} | cut -c3-)"'
+    )" || return 0
+    ( builtin cd -- "${dir/#\~/$HOME}" && t )
+}
+
+# ------------------------------------------------------------ zsh plugins --
+# Loaded only if installed (Homebrew: zsh-autosuggestions,
+# zsh-syntax-highlighting).
+#   autosuggestions: the rest of a matching past command appears in grey;
+#                    Right arrow or Cmd-Right (End) accepts it.
+#   syntax-highlighting: commands turn green if they exist, red if not.
+# syntax-highlighting must be sourced LAST, after every widget and bindkey,
+# or it misses them -- keep this block at the end of the file.
+_zsh_plugin_dir="$(brew --prefix 2>/dev/null)/share"
+if [ -f "$_zsh_plugin_dir/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#616E88'   # Nord's comment grey
+    source "$_zsh_plugin_dir/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+if [ -f "$_zsh_plugin_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+    source "$_zsh_plugin_dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+unset _zsh_plugin_dir

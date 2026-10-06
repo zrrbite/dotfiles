@@ -23,6 +23,28 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-05 (evening): project picker, zsh suggestions and highlighting
+
+### On other machines
+- **macOS:** re-run `./install_darwin.sh`. It installs `zsh-autosuggestions`
+  and `zsh-syntax-highlighting`. Then open a new shell.
+- **tmux:** `Ctrl+a` `r` to load the new `f` binding.
+- **Linux:** nothing. zsh is the macOS shell here; the plugins are loaded only
+  where installed.
+
+### What changed
+- **`tp` / `Ctrl+a` `f`:** fuzzy-find a project folder under
+  `~/Development` (or `$TP_ROOTS`) and go to its tmux session, created if
+  needed. `tp` hands off to `t`, so session names match. In tmux it opens
+  as a popup and replaces tmux's default find-window key (`Ctrl+a` `w` still
+  finds windows).
+- **zsh-autosuggestions:** a grey completion from history as you type; →
+  or ⌘ → accepts it.
+- **zsh-syntax-highlighting:** commands turn green when they exist, red when
+  they don't. It's sourced last in `.zshrc`, after every key binding.
+
+---
+
 ## 2026-10-05: the big one
 
 A day of work across the whole setup. It includes changes written between

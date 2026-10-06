@@ -26,6 +26,7 @@ lists every binding.
 |---|---|
 | **Sessions** | |
 | Session for this folder / a named one (a shell command, not a key) | `t` / `t name` |
+| **Pick a project** from a fuzzy list of ~/Development, then go to (or create) its session | `Ctrl+a` `f`, or `tp` at a shell prompt |
 | Same, from anywhere (Raycast, ⌥ Space) | **tmux session**, then a session name or a folder ("dotf" → `dotfiles`, found with zoxide) |
 | Detach (leave it running) | `Ctrl+a` `d` |
 | Reattach from a new terminal | `tmux a` (or `t name`) |

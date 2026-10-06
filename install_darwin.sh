@@ -146,6 +146,9 @@ BREW_PACKAGES=(
     # fd/rg/fzf/zoxide (search and jump) -- all installed here as well.
     yazi
     chafa
+    # zsh: grey suggestions from history, green/red command highlighting
+    zsh-autosuggestions
+    zsh-syntax-highlighting
     ffmpeg
     poppler
     sevenzip
