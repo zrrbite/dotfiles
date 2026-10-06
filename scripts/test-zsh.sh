@@ -93,13 +93,20 @@ fi
 
 # -- zsh-linux/.zprofile, from the repo (runs on any OS) ---------------------------
 # A login zsh that reads only that file: ZDOTDIR points at the package, and
-# GLOBAL_RCS off skips /etc/zprofile. PATH is a scratch dir, which decides
-# whether a Hyprland "exists".
+# GLOBAL_RCS off skips /etc/zprofile. PATH is a scratch dir holding fake
+# Hyprlands, then the system's, which /etc/profile.d scripts need.
 bin="$(mktemp -d)"
+SYS_PATH=/usr/bin:/bin
 zl() {  # zl [VAR=value ...] -- prints what the login shell printed
-    env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" "$@" \
+    env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin:$SYS_PATH" "$@" \
         "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo still-here' 2>&1
 }
+# A real Hyprland on the system PATH (Arch) would answer before our fakes run
+# out, so the fallback and no-Hyprland checks only run where there is none.
+sys_hypr=false
+for d in /usr/bin /bin; do
+    { [ -x "$d/Hyprland" ] || [ -x "$d/start-hyprland" ]; } && sys_hypr=true
+done
 if [ -f "$DOTFILES_DIR/zsh-linux/.zprofile" ]; then
     printf '#!/bin/sh\necho start-hyprland-ran\n' > "$bin/start-hyprland"
     printf '#!/bin/sh\necho Hyprland-ran\n' > "$bin/Hyprland"
@@ -108,15 +115,19 @@ if [ -f "$DOTFILES_DIR/zsh-linux/.zprofile" ]; then
     expect ".zprofile: not on TTY2" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=2)" "still-here"
     expect ".zprofile: not under a display" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1 DISPLAY=:0)" "still-here"
     rm "$bin/start-hyprland"
-    expect ".zprofile: falls back to Hyprland" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "Hyprland-ran"
-    rm "$bin/Hyprland"
-    # The Pi and WSL: no Hyprland. exec of a missing command would end the login.
-    expect ".zprofile: TTY1 without Hyprland keeps the shell" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "still-here"
+    if [ "$sys_hypr" = false ]; then
+        expect ".zprofile: falls back to Hyprland" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "Hyprland-ran"
+        rm "$bin/Hyprland"
+        # The Pi and WSL: no Hyprland. exec of a missing command would end the login.
+        expect ".zprofile: TTY1 without Hyprland keeps the shell" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "still-here"
+    else
+        echo "skip .zprofile: fallback and no-Hyprland checks (a real Hyprland is installed here)"
+        rm "$bin/Hyprland"
+    fi
     expect ".zprofile: keeps an existing agent" \
-        "$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" SSH_AUTH_SOCK=preset \
+        "$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin:$SYS_PATH" SSH_AUTH_SOCK=preset \
             "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo $SSH_AUTH_SOCK' 2>&1)" "preset"
-    ln -s "$(command -v ssh-agent)" "$bin/ssh-agent"
-    sock="$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" \
+    sock="$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin:$SYS_PATH" \
         "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo $SSH_AUTH_SOCK; kill $SSH_AGENT_PID' 2>&1)"
     expect_has ".zprofile: starts an ssh-agent when there is none" "$sock" "/"
 else

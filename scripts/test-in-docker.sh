@@ -109,6 +109,12 @@ if as_tester "grep -qx '$login' /etc/shells"; then
 else
     bad "login shell $login is not listed in /etc/shells"
 fi
+# Debian's and Ubuntu's zsh read no /etc/profile at login, so /etc/profile.d
+# (snap's PATH, locale fixes) would be skipped; bash logins read it.
+as_root 'echo "export DOTFILES_PROFILE_D=yes" > /etc/profile.d/zz-dotfiles-test.sh'
+got="$(as_tester 'SSH_AUTH_SOCK=x zsh -l -c "echo \${DOTFILES_PROFILE_D:-missing}"' 2>/dev/null | tail -1)"
+if [ "$got" = yes ]; then ok "a zsh login reads /etc/profile.d"; else bad "a zsh login skips /etc/profile.d (got $got)"; fi
+as_root 'rm -f /etc/profile.d/zz-dotfiles-test.sh'
 
 if as_tester 'ls ~/.config-backup-*/.zshrc ~/.config-backup-*/.zprofile >/dev/null 2>&1'; then
     ok "the pre-existing ~/.zshrc and ~/.zprofile were backed up"
@@ -151,6 +157,11 @@ if [ $rc -ne 0 ] && echo "$out" | grep -q 'login shell is /bin/bash, not zsh'; t
 else
     bad "verify.sh missed a bash login shell (exit $rc)"
 fi
+if echo "$out" | grep -q 'sudo chsh -s /usr/bin/zsh'; then
+    ok "verify.sh's chsh advice names /usr/bin/zsh"
+else
+    bad "verify.sh's chsh advice doesn't name /usr/bin/zsh"
+fi
 # A zsh that /etc/shells doesn't list (on Arch, /usr/sbin/zsh is one).
 as_root 'mkdir -p /opt/zsh && ln -sf "$(grep -m1 -x ".*/zsh" /etc/shells)" /opt/zsh/zsh && chsh -s /opt/zsh/zsh tester' 2>/dev/null
 out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"; rc=$?
@@ -160,6 +171,15 @@ else
     bad "verify.sh missed a login shell missing from /etc/shells (exit $rc)"
 fi
 as_root 'chsh -s "$(grep -m1 -x ".*/zsh" /etc/shells)" tester'
+# A tmux server started before the switch keeps opening bash panes.
+as_tester 'SHELL=/bin/bash tmux new-session -d -s before-switch'
+out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"
+if echo "$out" | grep -q 'tmux server'; then
+    ok "verify.sh warns about a tmux server still opening bash"
+else
+    bad "verify.sh missed a tmux server still opening bash"
+fi
+as_tester 'tmux kill-server'
 
 echo "== zsh startup time, three runs (seconds)"
 as_tester 'command -v zsh >/dev/null && zsh -c "zmodload zsh/datetime; for i in 1 2 3; do s=\$EPOCHREALTIME; SSH_AUTH_SOCK=/dev/null zsh -i -c exit >/dev/null 2>&1; printf \"     %.2f\n\" \$((EPOCHREALTIME - s)); done"'

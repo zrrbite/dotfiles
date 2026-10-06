@@ -11,6 +11,17 @@ if [ -z "$SSH_AUTH_SOCK" ]; then
     eval "$(ssh-agent -s)" >/dev/null
 fi
 
+# Debian's and Ubuntu's zsh read no /etc/profile at login, so the scripts in
+# /etc/profile.d (snap's PATH, locale fixes) would be skipped; bash logins run
+# them. Arch's /etc/zsh/zprofile already sources /etc/profile.
+# Builtins only: this runs before PATH can be trusted.
+if ! [[ -r /etc/zsh/zprofile && "$(</etc/zsh/zprofile)" == *(source|.)\ /etc/profile* ]]; then
+    for _f in /etc/profile.d/*.sh(N); do
+        [ -r "$_f" ] && emulate sh -c '. "$_f"'
+    done
+    unset _f
+fi
+
 # Start Hyprland on TTY1. start-hyprland (Hyprland 0.53+) is the supported
 # launcher: it restarts Hyprland in safe mode after a crash. Falls back to
 # Hyprland for older versions. A machine with neither (the Pi, WSL) just gets

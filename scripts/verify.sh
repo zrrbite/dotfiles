@@ -120,7 +120,7 @@ if [ "$OS" != darwin ] && [ "$checks_zsh" = true ]; then
     elif [ "${shell##*/}" = zsh ]; then
         pass "login shell is zsh ($shell)"
     else
-        fail "login shell is ${shell:-unknown}, not zsh -- run: sudo chsh -s \"\$(command -v zsh)\" $me, then log in again"
+        fail "login shell is ${shell:-unknown}, not zsh -- run: sudo chsh -s /usr/bin/zsh $me (or scripts/setup-zsh-linux.sh), then log in again"
     fi
     # Same patterns as scripts/setup-zsh-linux.sh, which removes these links.
     for f in "$HOME/.bashrc" "$HOME/.bash_profile"; do
@@ -131,6 +131,11 @@ if [ "$OS" != darwin ] && [ "$checks_zsh" = true ]; then
                 fail "$f still links to a retired bash file -- re-run the installer (or scripts/setup-zsh-linux.sh)" ;;
         esac
     done
+    # A tmux server keeps the shell it started with, so one started before the
+    # switch goes on opening bash panes until it is restarted.
+    if tmux_shell="$(tmux show -gv default-shell 2>/dev/null)" && [ "${tmux_shell##*/}" != zsh ]; then
+        warn "a running tmux server still opens $tmux_shell -- save (prefix Ctrl-s), then: tmux kill-server"
+    fi
     if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
         pass "oh-my-zsh installed"
     else
