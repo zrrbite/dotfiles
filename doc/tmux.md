@@ -2,8 +2,7 @@
 
 How tmux is set up here, the keys that config gives you, and a one-week plan
 for getting fluent with it. Config: `tmux/.tmux.conf`. The `t` command lives in
-`zsh/.zshrc` (macOS), with the same function in the bash configs for Arch, WSL
-and Raspbian (`bash/.bashrc-arch`, `-wsl`, `-raspbian`).
+`zsh/.zshrc`, the shell config on macOS and Linux alike.
 
 ## Why use it in this setup
 

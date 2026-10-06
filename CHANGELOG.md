@@ -23,6 +23,56 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: zsh on Linux; the Linux bash files are gone
+
+### On other machines
+**Arch box, Pi, WSL: run the installer straight after pulling.** The pull
+deletes the Linux `bash/.bashrc-*` and `.bash_profile-*` files that
+`~/.bashrc` and `~/.bash_profile` link to. Until the installer runs, a new
+terminal is bash with no config, and on Arch logging out lands on the text
+console without Hyprland (run the installer from there).
+1. `git pull --ff-only`, then at once `./install_arch.sh` or
+   `./install_debian.sh`. It installs zsh, its two plugins and oh-my-zsh, links
+   `zsh` and `zsh-linux`, puts back the distro's own `~/.bashrc`, and makes zsh
+   the login shell (`sudo chsh`).
+2. Log out and back in. On Arch, Hyprland now starts from `~/.zprofile`.
+3. `scripts/verify.sh`.
+
+A key passphrase is now asked in the first terminal, not at the TTY login.
+
+**macOS:** `stow -R -t ~ zsh`, then open a new terminal. A pull alone already
+works; the re-stow adds the `~/.config/zsh` link. `ll`, `lt` and `la` are now
+eza (they were oh-my-zsh's `ls -lh` / `ls -lAh`), and `fcpp`, `ftodo`, `fmd`
+and `ffunc` are new. `~/.zprofile` is untouched.
+
+**Windows:** nothing.
+
+### What changed
+- `zsh/.zshrc` is shared by macOS and Linux. OS specifics are in
+  `zsh/.config/zsh/darwin.zsh` / `linux.zsh`; `~/.zshrc.local` holds one
+  machine's lines.
+- New Linux-only package `zsh-linux`: `.zprofile` with one ssh-agent per
+  login and the TTY1 Hyprland start. Unlike `.bash_profile-arch` it doesn't
+  exec a Hyprland that isn't installed.
+- `scripts/setup-zsh-linux.sh`, run by both Linux installers: oh-my-zsh,
+  retiring the old bash links, Debian's `bat`/`fd` names, and `chsh` to a zsh
+  path `/etc/shells` lists. (On Arch `command -v zsh` can answer
+  `/usr/sbin/zsh`, which isn't listed.)
+- `scripts/verify.sh` on Linux: FAIL if the login shell isn't zsh, isn't
+  listed in `/etc/shells`, or a link to a removed bash file remains; WARN for
+  a missing oh-my-zsh or plugin.
+- `ls` is no longer eza on Linux, and listings no longer hide `CLAUDE.md`.
+- Tested: the Mac against a before/after baseline (same PATH and functions,
+  faster startup); `scripts/test-in-docker.sh` on ubuntu:24.04, debian:12 (an
+  upgrade from the bash setup) and archlinux. Not yet on real Linux hardware:
+  see the NUC checklist; the Pi and WSL on their next sync.
+- New test scripts: `scripts/test-zsh.sh` (what a new zsh gets, any machine)
+  and `scripts/test-in-docker.sh <image>` (a Linux installer end to end).
+- Design and plan: `doc/specs/2026-10-06-zsh-on-linux-design.md`,
+  `doc/plans/2026-10-06-zsh-on-linux.md`.
+
+---
+
 ## 2026-10-06: Nord theme for bat and btop
 
 ### On other machines

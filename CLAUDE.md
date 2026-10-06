@@ -141,20 +141,26 @@ Each top-level directory is a stow package that mirrors the home directory struc
   Debian/WSL/Raspbian (where the binary is `batcat`) and macOS; not on Windows,
   whose bat config lives under `%APPDATA%`.
 
-**macOS shell:**
-- **zsh**: `zsh/.zshrc` → `~/.zshrc`. zsh is the macOS login shell, so this is
-  what actually runs there — the `bash/.bashrc-darwin` file is only read if you
-  explicitly start bash. Keeps oh-my-zsh, swaps its theme for starship (matching
-  Arch and Windows), and initialises zoxide and fzf. Every tool integration is
-  guarded by `command -v`, so it degrades quietly before the packages exist.
-  Deliberately does **not** port `.bashrc-darwin`'s `ls`/`cat`/`find`/`ps`
-  aliases, which override standard commands.
+**Shell (macOS and Linux):**
+- **zsh**: `zsh/.zshrc` → `~/.zshrc`, the login shell on macOS, Arch and
+  Debian/WSL/Raspbian. One shared file. OS specifics live in
+  `zsh/.config/zsh/darwin.zsh` and `linux.zsh`, which `.zshrc` loads first
+  through its own real path, so a pull works before a re-stow. OS aliases go in
+  their `zsh_os_aliases`, called after oh-my-zsh. An untracked
+  `~/.zshrc.local` holds one machine's lines. Keeps oh-my-zsh, swaps its theme
+  for starship, and initialises zoxide, fzf and direnv; every integration is
+  guarded by `command -v`. Overrides no standard command: `ls`, `cat`, `find`
+  and `ps` are left alone, and eza is `ll`/`lt`/`la`.
+- **zsh-linux**: `.zprofile` for Linux login shells: one ssh-agent per login,
+  and Hyprland on TTY1 (only if installed). Not stowed on macOS, which keeps
+  its own `~/.zprofile`. `scripts/setup-zsh-linux.sh`, run by both Linux
+  installers, clones oh-my-zsh, retires old links to the removed Linux bash
+  files, links Debian's `batcat`/`fdfind` as `bat`/`fd`, and makes zsh the
+  login shell. Test from the Mac with `scripts/test-zsh.sh` and
+  `scripts/test-in-docker.sh <image>`.
 
-**Platform-specific bash configs:**
-- **bash/.bashrc-arch** - Arch Linux with all tools
-- **bash/.bashrc-wsl** - WSL with CLI tools only
-- **bash/.bashrc-raspbian** - Raspberry Pi / Debian (no WSL drive shortcuts)
-- **bash/.bashrc-darwin** - macOS with Homebrew paths
+**bash configs (macOS and Windows only; Linux runs zsh since 2026-10-06):**
+- **bash/.bashrc-darwin** - macOS with Homebrew paths, read only if you start bash
 - **bash/.bashrc-windows** - Windows Git Bash with Scoop tools
 - Install scripts create symlinks to the appropriate variant
 
@@ -223,12 +229,9 @@ stow list.
 
 ### Key Packages
 
-- **bash**: Platform-specific shell configuration
-  - Arch: Full setup with Hyprland auto-start, all aliases, bash-completion from `/usr/share`
-  - WSL: CLI tools only, bash-completion from `/etc` or `/usr/share`, aliases for batcat/fdfind
-  - Raspbian/Debian: Same as WSL but without Windows drive shortcuts
-  - macOS: Homebrew paths (`/opt/homebrew`), bash-completion from Homebrew location
-  - Windows: Git Bash with Scoop tools, bash-completion from Git for Windows
+- **bash**: macOS (`.bashrc-darwin`, only if you start bash) and Windows Git
+  Bash (`.bashrc-windows`, Scoop tools, bash-completion from Git for Windows).
+  Linux uses zsh; see Shell above.
 
 - **nvim**: Neovim config with lazy.nvim, LSP, treesitter, DAP debugging, gitsigns
   - **C++ (clangd)**: Full IDE features, clang-tidy integration, header/source switching
@@ -276,8 +279,8 @@ stow list.
 
 - **install_arch.sh**: Pacman + AUR packages, full Hyprland setup, systemd services
 - **install_debian.sh**: Unified Debian/Ubuntu installer with architecture detection (x86_64/aarch64)
-  - **install_wsl.sh**: Symlink to install_debian.sh (auto-detects WSL, uses `.bashrc-wsl`)
-  - **install_raspbian.sh**: Symlink to install_debian.sh (auto-detects Raspberry Pi, uses `.bashrc-raspbian`)
+  - **install_wsl.sh**: Symlink to install_debian.sh (auto-detects WSL)
+  - **install_raspbian.sh**: Symlink to install_debian.sh (auto-detects Raspberry Pi)
   - apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs, btop)
   - procs skipped on ARM64 (no prebuilt binary available)
 - **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support

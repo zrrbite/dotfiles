@@ -43,7 +43,7 @@ The install script will:
 - Enable audio (pipewire)
 
 Then reboot. Hyprland starts automatically when you log in on TTY1
-(`bash/.bash_profile-arch`); there is no display manager.
+(`zsh-linux/.zprofile`); there is no display manager.
 
 ### WSL (Ubuntu/Debian) - CLI Only
 
@@ -262,7 +262,8 @@ with an AI agent, point it at `AGENTS.md`.
 | `sketchybar` | macOS status bar - shares waybar's Nord colour contract |
 | `starship` | Shell prompt: Nord colours, git branch pill, Nerd Font icons |
 | `tmux`  | Terminal multiplexer - Nord status line, Ctrl+a prefix, vi keys and copy mode |
-| `zsh`   | macOS login shell config - oh-my-zsh + starship, deduplicated PATH |
+| `zsh`   | Login shell config, macOS and Linux - oh-my-zsh + starship, one shared .zshrc plus a small file per OS |
+| `zsh-linux` | Linux login file (.zprofile) - one ssh-agent per login, Hyprland on TTY1 |
 | `waybar`| Status bar with workspaces, clock, system info (Nord theme) |
 | `wlogout` | Logout menu with Nord theme (lock, logout, shutdown, reboot, suspend) |
 

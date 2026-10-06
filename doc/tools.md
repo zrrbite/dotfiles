@@ -40,7 +40,7 @@ and Raspberry Pi.
 | glow | Markdown in the terminal (and yazi previews) | ✓ | ✓ | – | – |
 | zoxide | Frecent `cd` (`cd` is zoxide on macOS) | ✓ | ✓ | ✓ | ✓ |
 | fzf | Fuzzy finder (`Ctrl+R`, `tp`, `fimg`) | ✓ | ✓ | ✓ | ✓ |
-| eza | `ls` with icons and git status | ✓ | ✓ | ✓ | ✓ |
+| eza | Listings with icons and git status (`ll`, `lt`, `la`; `ls` stays `ls`) | ✓ | ✓ | ✓ | ✓ |
 | fd, ripgrep | Find files / search contents | ✓ | ✓ | ✓ | ✓ |
 | bat | `cat` with syntax highlighting, Nord theme (`batcat` on Debian; default theme on Windows) | ✓ | ✓ | ✓ | ✓ |
 | duf, procs, btop | Disks, processes, system monitor (btop in Nord, via `scripts/seed-btop-config.sh`) | ✓ | ✓ | ✓ | duf, procs |

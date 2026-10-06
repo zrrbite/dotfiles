@@ -110,7 +110,7 @@ re-run safe: by default it only installs what's missing.
   is still in that format; Arch ships 0.56 as of 2026-10-05. Until it's
   migrated to `hyprland.lua` (see Martin's TODO), a 0.57 upgrade leaves
   Hyprland unconfigured. Check `pacman -Q hyprland` and tell the human.
-- **Arch:** Hyprland starts on login on TTY1 (`bash/.bash_profile-arch`).
+- **Arch:** Hyprland starts on login on TTY1 (`zsh-linux/.zprofile`).
   There is no display manager, so after the installer: reboot, log in on TTY1.
 
 ### Run
@@ -173,7 +173,7 @@ Find out the following and report it before changing anything:
 | Existing git config, with origins | `git config --list --show-origin --show-scope` | same | same |
 | Existing global hooks | `git config --global --get core.hooksPath` | same | same |
 | Do work repos use hook managers? | look for `.husky/`, `lefthook.yml`, `.pre-commit-config.yaml` | same | same |
-| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,ghostty,aerospace,sketchybar}` | `ls -la ~/.bashrc ~/.gitconfig ~/.tmux.conf ~/.gdbinit ~/.config/{nvim,starship.toml}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
+| Configs that would be replaced | `ls -la ~/.zshrc ~/.gitconfig ~/.config/{nvim,starship.toml,alacritty,ghostty,aerospace,sketchybar}` | `ls -la ~/.zshrc ~/.zprofile ~/.gitconfig ~/.tmux.conf ~/.gdbinit ~/.config/{nvim,starship.toml}` | `~\.gitconfig`, `%LOCALAPPDATA%\nvim`, `~\.glzr` |
 | Proxy or blocked downloads? | `env \| grep -i proxy`; does `curl -I https://github.com` work? | same | same, in PowerShell |
 
 If the machine is managed, installing casks into `/Applications`, granting
@@ -193,12 +193,13 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `ghostty` | mac | ✅ | Default terminal (`alt-enter`), Nord. `ghostty` cask. |
 | `yazi` | mac, Arch | ✅ | Terminal file manager; `y` in zsh launches it. Needs `yazi` plus, for previews, `ffmpeg`, `poppler` and `sevenzip`. Image previews need Ghostty, and `allow-passthrough on` inside tmux (set in `tmux/.tmux.conf`). |
 | `alacritty` | mac (Linux optional) | ✅ | Second terminal (`alt-shift-enter`), same Nord config. Only one of the two is needed. |
-| `zsh` | mac | ⚠️ ask | Replaces `~/.zshrc`. Merge any work-specific lines (proxy, SDK paths, corporate tooling) in first. |
+| `zsh` | mac, Linux | ⚠️ ask | Replaces `~/.zshrc`. Put work-specific lines (proxy, SDK paths, corporate tooling) in `~/.zshrc.local`, which it loads. On Linux the installer also makes zsh the login shell. |
+| `zsh-linux` | Linux | ⚠️ ask | Replaces `~/.zprofile`: one ssh-agent per login, Hyprland on TTY1 if installed. |
 | `fastfetch` | all | ✅ | On macOS, create `~/.config/fastfetch` first, stow with `--ignore='config\.jsonc'`, and link `config-darwin.jsonc` in its place (see `install_darwin.sh`). |
 | `aerospace`, `sketchybar`, `autoraise` | mac | ✅ needs permissions | The desktop stack. See [macOS desktop](#macos-desktop). |
 | `git` | all | ⚠️ after `~/.gitconfig.local` | Identity and credentials come from `~/.gitconfig.local`; create it first. Global hooks and a global ignore still apply. See [Git](#git). |
 | `claude` | all | ⚠️ skills only | See [Claude Code](#claude-code). |
-| `bash` | per-OS variants | ⚠️ ask | `bash/.bashrc-<os>` is linked to `~/.bashrc` by hand (the installers do it); check for existing content first. |
+| `bash` | mac, Windows | ⚠️ ask | `bash/.bashrc-darwin` / `.bashrc-windows` are linked to `~/.bashrc` by the installers; check for existing content first. Linux uses zsh. |
 | `hypr`, `foot`, `waybar`, `rofi`, `mako`, `wlogout`, `cava`, `gtk`, `mimeapps`, `discord` | Arch | n/a | Linux desktop only. |
 
 Per-OS package lists are in `scripts/packages.sh`. `doc/`, `img/`, `scripts/`,
