@@ -56,7 +56,11 @@ as_tester() { docker exec -u tester -e USER=tester -e HOME=/home/tester -w /home
 
 echo "== $IMAGE: a user with sudo"
 if [ "$INSTALLER" = install_arch.sh ]; then
-    as_root 'pacman -Syu --noconfirm --needed sudo git >/dev/null' || exit 2
+    # pacman 7 sandboxes its downloads with a seccomp filter that an emulated
+    # x86 container can't set up ("error restricting syscalls via seccomp").
+    # Real Arch machines aren't affected.
+    as_root 'sed -i "/^\[options\]/a DisableSandbox" /etc/pacman.conf
+             pacman -Syu --noconfirm --needed sudo git >/dev/null' || exit 2
 else
     # Docker's Debian and Ubuntu images leave out /usr/share/doc, which is
     # where Debian's fzf keeps its zsh key bindings. Real machines have it.
@@ -125,6 +129,24 @@ if [ -n "$UPGRADE_FROM" ]; then
         bad "~/.bashrc is not /etc/skel/.bashrc: $(as_tester 'ls -l ~/.bashrc 2>&1')"
     fi
 fi
+
+echo "== verify.sh catches a half-done switch"
+as_tester 'cp ~/.bashrc ~/.bashrc.keep && ln -sfn ~/dotfiles/bash/.bashrc-wsl ~/.bashrc'
+out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"; rc=$?
+if [ $rc -ne 0 ] && echo "$out" | grep -q 'still links to a retired bash file'; then
+    ok "verify.sh fails on a ~/.bashrc left linked to a removed bash file"
+else
+    bad "verify.sh missed a ~/.bashrc linked to a removed bash file (exit $rc)"
+fi
+as_tester 'rm ~/.bashrc && mv ~/.bashrc.keep ~/.bashrc'
+as_root 'chsh -s /bin/bash tester'
+out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"; rc=$?
+if [ $rc -ne 0 ] && echo "$out" | grep -q 'login shell is /bin/bash, not zsh'; then
+    ok "verify.sh fails when the login shell isn't zsh"
+else
+    bad "verify.sh missed a bash login shell (exit $rc)"
+fi
+as_root 'chsh -s "$(command -v zsh)" tester'
 
 echo "== zsh startup time, three runs (seconds)"
 as_tester 'command -v zsh >/dev/null && zsh -c "zmodload zsh/datetime; for i in 1 2 3; do s=\$EPOCHREALTIME; SSH_AUTH_SOCK=/dev/null zsh -i -c exit >/dev/null 2>&1; printf \"     %.2f\n\" \$((EPOCHREALTIME - s)); done"'

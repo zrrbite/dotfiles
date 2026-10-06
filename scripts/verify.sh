@@ -108,6 +108,41 @@ if [ $# -eq 0 ] && [ "$OS" = darwin ]; then
     fi
 fi
 
+# -- Shell (Linux) --------------------------------------------------------------
+# zsh replaced bash on Linux on 2026-10-06 (doc/specs/2026-10-06-zsh-on-linux-design.md).
+checks_zsh=false
+for p in "${PACKAGES[@]}"; do [ "$p" = zsh ] && checks_zsh=true; done
+if [ "$OS" != darwin ] && [ "$checks_zsh" = true ]; then
+    me="$(id -un)"
+    shell="$(getent passwd "$me" | cut -d: -f7)"
+    if [ "${shell##*/}" = zsh ]; then
+        pass "login shell is zsh ($shell)"
+    else
+        fail "login shell is ${shell:-unknown}, not zsh -- run: sudo chsh -s \"\$(command -v zsh)\" $me, then log in again"
+    fi
+    # Same patterns as scripts/setup-zsh-linux.sh, which removes these links.
+    for f in "$HOME/.bashrc" "$HOME/.bash_profile"; do
+        [ -L "$f" ] || continue
+        case "$(readlink "$f")" in
+            */bash/.bashrc-arch | */bash/.bashrc-wsl | */bash/.bashrc-raspbian | \
+            */bash/.bash_profile-arch | */bash/.bash_profile-wsl | */bash/.bash_profile-raspbian)
+                fail "$f still links to a retired bash file -- re-run the installer (or scripts/setup-zsh-linux.sh)" ;;
+        esac
+    done
+    if [ -f "$HOME/.oh-my-zsh/oh-my-zsh.sh" ]; then
+        pass "oh-my-zsh installed"
+    else
+        warn "oh-my-zsh missing: zsh works, minus its completion setup (the installers clone it)"
+    fi
+    for p in zsh-autosuggestions zsh-syntax-highlighting; do
+        if [ -f "/usr/share/zsh/plugins/$p/$p.zsh" ] || [ -f "/usr/share/$p/$p.zsh" ]; then
+            pass "$p installed"
+        else
+            warn "$p missing (the installers install it)"
+        fi
+    done
+fi
+
 # -- Directories that must never be a symlink into the repo --------------------
 # If stow "folds" one of these into a single symlink, anything that later writes
 # there -- apps writing config, Claude Code writing its history, the installer
