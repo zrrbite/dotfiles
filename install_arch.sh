@@ -60,6 +60,7 @@ PACKAGES=(
     thunar
     mc
     yazi
+    direnv         # per-folder environments (.envrc)
 
     # Bluetooth
     blueman

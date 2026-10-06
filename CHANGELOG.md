@@ -23,6 +23,28 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: Linux catches up — tp, y, direnv in bash; prefix f fixed
+
+### On other machines
+- **Arch / Debian / WSL / Pi:** pull, re-run the installer (adds `direnv`
+  and stows the `direnv` package), and open a new shell.
+- **tmux, everywhere:** `Ctrl+a` `r` to reload the fixed `f` binding.
+
+### What changed
+- **Fixed:** `Ctrl+a` `f` ran `zsh -ic tp`, which failed on Linux, where
+  zsh isn't installed. It now runs `"$SHELL" -ic tp`, using your login
+  shell.
+- **bash** (`.bashrc-arch`, `-wsl`, `-raspbian`) gains `tp` (project
+  picker), `y` (yazi that changes directory on quit) and the direnv hook,
+  matching zsh. The hook is last, after starship, as direnv requires. `t`
+  was ported earlier (`6497280`).
+- **direnv** is installed by `install_arch.sh` and `install_debian.sh` and
+  stowed on both (`scripts/packages.sh`).
+- **Not ported:** zsh-autosuggestions and syntax highlighting. bash's
+  equivalent (ble.sh) is heavier, so it's left out unless wanted.
+
+---
+
 ## 2026-10-06: direnv — per-project environments
 
 ### On other machines

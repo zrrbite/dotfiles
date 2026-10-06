@@ -75,6 +75,7 @@ APT_PACKAGES=(
     tldr
     curl
     unzip
+    direnv
 )
 
 info "Installing apt packages..."

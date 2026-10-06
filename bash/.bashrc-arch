@@ -83,3 +83,39 @@ _t() {
     mapfile -t COMPREPLY < <(compgen -W "$(tmux list-sessions -F '#S' 2>/dev/null)" -- "${COMP_WORDS[COMP_CWORD]}")
 }
 complete -F _t t
+
+# tp -- project picker: fuzzy-find a folder under ~/Development (or the
+# space-separated dirs in $TP_ROOTS) and open its tmux session via `t`, so it
+# gets the same name `t` would give it. tmux's prefix f runs this in a popup,
+# through $SHELL, so it works in bash here and zsh on macOS. Same command as
+# in zsh/.zshrc.
+tp() {
+    command -v fzf >/dev/null 2>&1 || { echo "tp: fzf is not installed" >&2; return 1; }
+    local root dir
+    # shellcheck disable=SC2086  # TP_ROOTS is a space-separated list on purpose
+    dir="$(
+        for root in ${TP_ROOTS:-$HOME/Development}; do
+            find "$root" -mindepth 1 -maxdepth 1 -type d ! -name '.*' 2>/dev/null
+        done | sed "s|^$HOME/|~/|" | sort |
+        fzf --reverse --prompt='project> ' --height=100% \
+            --preview 'ls -1 "${HOME}/$(echo {} | cut -c3-)"'
+    )" || return 0
+    ( builtin cd -- "${dir/#\~/$HOME}" && t )
+}
+
+# y -- yazi (yazi/.config/yazi); quitting with q leaves this shell in the
+# directory you browsed to. The wrapper from yazi's docs.
+y() {
+    command -v yazi >/dev/null 2>&1 || { echo "y: yazi is not installed" >&2; return 1; }
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
+}
+
+# direnv: loads a folder's .envrc on cd (`use venv` etc., see
+# direnv/.config/direnv/direnvrc). Keep this LAST: direnv's bash hook must
+# come after anything else that sets PROMPT_COMMAND, starship included.
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook bash)"
