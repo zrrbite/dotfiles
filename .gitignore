@@ -6,3 +6,7 @@
 # yazi plugins are fetched from yazi/.config/yazi/package.toml by `ya pkg install`.
 yazi/.config/yazi/plugins/
 yazi/.config/yazi/flavors/
+
+# Agent worktrees (git worktree checkouts made by Claude Code subagents).
+# They are separate checkouts of this repo; never track them.
+.claude/worktrees/
