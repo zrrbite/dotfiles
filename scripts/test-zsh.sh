@@ -91,6 +91,39 @@ else
     done
 fi
 
+# -- zsh-linux/.zprofile, from the repo (runs on any OS) ---------------------------
+# A login zsh that reads only that file: ZDOTDIR points at the package, and
+# GLOBAL_RCS off skips /etc/zprofile. PATH is a scratch dir, which decides
+# whether a Hyprland "exists".
+bin="$(mktemp -d)"
+zl() {  # zl [VAR=value ...] -- prints what the login shell printed
+    env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" "$@" \
+        "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo still-here' 2>&1
+}
+if [ -f "$DOTFILES_DIR/zsh-linux/.zprofile" ]; then
+    printf '#!/bin/sh\necho start-hyprland-ran\n' > "$bin/start-hyprland"
+    printf '#!/bin/sh\necho Hyprland-ran\n' > "$bin/Hyprland"
+    chmod +x "$bin/start-hyprland" "$bin/Hyprland"
+    expect ".zprofile: TTY1 starts Hyprland via start-hyprland" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "start-hyprland-ran"
+    expect ".zprofile: not on TTY2" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=2)" "still-here"
+    expect ".zprofile: not under a display" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1 DISPLAY=:0)" "still-here"
+    rm "$bin/start-hyprland"
+    expect ".zprofile: falls back to Hyprland" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "Hyprland-ran"
+    rm "$bin/Hyprland"
+    # The Pi and WSL: no Hyprland. exec of a missing command would end the login.
+    expect ".zprofile: TTY1 without Hyprland keeps the shell" "$(zl SSH_AUTH_SOCK=x XDG_VTNR=1)" "still-here"
+    expect ".zprofile: keeps an existing agent" \
+        "$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" SSH_AUTH_SOCK=preset \
+            "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo $SSH_AUTH_SOCK' 2>&1)" "preset"
+    ln -s "$(command -v ssh-agent)" "$bin/ssh-agent"
+    sock="$(env -i HOME="$HOME" ZDOTDIR="$DOTFILES_DIR/zsh-linux" PATH="$bin" \
+        "$ZSH_BIN" +o GLOBAL_RCS -l -c 'echo $SSH_AUTH_SOCK; kill $SSH_AGENT_PID' 2>&1)"
+    expect_has ".zprofile: starts an ssh-agent when there is none" "$sock" "/"
+else
+    bad "zsh-linux/.zprofile is missing"
+fi
+rm -rf "$bin"
+
 echo
 if [ "$FAILS" -gt 0 ]; then
     echo -e "${RED}$FAILS check(s) failed${NC}"
