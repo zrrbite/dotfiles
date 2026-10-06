@@ -379,7 +379,7 @@ Use the bootstrap script to create TypeScript projects with multiple framework o
 - **Formatting**: `Space+F` uses Prettier (respects .prettierrc)
 - **Type checking**: Automatic via LSP, `npm run type-check` for full project
 - **Linting**: ESLint integration, errors shown inline
-- **⚠️ REQUIRES**: `npm install -g typescript-language-server typescript` (not in install scripts yet)
+- **⚠️ REQUIRES**: `npm install -g typescript-language-server typescript@6`; `install_darwin.sh` does it. TypeScript 7 is a Go port without tsserver, so it doesn't work with ts_ls
 
 **Common features (all languages):**
 - F5: Start/Continue, F10: Step over, F11: Step into, F12: Step out

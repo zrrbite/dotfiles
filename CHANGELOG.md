@@ -23,6 +23,37 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: node 18 pin gone; nvim's TypeScript needs TypeScript 6
+
+### On other machines
+- **macOS:** open a new shell. If `node --version` still says 18, that Mac
+  has a hand-installed `node@18` too: `brew uninstall node@18`.
+- **macOS, TypeScript in nvim:** check
+  `ls "$(npm root -g)/typescript/lib/tsserver.js"`. If it's missing, the
+  global TypeScript is 7 and nvim's `ts_ls` fails with "Could not find a
+  valid TypeScript installation". Fix with
+  `npm install -g typescript-language-server typescript@6`, or re-run
+  `./install_darwin.sh`, which now checks for it.
+- **Linux, Windows:** nothing. node and `ts_ls` are macOS-only here.
+
+### What changed
+- `zsh/.zshrc` no longer puts `node@18` (end of life since April 2025)
+  ahead of Homebrew's `node`. Only Martin's main Mac had that keg, so
+  `node` was 18 there and 25 everywhere else. It's uninstalled there.
+- TypeScript 7 became npm's `latest`. It's a Go port with no `tsserver`,
+  and `typescript-language-server` (nvim's `ts_ls`) drives `tsserver`, so
+  the installer's unpinned `typescript` gave a broken setup.
+  `install_darwin.sh` now installs `typescript@6`, and reinstalls when the
+  global TypeScript lacks `tsserver`. A project's own TypeScript still
+  takes precedence. Moving nvim to TypeScript 7's built-in server
+  (`tsc --lsp --stdio`) is left for when projects are on 7.
+- Docs giving the install command now say `typescript@6`.
+- **On Martin's main Mac:** the language server had never been installed,
+  so TypeScript in nvim did nothing. It's installed now, and nvim attaches
+  `ts_ls` and reports type errors.
+
+---
+
 ## 2026-10-06: macOS wallpaper is the Arch logo, on the lock screen too
 
 ### On other machines

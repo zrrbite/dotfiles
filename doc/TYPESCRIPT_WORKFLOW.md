@@ -42,7 +42,7 @@ scoop install nodejs
 
 ```bash
 # Install TypeScript Language Server globally
-npm install -g typescript-language-server typescript
+npm install -g typescript-language-server typescript@6   # 7 has no tsserver
 ```
 
 **What this enables:**

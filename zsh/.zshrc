@@ -31,7 +31,6 @@ path_prepend() { [ -d "$1" ] && PATH="$1:$PATH"; }
 path_prepend "/usr/local/share/dotnet"
 path_prepend "$HOME/.dotnet/tools"
 path_prepend "/Library/Frameworks/Mono.framework/Versions/Current/Commands"
-path_prepend "/opt/homebrew/opt/node@18/bin"
 path_prepend "/opt/homebrew/opt/llvm/bin"
 path_prepend "$HOME/.cargo/bin"
 path_prepend "$HOME/.local/bin"

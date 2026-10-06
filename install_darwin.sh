@@ -253,12 +253,15 @@ run_ok xattr -cr /Applications/Alacritty.app
 # TypeScript language server. nvim names `typescript-language-server` as ts_ls's
 # cmd, so without this the TypeScript half of the nvim setup silently does
 # nothing. npm is only missing here if the node install above was skipped.
+# TypeScript stays on 6: TypeScript 7 is a Go port with no tsserver, which is
+# what typescript-language-server drives. A project's own TypeScript still wins.
 if command -v npm >/dev/null 2>&1; then
-    if npm ls -g --depth=0 typescript-language-server >/dev/null 2>&1; then
+    if npm ls -g --depth=0 typescript-language-server >/dev/null 2>&1 &&
+        [ -f "$(npm root -g)/typescript/lib/tsserver.js" ]; then
         info "typescript-language-server already installed"
     else
-        info "Installing typescript-language-server..."
-        run npm install -g typescript-language-server typescript
+        info "Installing typescript-language-server (with TypeScript 6)..."
+        run npm install -g typescript-language-server typescript@6
     fi
 else
     warn "npm not found -- skipping typescript-language-server (nvim's ts_ls will not start)"

@@ -185,7 +185,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 
 | Package | Platforms | Work-safe? | Notes |
 |---|---|---|---|
-| `nvim` | all | ✅ | Full IDE config. Installs plugins from GitHub on first launch and needs a C compiler and `make` for treesitter. TypeScript needs `npm i -g typescript-language-server typescript`. |
+| `nvim` | all | ✅ | Full IDE config. Installs plugins from GitHub on first launch and needs a C compiler and `make` for treesitter. TypeScript needs `npm i -g typescript-language-server typescript@6` (`install_darwin.sh` does it); TypeScript 7 has no tsserver. |
 | `starship` | all | ✅ | Prompt only. |
 | `tmux` | mac, Linux | ✅ | `Ctrl+a` prefix. |
 | `gdb` | Linux | ✅ | `~/.gdbinit`. It has hardcoded `/home/zrrbite` paths, so on another user account those lines do nothing. |
