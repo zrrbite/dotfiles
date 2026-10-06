@@ -19,9 +19,9 @@ and Raspberry Pi.
 
 | Tool | For | macOS | Arch | Debian | Windows |
 |---|---|:-:|:-:|:-:|:-:|
-| zsh + oh-my-zsh | Login shell (macOS) | ✓ | – | – | – |
-| bash | Login shell (Linux, Git Bash) | – | ✓ | ✓ | ✓ |
-| zsh-autosuggestions, zsh-syntax-highlighting | Grey history suggestions, green/red commands | ✓ | – | – | – |
+| zsh + oh-my-zsh | Login shell; one shared `.zshrc` | ✓ | ✓ | ✓ | – |
+| bash | Login shell (Git Bash) | – | – | – | ✓ |
+| zsh-autosuggestions, zsh-syntax-highlighting | Grey history suggestions, green/red commands | ✓ | ✓ | ✓ | – |
 | starship | Prompt (Nord) | ✓ | ✓ | ✓ | ✓ |
 | Ghostty | Terminal, default (`alt-enter`) | ✓ | – | – | – |
 | Alacritty | Terminal, second (`alt-shift-enter`) | ✓ | config only | – | – |

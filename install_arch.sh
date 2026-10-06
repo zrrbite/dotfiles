@@ -42,6 +42,9 @@ PACKAGES=(
     foot
     starship
     bash-completion
+    zsh
+    zsh-autosuggestions
+    zsh-syntax-highlighting
 
     # Audio
     pipewire
@@ -207,8 +210,8 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-format
     ~/.clang-tidy
     ~/.gdbinit
-    ~/.bashrc
-    ~/.bash_profile
+    ~/.zshrc
+    ~/.zprofile
     ~/.tmux.conf
     ~/.git-hooks
     ~/.gitignore-global
@@ -256,11 +259,6 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
-# Create platform-specific bash symlinks directly (not via stow)
-info "Creating Arch-specific bash config symlinks..."
-ln -sf "$DOTFILES_DIR/bash/.bashrc-arch" "$HOME/.bashrc"
-ln -sf "$DOTFILES_DIR/bash/.bash_profile-arch" "$HOME/.bash_profile"
-
 # Created before stow runs: a missing target directory gets "folded" into one
 # symlink into the repo, and then Claude Code (~/.claude) or any app writing
 # under ~/.config writes into the working tree. scripts/verify.sh checks this.
@@ -268,8 +266,8 @@ ln -sf "$DOTFILES_DIR/bash/.bash_profile-arch" "$HOME/.bash_profile"
 mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
 
 # An explicit list rather than every directory: the repo also holds macOS
-# packages (aerospace, sketchybar, autoraise, ghostty, zsh) and Windows ones
-# (glazewm, zebar) that have no business in an Arch $HOME. bash is linked above.
+# packages (aerospace, sketchybar, autoraise, ghostty) and Windows ones
+# (glazewm, zebar) that have no business in an Arch $HOME.
 info "Stowing packages..."
 # shellcheck source=scripts/packages.sh
 source "$DOTFILES_DIR/scripts/packages.sh"
@@ -283,6 +281,11 @@ for pkg in "${STOW_PACKAGES[@]}"; do
         FAILURES+=("stow $pkg failed (see: stow -n -v -t ~ $pkg)")
     fi
 done
+
+# zsh as the login shell, oh-my-zsh, and retiring the old bash links. Shared
+# with install_debian.sh.
+"$DOTFILES_DIR/scripts/setup-zsh-linux.sh" \
+    || FAILURES+=("setup-zsh-linux.sh: a zsh step failed (see its warnings above)")
 
 # yazi plugins (git status column, Markdown preview) are declared in
 # yazi/.config/yazi/package.toml but not committed; fetch them now that the
@@ -332,7 +335,7 @@ fi
 echo ""
 echo "Next steps:"
 echo "  1. Reboot (or log out and back in)"
-echo "  2. Hyprland will auto-start on TTY1"
+echo "  2. Log in on TTY1: zsh is your login shell, and it starts Hyprland"
 echo ""
 echo "Key bindings:"
 echo "  Super + Q      - Open terminal (foot)"

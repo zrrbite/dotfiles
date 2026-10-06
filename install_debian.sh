@@ -76,6 +76,9 @@ APT_PACKAGES=(
     curl
     unzip
     direnv
+    zsh
+    zsh-autosuggestions
+    zsh-syntax-highlighting
 )
 
 info "Installing apt packages..."
@@ -102,7 +105,7 @@ else
 fi
 
 # Install zoxide. Its installer puts it in ~/.local/bin, which only the stowed
-# .bashrc adds to PATH -- so check there too, or every re-run reinstalls it.
+# .zshrc adds to PATH -- so check there too, or every re-run reinstalls it.
 if ! command -v zoxide &> /dev/null && [ ! -x "$HOME/.local/bin/zoxide" ]; then
     info "Installing zoxide..."
     curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
@@ -207,8 +210,8 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-format
     ~/.clang-tidy
     ~/.gdbinit
-    ~/.bashrc
-    ~/.bash_profile
+    ~/.zshrc
+    ~/.zprofile
 )
 
 # git/.gitconfig carries no identity or credential helper; those live in
@@ -249,22 +252,6 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
     fi
 done
 
-# Create platform-specific bash symlinks directly (not via stow)
-case $PLATFORM in
-    wsl)
-        BASHRC_VARIANT="wsl"
-        BASH_PROFILE_VARIANT="wsl"
-        ;;
-    raspbian|debian)
-        BASHRC_VARIANT="raspbian"
-        BASH_PROFILE_VARIANT="raspbian"
-        ;;
-esac
-
-info "Creating ${PLATFORM}-specific bash config symlinks..."
-ln -sf "$DOTFILES_DIR/bash/.bashrc-${BASHRC_VARIANT}" "$HOME/.bashrc"
-ln -sf "$DOTFILES_DIR/bash/.bash_profile-${BASH_PROFILE_VARIANT}" "$HOME/.bash_profile"
-
 # Stow universal packages (no GUI/Wayland stuff)
 # Created before stow runs: a missing target directory gets "folded" into one
 # symlink into the repo, and then Claude Code (~/.claude) or any app writing
@@ -283,6 +270,11 @@ for pkg in "${STOW_PACKAGES[@]}"; do
         FAILURES+=("stow $pkg failed (see: stow -n -v -t ~ $pkg)")
     fi
 done
+
+# zsh as the login shell, oh-my-zsh, and retiring the old bash links. Shared
+# with install_arch.sh.
+"$DOTFILES_DIR/scripts/setup-zsh-linux.sh" \
+    || FAILURES+=("setup-zsh-linux.sh: a zsh step failed (see its warnings above)")
 
 # btop's Nord theme. btop rewrites its config on exit, so it isn't stowed; this
 # sets the theme line once and leaves the file to btop.
@@ -317,7 +309,7 @@ else
 fi
 echo ""
 echo "Next steps:"
-echo "  1. Restart your terminal or run: source ~/.bashrc"
+echo "  1. Log out and back in: zsh is now your login shell"
 if [ "$PLATFORM" = "wsl" ]; then
     echo "  2. Install JetBrains Mono Nerd Font on Windows for proper icons"
 else
