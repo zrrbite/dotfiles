@@ -171,15 +171,20 @@ else
     bad "verify.sh missed a login shell missing from /etc/shells (exit $rc)"
 fi
 as_root 'chsh -s "$(grep -m1 -x ".*/zsh" /etc/shells)" tester'
-# A tmux server started before the switch keeps opening bash panes.
-as_tester 'SHELL=/bin/bash tmux new-session -d -s before-switch'
-out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"
-if echo "$out" | grep -q 'tmux server'; then
-    ok "verify.sh warns about a tmux server still opening bash"
+# A tmux server started before the switch keeps opening bash panes. Under
+# emulation (archlinux) tmux can't start a pane's process, so the server
+# exits at once and there is nothing to check.
+if as_tester 'SHELL=/bin/bash tmux new-session -d -s before-switch "sleep 60" && tmux has-session -t before-switch 2>/dev/null'; then
+    out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"
+    if echo "$out" | grep -q 'tmux server'; then
+        ok "verify.sh warns about a tmux server still opening bash"
+    else
+        bad "verify.sh missed a tmux server still opening bash"
+    fi
+    as_tester 'tmux kill-server'
 else
-    bad "verify.sh missed a tmux server still opening bash"
+    echo "skip verify.sh's tmux-server warning (tmux can't keep a session here, as under emulation)"
 fi
-as_tester 'tmux kill-server'
 
 echo "== zsh startup time, three runs (seconds)"
 as_tester 'command -v zsh >/dev/null && zsh -c "zmodload zsh/datetime; for i in 1 2 3; do s=\$EPOCHREALTIME; SSH_AUTH_SOCK=/dev/null zsh -i -c exit >/dev/null 2>&1; printf \"     %.2f\n\" \$((EPOCHREALTIME - s)); done"'
