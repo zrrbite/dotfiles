@@ -27,7 +27,8 @@ and every stow command here passes `-t ~`. The examples use `~/dotfiles`.
 
 ## What "done" means
 
-On macOS and Linux, **`scripts/verify.sh` exits 0**. It is read-only. It
+On macOS and Linux, **`scripts/verify.sh` exits 0**. Its only write is a
+record of the commit it passed at (`~/.local/state/dotfiles/applied`). It
 checks that each package is linked (stow has nothing left to do), that no
 app-state directory is a symlink into the repo, that the repo is clean, that
 git identity is set and doesn't come from the tracked file, and, on macOS,
@@ -345,6 +346,24 @@ fi
 
 If `~/.gitconfig` is a plain file instead, skip this. The installers'
 seed step handles it.
+
+**1b. Repair anything an older installer wrote into the repo.** Before
+2026-10-05, the macOS installer could make `~/.config/fastfetch` (and
+`~/.claude`) a symlink into the repo. It then wrote the macOS fastfetch config
+*over* the tracked `fastfetch/.config/fastfetch/config.jsonc`. Check before
+pulling, because a pull over a modified tracked file can fail:
+
+```bash
+cd ~/dotfiles && git status --short      # anything you didn't change yourself?
+ls -ld ~/.config/fastfetch ~/.claude     # an `l` in the first column = symlink
+if [ -L ~/.config/fastfetch ]; then
+    git checkout -- fastfetch/.config/fastfetch/config.jsonc   # restore the tracked file
+    rm ~/.config/fastfetch                                     # removes only the link
+fi
+```
+
+For a `~/.claude` symlink, see step 3. The installer re-creates both as real
+directories.
 
 **2. Pull and re-run the installer** (macOS / Linux). It's re-run safe,
 installs only what's missing (new tools, fonts, casks), and re-links:

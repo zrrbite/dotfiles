@@ -30,10 +30,20 @@ July and September that reached `master` today (the lint/CI branch, PR #2).
 
 ### On other machines
 
-**Do first, before `git pull`:** save git identity to `~/.gitconfig.local`.
-The shared `git/.gitconfig` no longer carries a name, email or credential
-helper. If `~/.gitconfig` is a symlink into this repo, pulling removes them.
-The snippet is under "Updating a machine" in `doc/applying-the-setup.md`.
+**Do first, before `git pull`:**
+
+1. **Save git identity to `~/.gitconfig.local`.** The shared
+   `git/.gitconfig` no longer carries a name, email or credential helper; if
+   `~/.gitconfig` is a symlink into this repo, pulling removes them. The
+   snippet is under "Updating a machine" in `doc/applying-the-setup.md`.
+2. **Repair what older installers wrote into the repo.** A macOS installer
+   from before today stowed `fastfetch` *before* creating
+   `~/.config/fastfetch`. So that directory became a symlink into the repo,
+   and its `ln -sf` replaced the tracked `fastfetch/.config/fastfetch/config.jsonc`
+   with a symlink. `~/.claude` can be folded the same way. Check
+   `git -C ~/dotfiles status` and `ls -ld ~/.config/fastfetch ~/.claude`, and
+   repair with the snippet in "Updating a machine", step 1b. A pull over a
+   modified tracked file can fail.
 
 Then:
 
@@ -43,12 +53,12 @@ Then:
    - **macOS:** `ghostty`, `font-sketchybar-app-font`, `yazi`, `chafa`,
      `ffmpeg`, `poppler`, `sevenzip`, `tmux`; oh-my-zsh (a git clone).
    - **All OSes:** tmux-resurrect, cloned into `~/.tmux/plugins/`.
-   - **New stow packages:** `ghostty`, `yazi` (macOS, and yazi on Arch).
+   - **New stow packages:** `ghostty`, `yazi` and `tmux` on macOS (tmux's
+     config existed but wasn't on the macOS list); `yazi` on Arch.
    - The installer also creates `~/.config`, `~/.config/fastfetch` and
      `~/.claude` before stowing (see the Installers section below).
-2. **`scripts/verify.sh`.** Fix any FAIL. A `~/.claude` symlinked into the
-   repo, left by an older installer, has a one-line fix in
-   `doc/applying-the-setup.md`.
+2. **`scripts/verify.sh`.** Fix any FAIL. When everything passes, it records
+   this commit as the machine's sync point.
 3. **Reload what's running:**
    - open a new shell;
    - Ghostty: `⌘⇧,`;
@@ -95,8 +105,9 @@ Then:
   - pre-commit pins the clang-format binary (`4db22f0`).
 
 **Installers and checks**
-- **`scripts/verify.sh`:** a read-only "is this machine applied?" check;
-  exit 0 means done. (`13253a8`)
+- **`scripts/verify.sh`:** an "is this machine applied?" check; exit 0
+  means done. Its only write is the sync record in
+  `~/.local/state/dotfiles/applied`. (`13253a8`, `535dece`)
 - **`scripts/packages.sh`:** the single list of stow packages per OS.
 - **Installers:**
   - never link app-state folders into the repo;
@@ -111,6 +122,8 @@ Then:
   `7883e94`)
 - **Lint and CI:** `scripts/lint.sh` (shellcheck, stow, executable bits),
   run in CI. (`027c7a9`)
+- **Installers:** tmux and node were added to the macOS and Arch package
+  lists. node is there for nvim's TypeScript language server. (`f561c24`)
 
 **Desktop (macOS)**
 - **sketchybar:**
@@ -150,6 +163,14 @@ Then:
   terminal images (`fimg`). (`a80e0da`)
 - **Raycast script command:** `tmux session`, `t` from anywhere.
   (`88fbac8`)
+
+**zsh and Claude Code**
+- **zsh:** a `roast` alias for the coffee-roaster console. (`b0b0031`)
+- **Claude Code:** `claude/.claude/CLAUDE.md` is now the working config, not
+  the old persona file. The installer backs up a real `~/.claude/CLAUDE.md`
+  and links the repo's. There is also a PreModelSwitch hook that blocks
+  costly model switches; it does nothing until registered in
+  `~/.claude/settings.json`. (`033da3d`, `6a2e19e`)
 
 **Docs**
 - `AGENTS.md` for non-Claude agents. (`705dc20`)
