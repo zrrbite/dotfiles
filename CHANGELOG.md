@@ -23,6 +23,30 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: Hyprland config fixes that apply now (0.56)
+
+### On other machines
+- **Arch:** pull, then `hyprctl reload` and restart hyprpaper
+  (`pkill hyprpaper; hyprpaper &`), or just log out and back in on TTY1.
+- Expect the wallpaper back, and no window-rule errors.
+
+### What changed
+- **Window rules:** converted to the `match:` syntax of 0.53+. The old
+  `windowrulev2` / `windowrule = effect, class:` lines have been errors
+  since 0.53, so the firefox→2, discord→3, suppress-maximize and XWayland
+  no-focus rules weren't applying. Names checked against the hyprland-wiki
+  page at `7a711bbee`, the last version before the Lua rewrite.
+- **hyprpaper.conf:** uses the 0.8 `wallpaper { }` block syntax. The old
+  `preload` / `wallpaper = ,path` lines make hyprpaper 0.8.1+ refuse to
+  start, so there was no wallpaper. The path is now `~/`, not
+  `/home/zrrbite`.
+- **`.bash_profile-arch`:** starts Hyprland via `start-hyprland` (0.53+),
+  the supported launcher with crash recovery, falling back to `Hyprland`.
+- **Still to do:** the `hyprland.lua` migration (needed before 0.57) is
+  being prepared on branch `hypr-lua`, for testing on the NUC.
+
+---
+
 ## 2026-10-06: doc/tools.md — what's installed, per OS
 
 ### On other machines
