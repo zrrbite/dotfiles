@@ -107,7 +107,7 @@ re-run safe: by default it only installs what's missing.
   `hypr/.config/hypr/`, which changes every machine. Don't commit them;
   tell the human.
 - **Hyprland 0.57 drops `hyprland.conf`.** These dotfiles' Hyprland config
-  is still in that format; Arch ships 0.56 as of 2026-10-06. Until it's
+  is still in that format; Arch ships 0.56 as of 2026-10-05. Until it's
   migrated to `hyprland.lua` (see Martin's TODO), a 0.57 upgrade leaves
   Hyprland unconfigured. Check `pacman -Q hyprland` and tell the human.
 - **Arch:** Hyprland starts on login on TTY1 (`bash/.bash_profile-arch`).

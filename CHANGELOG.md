@@ -23,7 +23,7 @@ app settings outside stow, and manual installs.
 
 ---
 
-## 2026-10-06: yazi shows hidden files by default
+## 2026-10-05 (night): yazi shows hidden files by default
 
 ### On other machines
 Nothing to run: it applies the next time yazi starts (the config is linked).
@@ -35,7 +35,7 @@ only.
 
 ---
 
-## 2026-10-06: Hyprland config fixes that apply now (0.56)
+## 2026-10-05 (night): Hyprland config fixes that apply now (0.56)
 
 ### On other machines
 - **Arch:** pull, then `hyprctl reload` and restart hyprpaper
@@ -59,7 +59,7 @@ only.
 
 ---
 
-## 2026-10-06: doc/tools.md — what's installed, per OS
+## 2026-10-05 (night): doc/tools.md — what's installed, per OS
 
 ### On other machines
 Nothing to run.
@@ -74,7 +74,7 @@ a package.
 
 ---
 
-## 2026-10-06: Arch guide lives in archinstall; Hyprland 0.57 warning
+## 2026-10-05 (night): Arch guide lives in archinstall; Hyprland 0.57 warning
 
 ### On other machines
 - Nothing to run.
@@ -93,7 +93,7 @@ a package.
 
 ---
 
-## 2026-10-06: Linux catches up — tp, y, direnv in bash; prefix f fixed
+## 2026-10-05 (night): Linux catches up — tp, y, direnv in bash; prefix f fixed
 
 ### On other machines
 - **Arch / Debian / WSL / Pi:** pull, re-run the installer (adds `direnv`
@@ -115,7 +115,7 @@ a package.
 
 ---
 
-## 2026-10-06: direnv — per-project environments
+## 2026-10-05 (night): direnv — per-project environments
 
 ### On other machines
 - **macOS:** re-run the installer (installs `direnv`, stows the `direnv`
@@ -139,7 +139,7 @@ a package.
 
 ---
 
-## 2026-10-06: yazi extras — git status, Markdown preview, yazi inside nvim
+## 2026-10-05 (night): yazi extras — git status, Markdown preview, yazi inside nvim
 
 ### On other machines
 - **Re-run the installer.** macOS gets `glow`. Both macOS and Arch run
