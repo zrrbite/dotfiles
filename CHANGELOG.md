@@ -23,6 +23,18 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: yazi shows hidden files by default
+
+### On other machines
+Nothing to run: it applies the next time yazi starts (the config is linked).
+
+### What changed
+`show_hidden = true` in `yazi/.config/yazi/yazi.toml`, matching Finder
+(`scripts/finder-defaults.sh`). `.` still toggles, for the current session
+only.
+
+---
+
 ## 2026-10-06: Hyprland config fixes that apply now (0.56)
 
 ### On other machines

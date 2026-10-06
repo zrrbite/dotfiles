@@ -19,7 +19,7 @@ ratio          = [ 1, 3, 4 ]   # parent | current | preview -- a wider preview t
 sort_by        = "natural"     # file2 before file10
 sort_dir_first = true
 linemode       = "size"        # show sizes beside names
-show_hidden    = false         # `.` toggles
+show_hidden    = true          # dotfiles visible by default, as in Finder; `.` hides them
 
 [preview]
 max_width     = 1200           # Retina: the 600x900 default looks soft
