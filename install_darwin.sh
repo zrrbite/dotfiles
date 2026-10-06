@@ -478,8 +478,9 @@ if [ "$WITH_DESKTOP" = true ]; then
     # restarts Finder itself.
     run "$DOTFILES_DIR/scripts/finder-defaults.sh"
 
-    # Set wallpaper (skull, matching Windows)
-    WALLPAPER="$DOTFILES_DIR/hypr/.local/share/wallpapers/pexels-ahmedadly-1270184.jpg"
+    # Set wallpaper (Arch logo, matching hyprpaper on Arch). The lock screen
+    # and login window use it too; macOS has no separate picker for them
+    WALLPAPER="$DOTFILES_DIR/hypr/.local/share/wallpapers/arch-blue-lowlight.png"
     if [ -f "$WALLPAPER" ]; then
         run osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$WALLPAPER\""
         info "  Wallpaper set"
@@ -529,7 +530,7 @@ if [ "$WITH_DESKTOP" = true ]; then
     echo "  - Dock auto-hidden (sketchybar replaces it)"
     echo "  - Menu bar auto-hidden"
     echo "  - Desktop icons hidden"
-    echo "  - Wallpaper set (skull)"
+    echo "  - Wallpaper set (Arch logo; also the lock screen)"
     echo ""
 fi
 echo "AeroSpace tiling WM:"

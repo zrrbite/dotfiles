@@ -23,6 +23,34 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: macOS wallpaper is the Arch logo, on the lock screen too
+
+### On other machines
+- **macOS:** the installer only sets the wallpaper with `--with-desktop`,
+  which also overwrites the Dock and Finder settings. To change just the
+  wallpaper:
+  ```bash
+  osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$HOME/Development/dotfiles/hypr/.local/share/wallpapers/arch-blue-lowlight.png\""
+  ```
+  (adjust the path if the repo lives elsewhere). The lock screen follows at
+  once. With FileVault on, the screen after a restart is a separate copy:
+  run `sudo diskutil apfs updatePreboot /`, or log out and back in.
+- **Arch, Windows:** nothing. Arch already uses this image (hyprpaper);
+  Windows keeps the skull.
+
+### What changed
+`install_darwin.sh --with-desktop` sets `arch-blue-lowlight.png` instead of
+the skull, matching the Arch box's desktop. macOS has no separate lock-screen
+or login-window picture, so the wallpaper is what they show.
+
+**Not in the repo:** the wallpaper is a per-machine setting, so pulling
+changes nothing until it's set. The lock-screen clock's font and weight
+(System Settings → Wallpaper → Clock Appearance, new in Tahoe) are
+settings-app only. Martin's main Mac: set 2026-10-06 (it was
+`~/Downloads/melinoe_wallpaper.jpeg`).
+
+---
+
 ## 2026-10-05 (night): yazi shows hidden files by default
 
 ### On other machines
