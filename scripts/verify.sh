@@ -115,7 +115,9 @@ for p in "${PACKAGES[@]}"; do [ "$p" = zsh ] && checks_zsh=true; done
 if [ "$OS" != darwin ] && [ "$checks_zsh" = true ]; then
     me="$(id -un)"
     shell="$(getent passwd "$me" | cut -d: -f7)"
-    if [ "${shell##*/}" = zsh ]; then
+    if [ "${shell##*/}" = zsh ] && ! grep -qx "$shell" /etc/shells 2>/dev/null; then
+        fail "login shell $shell is not listed in /etc/shells; login managers and chsh reject it -- run: sudo chsh -s /usr/bin/zsh $me"
+    elif [ "${shell##*/}" = zsh ]; then
         pass "login shell is zsh ($shell)"
     else
         fail "login shell is ${shell:-unknown}, not zsh -- run: sudo chsh -s \"\$(command -v zsh)\" $me, then log in again"

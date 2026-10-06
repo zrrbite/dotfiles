@@ -104,6 +104,11 @@ if as_tester 'cd ~/dotfiles && scripts/verify.sh'; then ok "scripts/verify.sh"; 
 
 login="$(as_tester 'getent passwd tester | cut -d: -f7')"
 if [ "${login##*/}" = zsh ]; then ok "login shell is $login"; else bad "login shell is $login, not zsh"; fi
+if as_tester "grep -qx '$login' /etc/shells"; then
+    ok "login shell is listed in /etc/shells"
+else
+    bad "login shell $login is not listed in /etc/shells"
+fi
 
 if as_tester 'ls ~/.config-backup-*/.zshrc ~/.config-backup-*/.zprofile >/dev/null 2>&1'; then
     ok "the pre-existing ~/.zshrc and ~/.zprofile were backed up"
@@ -146,7 +151,15 @@ if [ $rc -ne 0 ] && echo "$out" | grep -q 'login shell is /bin/bash, not zsh'; t
 else
     bad "verify.sh missed a bash login shell (exit $rc)"
 fi
-as_root 'chsh -s "$(command -v zsh)" tester'
+# A zsh that /etc/shells doesn't list (on Arch, /usr/sbin/zsh is one).
+as_root 'mkdir -p /opt/zsh && ln -sf "$(grep -m1 -x ".*/zsh" /etc/shells)" /opt/zsh/zsh && chsh -s /opt/zsh/zsh tester' 2>/dev/null
+out="$(as_tester 'cd ~/dotfiles && scripts/verify.sh' 2>&1)"; rc=$?
+if [ $rc -ne 0 ] && echo "$out" | grep -q 'is not listed in /etc/shells'; then
+    ok "verify.sh fails when the login shell isn't in /etc/shells"
+else
+    bad "verify.sh missed a login shell missing from /etc/shells (exit $rc)"
+fi
+as_root 'chsh -s "$(grep -m1 -x ".*/zsh" /etc/shells)" tester'
 
 echo "== zsh startup time, three runs (seconds)"
 as_tester 'command -v zsh >/dev/null && zsh -c "zmodload zsh/datetime; for i in 1 2 3; do s=\$EPOCHREALTIME; SSH_AUTH_SOCK=/dev/null zsh -i -c exit >/dev/null 2>&1; printf \"     %.2f\n\" \$((EPOCHREALTIME - s)); done"'

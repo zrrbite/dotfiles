@@ -67,13 +67,20 @@ for pair in bat:batcat fd:fdfind; do
     fi
 done
 
-# 4. The login shell
-zsh_path="$(command -v zsh || true)"
+# 4. The login shell, as a path /etc/shells lists. On Arch /usr/sbin is a
+# link to /usr/bin, so `command -v zsh` can answer /usr/sbin/zsh, which isn't
+# listed; login managers and chsh treat an unlisted shell as invalid. A login
+# shell already set to such a path is corrected too.
+if grep -qx /usr/bin/zsh /etc/shells 2>/dev/null && [ -x /usr/bin/zsh ]; then
+    zsh_path=/usr/bin/zsh
+else
+    zsh_path="$(grep -m1 -x '/.*/zsh' /etc/shells 2>/dev/null || command -v zsh || true)"
+fi
 current="$(getent passwd "$me" | cut -d: -f7)"
 if [ -z "$zsh_path" ]; then
     warn "zsh is not installed; the login shell stays $current"
     status=1
-elif [ "${current##*/}" != zsh ]; then
+elif [ "${current##*/}" != zsh ] || ! grep -qx "$current" /etc/shells 2>/dev/null; then
     if sudo chsh -s "$zsh_path" "$me"; then
         info "Login shell is now zsh (was $current); log out and back in to use it"
     else
