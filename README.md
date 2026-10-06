@@ -697,7 +697,8 @@ Learns your habits over time - the more you `cd` somewhere, the higher it ranks.
 
 ### bat - Better cat
 
-Syntax highlighting, line numbers, and git integration:
+Syntax highlighting, line numbers, and git integration, in the Nord theme
+(`bat/.config/bat/config`):
 
 ```bash
 bat file.cpp           # view with syntax highlighting

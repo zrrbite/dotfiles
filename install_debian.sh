@@ -284,6 +284,10 @@ for pkg in "${STOW_PACKAGES[@]}"; do
     fi
 done
 
+# btop's Nord theme. btop rewrites its config on exit, so it isn't stowed; this
+# sets the theme line once and leaves the file to btop.
+"$DOTFILES_DIR/scripts/seed-btop-config.sh" \
+    || FAILURES+=("seed-btop-config.sh failed; btop keeps its default theme")
 
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
 # tmux/.tmux.conf if present; pinned to a release tag.

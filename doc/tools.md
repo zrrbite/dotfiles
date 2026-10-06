@@ -42,8 +42,8 @@ and Raspberry Pi.
 | fzf | Fuzzy finder (`Ctrl+R`, `tp`, `fimg`) | ✓ | ✓ | ✓ | ✓ |
 | eza | `ls` with icons and git status | ✓ | ✓ | ✓ | ✓ |
 | fd, ripgrep | Find files / search contents | ✓ | ✓ | ✓ | ✓ |
-| bat | `cat` with syntax highlighting (`batcat` on Debian) | ✓ | ✓ | ✓ | ✓ |
-| duf, procs, btop | Disks, processes, system monitor | ✓ | ✓ | ✓ | duf, procs |
+| bat | `cat` with syntax highlighting, Nord theme (`batcat` on Debian; default theme on Windows) | ✓ | ✓ | ✓ | ✓ |
+| duf, procs, btop | Disks, processes, system monitor (btop in Nord, via `scripts/seed-btop-config.sh`) | ✓ | ✓ | ✓ | duf, procs |
 | tldr | Short man pages | ✓ | ✓ | ✓ | – |
 | ffmpeg, poppler, 7-Zip | yazi preview helpers (video, PDF, archives) | ✓ | – | – | – |
 

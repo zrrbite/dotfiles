@@ -137,6 +137,9 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
 - **tmux**: Terminal multiplexer, `Ctrl+a` prefix and Nord status line. Stowed
   and installed on Arch, Debian/WSL/Raspbian and macOS; not on Windows.
+- **bat**: one line, `--theme="Nord"`, matching delta. Stowed on Arch,
+  Debian/WSL/Raspbian (where the binary is `batcat`) and macOS; not on Windows,
+  whose bat config lives under `%APPDATA%`.
 
 **macOS shell:**
 - **zsh**: `zsh/.zshrc` → `~/.zshrc`. zsh is the macOS login shell, so this is
@@ -165,8 +168,11 @@ Each top-level directory is a stow package that mirrors the home directory struc
 **Linux-only (Arch + optionally WSL):**
 - **gdb**: Debugger config (macOS uses lldb instead)
 
-btop is installed as a binary by every installer but has no stow package here —
-it runs on its own defaults. There is no `btop/` directory; don't add it to a
+btop is installed as a binary by every installer but has no stow package here:
+it rewrites its own `btop.conf` on exit, so a linked file would be rewritten
+inside the repo. Instead the installers run `scripts/seed-btop-config.sh`, which
+sets `color_theme = "nord"` once (only over btop's `Default` or a missing file)
+and leaves the file to btop. There is no `btop/` directory; don't add it to a
 stow list.
 
 **Arch-only (native hardware with GPU):**

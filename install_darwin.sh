@@ -427,6 +427,11 @@ if command -v ya >/dev/null 2>&1; then
     run ya pkg install || FAILURES+=("ya pkg install failed; yazi works, minus its plugins")
 fi
 
+# btop's Nord theme. btop rewrites its config on exit, so it isn't stowed; this
+# sets the theme line once and leaves the file to btop.
+DRY_RUN="$DRY_RUN" "$DOTFILES_DIR/scripts/seed-btop-config.sh" \
+    || FAILURES+=("seed-btop-config.sh failed; btop keeps its default theme")
+
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
 # tmux/.tmux.conf if present; pinned to a release tag.
 if [ ! -d "$HOME/.tmux/plugins/tmux-resurrect" ]; then

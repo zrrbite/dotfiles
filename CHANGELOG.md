@@ -23,6 +23,38 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: Nord theme for bat and btop
+
+### On other machines
+- **macOS, Arch, Debian/WSL/Pi:** pull, then either re-run the installer,
+  or do its two steps by hand:
+  ```bash
+  stow -t ~ bat
+  scripts/seed-btop-config.sh
+  ```
+  `scripts/verify.sh` then checks `bat` like any other package.
+- If stowing `bat` reports a conflict, that machine already has its own
+  `~/.config/bat/config`: merge it into `bat/.config/bat/config` or move it
+  aside.
+- btop: the script only replaces btop's `Default` theme. A theme picked in
+  btop's menu is kept, and the script says so.
+- **Windows:** nothing; bat keeps its default theme there.
+
+### What changed
+- **bat:** a new `bat` package with `--theme="Nord"` (a theme bat ships
+  with), matching delta. Stowed on macOS, Arch and Debian
+  (`scripts/packages.sh`).
+- **btop:** not stowed, because btop rewrites `btop.conf` on exit and would
+  write into the repo through a link. The new
+  `scripts/seed-btop-config.sh` sets `color_theme = "nord"` once and leaves
+  the file to btop. All three installers run it, Arch after its config
+  backup. Tested on all four starting states (none, `Default`, a picked
+  theme, no theme line), plus a real btop run: it draws in Nord and keeps
+  the setting when it rewrites its config.
+- **On Martin's main Mac:** both applied.
+
+---
+
 ## 2026-10-06: node 18 pin gone; nvim's TypeScript needs TypeScript 6
 
 ### On other machines

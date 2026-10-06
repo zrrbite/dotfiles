@@ -1,0 +1,3 @@
+# bat reads each line as a command-line flag. Nord matches delta
+# (git/.gitconfig), the terminals and the prompt.
+--theme="Nord"
