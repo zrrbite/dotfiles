@@ -21,6 +21,11 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 machines: they replace `~/.gitconfig` (global hooks, a global ignore) and
 `~/.zshrc`.
 
+**`doc/tools.md` is the per-OS overview of every tool** (what it's for, and
+which OS has it). Update its table in the same commit that adds or removes a
+package from an installer. The exact package names stay in the installers,
+not copied there.
+
 **Every change that affects a machine gets a `CHANGELOG.md` entry**, under
 today's date (newest first), in the same pass as the commit. Say what changed,
 with commit refs, and **On other machines**: the exact steps to catch up (re-run

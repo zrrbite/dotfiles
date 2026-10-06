@@ -70,6 +70,8 @@ make clean
 
 ### Setting up a machine
 
+- **[tools.md](tools.md)** — every tool this repo installs, what it's for,
+  and which OS has it. The one-page answer to "what's on this machine?".
 - **[applying-the-setup.md](applying-the-setup.md)** — for an AI agent (or a
   person) applying this repo to a new machine, especially a work one: what to
   check first, which packages are safe, and why `git` and `claude/CLAUDE.md`

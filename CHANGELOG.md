@@ -23,6 +23,21 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-06: doc/tools.md — what's installed, per OS
+
+### On other machines
+Nothing to run.
+
+### What changed
+`doc/tools.md` lists every tool by purpose, with a column per OS (macOS,
+Arch, Debian/WSL/Pi, Windows), plus what the repo *doesn't* install
+(Raycast, per-project `.envrc`). It was built from the installers' actual
+package lists, which remain the source for exact names. `AGENTS.md` links it
+first; `CLAUDE.md` requires updating it whenever an installer gains or loses
+a package.
+
+---
+
 ## 2026-10-06: Arch guide lives in archinstall; Hyprland 0.57 warning
 
 ### On other machines

@@ -4,6 +4,8 @@ Instructions for AI coding agents (Codex, Copilot, Cursor and others) working
 in this repo. Claude Code reads `CLAUDE.md` directly; this file points every
 other agent at the same material rather than repeating it.
 
+- **What's installed, per OS** (tools and what each is for):
+  [`doc/tools.md`](doc/tools.md). Start here to know what a machine has.
 - **Working on the repo** (its layout, stow packages, installers, hooks):
   read [`CLAUDE.md`](CLAUDE.md).
 - **Setting up a machine from it** ("apply this repo"): read
