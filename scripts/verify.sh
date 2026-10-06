@@ -166,6 +166,11 @@ if command -v tmux >/dev/null 2>&1; then
     else
         warn "tmux-resurrect missing: sessions won't survive a reboot (the installers clone it)"
     fi
+    if [ -f "$HOME/.tmux/plugins/tmux-continuum/continuum.tmux" ]; then
+        pass "tmux-continuum installed (auto-save and restore)"
+    else
+        warn "tmux-continuum missing: saving is manual, prefix Ctrl-s (the installers clone it)"
+    fi
 fi
 
 # -- Running services (macOS desktop) -----------------------------------------

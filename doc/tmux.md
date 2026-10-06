@@ -48,9 +48,10 @@ lists every binding.
 | Enter copy mode | `Ctrl+a` `[` |
 | Move / page / search | `j` `k`, `Ctrl+u` `Ctrl+d`, `g` `G`, `/` |
 | Select / copy / leave | `v` / `y` / `q`. Paste with `⌘V`. |
-| **Surviving a reboot** (tmux-resurrect) | |
-| Save every session now | `Ctrl+a` `Ctrl+s` |
-| Restore the last save | `Ctrl+a` `Ctrl+r` |
+| **Surviving a reboot** (tmux-resurrect + tmux-continuum) | |
+| Automatic | saved every 15 minutes, and restored when tmux next starts |
+| Save every session now (e.g. right before a restart) | `Ctrl+a` `Ctrl+s` |
+| Restore the last save by hand | `Ctrl+a` `Ctrl+r` |
 | **Other** | |
 | tmux command prompt | `Ctrl+a` `:` |
 | Reload the config | `Ctrl+a` `r` |
@@ -62,10 +63,16 @@ Gotchas:
   `⌘ ←`: Ghostty and Alacritty send Home, which works in tmux.
 - **Last-session isn't `Ctrl+a` `L`**, tmux's default, because `L` resizes
   here. It's `Tab`.
-- **Sessions survive closing the terminal, but not a reboot,** unless you
-  saved them. Save with `Ctrl+a` `Ctrl+s` before restarting. After the
-  reboot, start tmux (`t`) and press `Ctrl+a` `Ctrl+r`. Saving is manual;
-  the auto-save plugin, tmux-continuum, isn't installed.
+- **Sessions survive a reboot automatically.** They're saved every 15
+  minutes, and the first tmux start afterwards restores them, so at most 15
+  minutes of layout changes are lost. `Ctrl+a` `Ctrl+s` right before a
+  restart loses nothing. Auto-save only runs while there's a single tmux
+  server (normal use). To start truly empty, delete the saves in
+  `~/.local/share/tmux/resurrect` first.
+- **The status bar:**
+  - left: your session, in a pill that turns **yellow while `Ctrl+a` is
+    pressed**, plus **COPY** in copy mode;
+  - right: all sessions (the current one bright) and the machine name.
 - **Config changes don't reach running sessions.** Reload with `Ctrl+a` `r`.
   Terminal features such as colour need a detach and reattach as well.
 

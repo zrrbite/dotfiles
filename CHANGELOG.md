@@ -23,6 +23,27 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-05 (late): tmux status bar and auto-save
+
+### On other machines
+- **Re-run the installer.** It clones tmux-continuum (v3.1.0) into
+  `~/.tmux/plugins/`.
+- **In tmux:** `Ctrl+a` `r`. A running server loads auto-save but doesn't
+  restore anything; restore happens on the next fresh start.
+
+### What changed
+- **Status bar:**
+  - the session pill turns yellow while the prefix is pending;
+  - COPY shows in copy mode;
+  - the right side lists every session and the host name;
+  - the date and time are gone (sketchybar has them).
+- **tmux-continuum:** auto-saves every 15 minutes and restores on the next
+  tmux start. It loads after resurrect, and after status-right is set,
+  because it hooks its timer into status-right. It pauses itself while more
+  than one tmux server runs.
+
+---
+
 ## 2026-10-05 (evening): project picker, zsh suggestions and highlighting
 
 ### On other machines

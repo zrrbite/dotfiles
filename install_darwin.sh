@@ -422,6 +422,13 @@ if [ ! -d "$HOME/.tmux/plugins/tmux-resurrect" ]; then
         https://github.com/tmux-plugins/tmux-resurrect "$HOME/.tmux/plugins/tmux-resurrect" \
         || FAILURES+=("tmux-resurrect clone failed; tmux works without it")
 fi
+# tmux-continuum: auto-saves every 15 minutes and restores on tmux start.
+if [ ! -d "$HOME/.tmux/plugins/tmux-continuum" ]; then
+    info "Installing tmux-continuum..."
+    run git clone -q --depth 1 --branch v3.1.0 \
+        https://github.com/tmux-plugins/tmux-continuum "$HOME/.tmux/plugins/tmux-continuum" \
+        || FAILURES+=("tmux-continuum clone failed; saving stays manual (prefix Ctrl-s)")
+fi
 
 # oh-my-zsh, which zsh/.zshrc loads when present. Cloned rather than run
 # through its install.sh, because that script rewrites ~/.zshrc -- which is
