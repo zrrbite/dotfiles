@@ -321,6 +321,13 @@ Notes:
 
 For a machine set up from an older version of this repo.
 
+**0. Find out what's new for this machine.** Run `scripts/verify.sh`. Its
+first line says which commit the machine was last synced at, and how many
+commits behind it is. No record means it predates 2026-10-05. Then read
+`CHANGELOG.md` from that date. Each entry lists what changed and its **On
+other machines** steps, including manual ones the installer can't do (e.g.
+Raycast's script folder). The steps below are the common core.
+
 **1. Save git identity first, before pulling.** If `~/.gitconfig` is a
 symlink into the repo, an older version carried the identity inside the
 tracked file. Newer versions moved it to `~/.gitconfig.local`, so pulling

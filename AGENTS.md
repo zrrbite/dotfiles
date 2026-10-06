@@ -13,6 +13,11 @@ other agent at the same material rather than repeating it.
   can do, and how to verify.
 - **Done** on macOS/Linux means `scripts/verify.sh` exits 0; report its output
   as the result. Windows has a checklist in the same doc.
+- **Syncing a machine that already has it** ("update my dotfiles", "what
+  changed?"): run `scripts/verify.sh` first. It says which commit this machine
+  was last synced at. Then read [`CHANGELOG.md`](CHANGELOG.md) from that date
+  and do each entry's "On other machines" steps. Some must happen *before*
+  `git pull`.
 
 Three rules matter enough to repeat here:
 
@@ -26,4 +31,6 @@ Three rules matter enough to repeat here:
 3. **Don't link `claude/.claude/CLAUDE.md` on a work machine.** It sends tasks
    to a personal repo. The skills alongside it are fine.
 
-Verify changes with `scripts/lint.sh` (shellcheck plus a stow dry run).
+When you change the repo: verify with `scripts/lint.sh` (shellcheck, stow dry
+run, executable bits), and add a `CHANGELOG.md` entry saying what changed and
+what another machine must do to catch up.

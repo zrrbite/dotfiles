@@ -21,6 +21,17 @@ Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows
 machines: they replace `~/.gitconfig` (global hooks, a global ignore) and
 `~/.zshrc`.
 
+**Every change that affects a machine gets a `CHANGELOG.md` entry**, under
+today's date (newest first), in the same pass as the commit. Say what changed,
+with commit refs, and **On other machines**: the exact steps to catch up (re-run
+the installer, reload something, a manual step), flagging anything that must
+happen before `git pull`. Also say what the repo *can't* do: app settings
+outside stow, manual installs, changes made only on one machine. Other agents
+sync machines from this file, so a missing entry means a machine silently
+missing a change. `scripts/verify.sh` records each machine's last synced
+commit in `~/.local/state/dotfiles/applied`, which is how they find where to
+start reading.
+
 **Git identity is per-machine.** `git/.gitconfig` has no `[user]` and no
 credential helper; it includes `~/.gitconfig.local` last, which holds both.
 `scripts/seed-gitconfig-local.sh` creates that file from an existing

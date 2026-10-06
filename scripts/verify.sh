@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 #
-# Read-only check of whether this repo is applied to the current machine.
-# Changes nothing. Prints PASS / WARN / FAIL lines and exits non-zero if any
-# check FAILs, so an agent (or a person) has an unambiguous "done" signal.
+# Check whether this repo is applied to the current machine. Prints PASS /
+# WARN / FAIL lines and exits non-zero if any check FAILs, so an agent (or a
+# person) has an unambiguous "done" signal.
+#
+# Changes nothing, with one exception: when every check passes, it records the
+# repo's current commit in ~/.local/state/dotfiles/applied. The next run then
+# says how far behind master this machine is, and CHANGELOG.md says what to
+# do about it. The record is outside the repo, per machine.
 #
 # Usage: scripts/verify.sh [package ...]
 #   With no arguments, checks the packages the installer for this OS stows.
@@ -49,6 +54,25 @@ esac
 if [ $# -gt 0 ]; then PACKAGES=("$@"); else PACKAGES=("${DEFAULT[@]}"); fi
 
 echo "Checking $OS against $DOTFILES_DIR"
+
+# -- Where this machine was last synced ------------------------------------------
+STATE="$HOME/.local/state/dotfiles/applied"
+HEAD_SHA="$(git -C "$DOTFILES_DIR" rev-parse HEAD 2>/dev/null)"
+if [ -f "$STATE" ]; then
+    last_sha="$(sed -n 's/^commit //p' "$STATE")"
+    last_date="$(sed -n 's/^date //p' "$STATE")"
+    if behind="$(git -C "$DOTFILES_DIR" rev-list --count "$last_sha..HEAD" 2>/dev/null)"; then
+        if [ "$behind" -gt 0 ]; then
+            warn "last verified at ${last_sha:0:7} ($last_date), $behind commit(s) ago -- read the CHANGELOG.md entries since $last_date"
+        else
+            pass "last verified at ${last_sha:0:7} ($last_date), the current commit"
+        fi
+    else
+        warn "last verified at ${last_sha:0:7} ($last_date), a commit this checkout doesn't have -- pull first"
+    fi
+else
+    warn "no record of a previous sync on this machine -- treat every CHANGELOG.md entry as new"
+fi
 echo
 
 # -- Prerequisites ------------------------------------------------------------
@@ -173,4 +197,15 @@ if [ "$FAILS" -gt 0 ]; then
     echo -e "${RED}$FAILS check(s) failed${NC}, $WARNS warning(s)."
     exit 1
 fi
-echo -e "${GREEN}All checks passed${NC}, $WARNS warning(s)."
+
+# Everything passed: record this commit as the one this machine is synced to.
+if [ -n "$HEAD_SHA" ]; then
+    mkdir -p "$(dirname "$STATE")"
+    {
+        echo "commit $HEAD_SHA"
+        echo "date $(git -C "$DOTFILES_DIR" log -1 --format=%cd --date=short HEAD)"
+        echo "verified $(date '+%Y-%m-%d %H:%M')"
+        echo "packages ${PACKAGES[*]}"
+    } > "$STATE"
+fi
+echo -e "${GREEN}All checks passed${NC}, $WARNS warning(s). Recorded ${HEAD_SHA:0:7} as this machine's sync point."
