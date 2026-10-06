@@ -118,18 +118,26 @@ re-run safe: by default it only installs what's missing.
 ```bash
 git clone https://github.com/zrrbite/dotfiles.git ~/dotfiles
 cd ~/dotfiles
+
+# macOS
 ./install_darwin.sh --dry-run     # preview; show the human
 ./install_darwin.sh               # missing packages only; re-run safe
+
+# Linux: Arch, or Debian/Ubuntu (install_wsl.sh and install_raspbian.sh are
+# symlinks to install_debian.sh). No dry run; they use sudo, so the human
+# types the password.
+./install_arch.sh                 # or ./install_debian.sh
 ```
 
-Flags:
+macOS flags:
 - `--with-desktop` hides the Dock and menu bar and sets the wallpaper. Use it
   for a fresh machine only, when asked.
 - `--upgrade` lets brew upgrade existing packages.
 
-On Linux, `./install_arch.sh` or `./install_debian.sh` (WSL and Raspberry Pi
-are symlinks to the Debian one). They use `sudo`, so the human types the
-password.
+**A fresh Arch box, from a blank disk:** the archinstall guide's
+[fast path](https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md#fast-path-arch-with-the-dotfiles-step-by-step)
+is this, step by step, including what comes before the installer (git, an
+NVIDIA driver, the Hyprland version) and what to check after.
 
 What the installer does, in order:
 1. Packages. A failed brew install is recorded, not fatal.
