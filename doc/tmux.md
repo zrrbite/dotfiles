@@ -33,7 +33,7 @@ lists every binding.
 | Back to the previous session | `Ctrl+a` `Tab` |
 | Previous / next session | `Ctrl+a` `⌘ ←` / `⌘ →`. Keep pressing ⌘ → to cycle without the prefix. (`Ctrl+a` `(` / `)` also work.) |
 | **Panes** | |
-| Split side by side / stacked | `Ctrl+a` `\|` / `Ctrl+a` `-` |
+| Split side by side / stacked | `Ctrl+a` `v` (or `\|`) / `Ctrl+a` `-`. On a Danish Mac, `\|` is ⌥ i, which AeroSpace takes, so use `v` |
 | Move between panes | `Ctrl+a` `h` `j` `k` `l`, or click |
 | Zoom a pane / back | `Ctrl+a` `z` |
 | Resize (hold to repeat) | `Ctrl+a` `H` `J` `K` `L` |

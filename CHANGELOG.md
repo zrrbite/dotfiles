@@ -23,6 +23,18 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-07: tmux `Ctrl+a v` splits side by side
+
+### On other machines
+In tmux: `Ctrl+a` `r` to reload. Nothing else.
+
+### What changed
+`Ctrl+a v` splits a pane side by side, like vim's `:vsplit`, next to the
+existing `Ctrl+a |`. On a Danish Mac layout `|` is Option+i, and AeroSpace
+takes alt-i for resizing, so `Ctrl+a |` did nothing there.
+
+---
+
 ## 2026-10-06: zsh on Linux; the Linux bash files are gone
 
 ### On other machines
