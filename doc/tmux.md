@@ -44,7 +44,7 @@ lists every binding.
 | Rename window | `Ctrl+a` `,` |
 | Tree of every session and window | `Ctrl+a` `w` |
 | **Scrollback and copying** (vi keys) | |
-| Enter copy mode | `Ctrl+a` `[` |
+| Enter copy mode | `Ctrl+a` `Enter` (or `[`; on a Danish Mac `[` is ⌥ 8, which AeroSpace takes), or just scroll up |
 | Move / page / search | `j` `k`, `Ctrl+u` `Ctrl+d`, `g` `G`, `/` |
 | Select / copy / leave | `v` / `y` / `q`. Paste with `⌘V`. |
 | **Surviving a reboot** (tmux-resurrect + tmux-continuum) | |

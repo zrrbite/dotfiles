@@ -23,7 +23,7 @@ app settings outside stow, and manual installs.
 
 ---
 
-## 2026-10-07: tmux `Ctrl+a v` splits side by side; window names in narrow windows
+## 2026-10-07: tmux `Ctrl+a v` and `Ctrl+a Enter` for Danish keyboards; window names in narrow windows
 
 ### On other machines
 In tmux: `Ctrl+a` `r` to reload. Nothing else.
@@ -34,6 +34,8 @@ In tmux: `Ctrl+a` `r` to reload. Nothing else.
   takes alt-i for resizing, so `Ctrl+a |` did nothing there.
 - The status bar lists every session only when the window is 120+ columns
   wide. In a narrower one the list crowded out the window names.
+- `Ctrl+a Enter` enters copy mode, next to `Ctrl+a [`: on the Danish layout
+  `[` is Option+8, which AeroSpace takes for workspace 8.
 
 ---
 
