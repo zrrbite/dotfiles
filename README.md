@@ -93,7 +93,7 @@ Preview any run first:
 
 Installs via Homebrew:
 - All CLI tools from WSL setup
-- Ghostty (default, `alt-enter`) and Alacritty (`alt-shift-enter`), both Nord
+- Ghostty (default, `ctrl-alt-enter`) and Alacritty (`ctrl-alt-shift-enter`), both Nord
 - Platform-specific tools (lldb instead of gdb)
 - AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland
 - sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)

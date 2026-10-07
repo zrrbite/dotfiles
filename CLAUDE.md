@@ -192,7 +192,8 @@ stow list.
 - **gtk/mimeapps/discord**: Desktop environment configs (uses discord_arch_electron)
 
 **macOS:**
-- **aerospace**: i3-style tiling WM (keybinds match GlazeWM/Hyprland, `~/.config/aerospace/aerospace.toml`)
+- **aerospace**: i3-style tiling WM (same keys as GlazeWM/Hyprland under a ctrl-alt (⌃⌥) modifier, because
+  on the Danish layout Option alone types `[ ] { } | \`; `~/.config/aerospace/aerospace.toml`)
 - **sketchybar**: Nord-themed status bar, pinned to the top; workspace pills show app icons
   (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
   (auto-launched by AeroSpace).
@@ -207,13 +208,13 @@ stow list.
   `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
   it keeps the cursor on the keyboard-focused window so AutoRaise does not
   immediately steal focus back. Needs Accessibility permission.
-- **alacritty**: Cross-platform terminal with Nord theme (`alt-shift-enter`)
+- **alacritty**: Cross-platform terminal with Nord theme (`ctrl-alt-shift-enter`)
 - **yazi**: Terminal file manager (Finder replacement), macOS and Arch. `y` in
   zsh launches it and leaves the shell where you quit. No theme file: the
   default theme uses ANSI colours, which the terminals map to Nord. Config keys
   are written against yazi 26.9's preset; they were renamed between releases
 - **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
-  (`alt-enter`) since the same day.
+  (`ctrl-alt-enter`) since the same day.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,
   opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
   protocol and a native window. Alacritty stays until the trial is decided;
@@ -261,7 +262,7 @@ stow list.
   - Four quality gates: Prettier (pre-commit) → TypeScript + ESLint + Vitest (pre-push)
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
-  - Second terminal on macOS (`alt-shift-enter`); Ghostty is the default
+  - Second terminal on macOS (`ctrl-alt-shift-enter`); Ghostty is the default
   - Optional on Arch/WSL (foot is default on Arch)
 
 - **ghostty**: Native-UI GPU terminal, on trial on macOS alongside Alacritty

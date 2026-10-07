@@ -51,31 +51,36 @@ outer.right = 12
 
 # Main mode keybindings
 [mode.main.binding]
+# Every binding is ctrl-alt (Control+Option), not alt. On the Danish layout
+# Option types [ ] { } | \ (alt-8, alt-9, alt-shift-8/9, alt-i, alt-shift-7),
+# and AeroSpace's bindings are global, so with plain alt they switched
+# workspaces instead of typing. Control+Option+key types nothing on a Mac.
+# Same letters as GlazeWM (alt) and Hyprland (SUPER).
 # Focus movement (vim-style)
-alt-h = 'focus left'
-alt-j = 'focus down'
-alt-k = 'focus up'
-alt-l = 'focus right'
+ctrl-alt-h = 'focus left'
+ctrl-alt-j = 'focus down'
+ctrl-alt-k = 'focus up'
+ctrl-alt-l = 'focus right'
 
-# Cycle windows within the workspace, alt-tab style. The hjkl bindings above
+# Cycle windows within the workspace, Alt-Tab style. The hjkl bindings above
 # are directional; these walk every window in tree order instead.
-alt-tab = 'focus dfs-next'
-alt-shift-tab = 'focus dfs-prev'
+ctrl-alt-tab = 'focus dfs-next'
+ctrl-alt-shift-tab = 'focus dfs-prev'
 
 # Move focused window
-alt-shift-h = 'move left'
-alt-shift-j = 'move down'
-alt-shift-k = 'move up'
-alt-shift-l = 'move right'
+ctrl-alt-shift-h = 'move left'
+ctrl-alt-shift-j = 'move down'
+ctrl-alt-shift-k = 'move up'
+ctrl-alt-shift-l = 'move right'
 
 # Resize. 'smart' resizes along the parent container's own orientation and
-# 'smart-opposite' across it, so these keep working after alt-v flips a
+# 'smart-opposite' across it, so these keep working after ctrl-alt-v flips a
 # container to vertical -- an explicit 'width' in a v_tiles container silently
 # does nothing, which reads as "resize is broken for this window".
-alt-u = 'resize smart -50'
-alt-p = 'resize smart +50'
-alt-o = 'resize smart-opposite +50'
-alt-i = 'resize smart-opposite -50'
+ctrl-alt-u = 'resize smart -50'
+ctrl-alt-p = 'resize smart +50'
+ctrl-alt-o = 'resize smart-opposite +50'
+ctrl-alt-i = 'resize smart-opposite -50'
 
 # Undo a squeezed layout. AeroSpace sizes tiles without knowing an app's
 # minimum window size: it assigns the tile, the app refuses to shrink below
@@ -84,63 +89,63 @@ alt-i = 'resize smart-opposite -50'
 # Measured floors on this setup: Slack 668px wide, Discord 800px. Squeeze a
 # 3440px workspace so either falls under that and the row visibly breaks.
 # Equal thirds (~1125px) are safely above both, so balancing always recovers.
-alt-b = 'balance-sizes'
+ctrl-alt-b = 'balance-sizes'
 
 # Enter resize mode (HJKL to resize, b to balance, escape to exit)
-alt-r = 'mode resize'
+ctrl-alt-r = 'mode resize'
 
 # Toggle tiling direction (matches alt+v in GlazeWM)
-alt-v = 'layout tiles horizontal vertical'
+ctrl-alt-v = 'layout tiles horizontal vertical'
 
 # Toggle floating (matches alt+shift+space in GlazeWM)
-alt-shift-space = 'layout floating tiling'
+ctrl-alt-shift-space = 'layout floating tiling'
 
 # Toggle fullscreen (matches alt+f in GlazeWM)
-alt-f = 'fullscreen'
+ctrl-alt-f = 'fullscreen'
 
 # Close focused window (matches alt+shift+q in GlazeWM)
-alt-shift-q = 'close'
+ctrl-alt-shift-q = 'close'
 
 # Launch the terminal (matches alt+enter in GlazeWM → terminal). Ghostty is
 # the default; `open -na` is what its own help recommends on macOS, since its
 # `+new-window` action is Linux-only. Alacritty stays one modifier away while
 # the two are compared.
-alt-enter = 'exec-and-forget open -na Ghostty'
-alt-shift-enter = 'exec-and-forget open -na Alacritty'
+ctrl-alt-enter = 'exec-and-forget open -na Ghostty'
+ctrl-alt-shift-enter = 'exec-and-forget open -na Alacritty'
 
 # Reload config (matches alt+shift+r in GlazeWM)
-alt-shift-r = 'reload-config'
+ctrl-alt-shift-r = 'reload-config'
 
 # Focus workspace (matches alt+N in GlazeWM/Hyprland)
-alt-1 = 'workspace 1'
-alt-2 = 'workspace 2'
-alt-3 = 'workspace 3'
-alt-4 = 'workspace 4'
-alt-5 = 'workspace 5'
-alt-6 = 'workspace 6'
-alt-7 = 'workspace 7'
-alt-8 = 'workspace 8'
-alt-9 = 'workspace 9'
+ctrl-alt-1 = 'workspace 1'
+ctrl-alt-2 = 'workspace 2'
+ctrl-alt-3 = 'workspace 3'
+ctrl-alt-4 = 'workspace 4'
+ctrl-alt-5 = 'workspace 5'
+ctrl-alt-6 = 'workspace 6'
+ctrl-alt-7 = 'workspace 7'
+ctrl-alt-8 = 'workspace 8'
+ctrl-alt-9 = 'workspace 9'
 
 # Move window to workspace and follow (matches alt+shift+N in GlazeWM)
-alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
-alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
-alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
-alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
-alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
-alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
-alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
-alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
-alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+ctrl-alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+ctrl-alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+ctrl-alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+ctrl-alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+ctrl-alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+ctrl-alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+ctrl-alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+ctrl-alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+ctrl-alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 
 # Cycle through active workspaces (matches alt+s/alt+a in GlazeWM)
-alt-s = 'workspace next'
-alt-a = 'workspace prev'
-alt-d = 'workspace-back-and-forth'
+ctrl-alt-s = 'workspace next'
+ctrl-alt-a = 'workspace prev'
+ctrl-alt-d = 'workspace-back-and-forth'
 
 # Move workspace to monitor (matches alt+shift+a/f in GlazeWM)
-alt-shift-a = 'move-workspace-to-monitor prev'
-alt-shift-f = 'move-workspace-to-monitor next'
+ctrl-alt-shift-a = 'move-workspace-to-monitor prev'
+ctrl-alt-shift-f = 'move-workspace-to-monitor next'
 
 # Resize mode (matches GlazeWM resize binding mode)
 [mode.resize.binding]

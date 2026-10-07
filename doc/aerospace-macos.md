@@ -1,19 +1,22 @@
 # AeroSpace on macOS
 
 How the tiling setup works on macOS, and the things that will confuse you at
-least once. Keybinds deliberately mirror [GlazeWM on Windows](glazewm.md) — same
-modifier, same `hjkl`, same chords — so muscle memory carries between the two.
-[Hyprland on Linux](hyprland.md) shares the `hjkl` half but uses `SUPER` as its
-modifier, because `alt-shift` there is taken by the dk/us keyboard-layout
+least once. Keybinds mirror [GlazeWM on Windows](glazewm.md) — same `hjkl`,
+same chords — under a different modifier, so the letters carry between the
+two. [Hyprland on Linux](hyprland.md) shares the `hjkl` half but uses `SUPER` as
+its modifier, because `ctrl-alt-shift` there is taken by the dk/us keyboard-layout
 switcher.
 
 Config lives in `aerospace/.config/aerospace/aerospace.toml`.
 
-## Alt means Option
+## The modifier is Control+Option (⌃⌥)
 
-Every binding below uses `alt`, which on a Mac is the **Option (⌥)** key —
-between `control` and `command`, usually labelled `alt` on keyboards sold in
-Europe. On an external PC keyboard the physical `Alt` maps to Option by default
+Every binding below uses `ctrl-alt`: **Control and Option (⌥) together**. It
+used to be Option alone, like GlazeWM, but on the Danish layout Option types
+`[ ] { } | \` (⌥ 8, ⌥ 9, ⌥⇧ 8/9, ⌥ i, ⌥⇧ 7), and AeroSpace's bindings are
+global: they switched workspaces instead of typing the character, in every
+app. Control+Option plus a key types nothing on a Mac, so nothing collides.
+On an external PC keyboard the physical `Alt` maps to Option by default
 (remappable under System Settings → Keyboard → Keyboard Shortcuts → Modifier
 Keys).
 
@@ -40,17 +43,17 @@ both places would leave two instances polling the cursor. See
 | Key | Action |
 |---|---|
 | `alt` + `h/j/k/l` | Focus left / down / up / right |
-| `alt-shift` + `h/j/k/l` | Move the focused window in that direction |
-| `alt-tab` | Cycle to the next window in the workspace |
-| `alt-shift-tab` | Cycle to the previous window |
+| `ctrl-alt-shift` + `h/j/k/l` | Move the focused window in that direction |
+| `ctrl-alt-tab` | Cycle to the next window in the workspace |
+| `ctrl-alt-shift-tab` | Cycle to the previous window |
 
 Two ways to change focus. The `hjkl` bindings are **directional** — with two
-windows side by side, `alt-l` and `alt-h` move between them. `alt-tab` instead
+windows side by side, `ctrl-alt-l` and `ctrl-alt-h` move between them. `ctrl-alt-tab` instead
 walks every window in the workspace in tree order (`focus dfs-next`), which is
 easier when you have several windows and do not want to think about where they
 sit.
 
-Neither wraps into other workspaces; use `alt-1`–`alt-9` or `alt-s`/`alt-a` for
+Neither wraps into other workspaces; use `ctrl-alt-1`–`ctrl-alt-9` or `ctrl-alt-s`/`ctrl-alt-a` for
 that.
 
 ### Workspaces
@@ -58,27 +61,27 @@ that.
 | Key | Action |
 |---|---|
 | `alt` + `1`–`9` | Switch to workspace N |
-| `alt-shift` + `1`–`9` | Move window to workspace N **and follow it** |
-| `alt-s` / `alt-a` | Next / previous workspace |
-| `alt-d` | Back and forth between the last two |
-| `alt-shift-a` / `alt-shift-f` | Move the whole workspace to the previous / next monitor |
+| `ctrl-alt-shift` + `1`–`9` | Move window to workspace N **and follow it** |
+| `ctrl-alt-s` / `ctrl-alt-a` | Next / previous workspace |
+| `ctrl-alt-d` | Back and forth between the last two |
+| `ctrl-alt-shift-a` / `ctrl-alt-shift-f` | Move the whole workspace to the previous / next monitor |
 
 ### Layout
 
 | Key | Action |
 |---|---|
-| `alt-v` | Toggle tiling direction: tiles horizontal ↔ vertical |
-| `alt-f` | Toggle fullscreen |
-| `alt-shift-space` | Toggle floating / tiling |
+| `ctrl-alt-v` | Toggle tiling direction: tiles horizontal ↔ vertical |
+| `ctrl-alt-f` | Toggle fullscreen |
+| `ctrl-alt-shift-space` | Toggle floating / tiling |
 
 ### Windows and session
 
 | Key | Action |
 |---|---|
-| `alt-enter` | New Ghostty window (`open -na`, so it really is a new one) |
-| `alt-shift-enter` | New Alacritty window (kept alongside while Ghostty is on trial) |
-| `alt-shift-q` | Close the focused window |
-| `alt-shift-r` | Reload the config |
+| `ctrl-alt-enter` | New Ghostty window (`open -na`, so it really is a new one) |
+| `ctrl-alt-shift-enter` | New Alacritty window (kept alongside while Ghostty is on trial) |
+| `ctrl-alt-shift-q` | Close the focused window |
+| `ctrl-alt-shift-r` | Reload the config |
 
 ### Resizing
 
@@ -86,9 +89,9 @@ Either nudge directly, or enter a mode and stay there:
 
 | Key | Action |
 |---|---|
-| `alt-u` / `alt-p` | Width −50 / +50 |
-| `alt-i` / `alt-o` | Height −50 / +50 |
-| `alt-r` | Enter resize mode |
+| `ctrl-alt-u` / `ctrl-alt-p` | Width −50 / +50 |
+| `ctrl-alt-i` / `ctrl-alt-o` | Height −50 / +50 |
+| `ctrl-alt-r` | Enter resize mode |
 
 In resize mode, `h`/`l` change width, `j`/`k` change height, and `esc` or
 `enter` returns to main mode. Nothing else is bound there, so if the keyboard
@@ -109,7 +112,7 @@ focus it, and resizing appears to make the focused window fill the screen. It is
 easy to land in without meaning to — collapsing many windows into one workspace
 can leave a nested container in accordion.
 
-The fix is `alt-v`, or from a shell:
+The fix is `ctrl-alt-v`, or from a shell:
 
 ```bash
 aerospace layout tiles horizontal
@@ -133,7 +136,7 @@ Either way, read `$?` directly. Piping the command into anything gives you the
 pipeline's exit code instead of AeroSpace's — an easy way to convince yourself a
 command succeeded when it did nothing.
 
-`alt-f` fullscreen produces a similar "the other window vanished" impression.
+`ctrl-alt-f` fullscreen produces a similar "the other window vanished" impression.
 `aerospace fullscreen off --fail-if-noop` tells you which it was: exit 0 means
 the window really was fullscreen and has been un-fullscreened, exit 1 means it
 was not. Check `$?` directly rather than through a pipe, or you will read the
@@ -238,5 +241,5 @@ this repo that command fails with `ModuleNotFoundError`. Either `brew install
 python` or just read the file — it is short, and `grep` answers most questions:
 
 ```bash
-grep -n 'alt-tab\|after-startup\|outer.top' ~/.config/aerospace/aerospace.toml
+grep -n 'ctrl-alt-tab\|after-startup\|outer.top' ~/.config/aerospace/aerospace.toml
 ```

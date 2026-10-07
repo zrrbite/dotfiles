@@ -23,8 +23,8 @@ and Raspberry Pi.
 | bash | Login shell (Git Bash) | – | – | – | ✓ |
 | zsh-autosuggestions, zsh-syntax-highlighting | Grey history suggestions, green/red commands | ✓ | ✓ | ✓ | – |
 | starship | Prompt (Nord) | ✓ | ✓ | ✓ | ✓ |
-| Ghostty | Terminal, default (`alt-enter`) | ✓ | – | – | – |
-| Alacritty | Terminal, second (`alt-shift-enter`) | ✓ | config only | – | – |
+| Ghostty | Terminal, default (`ctrl-alt-enter`) | ✓ | – | – | – |
+| Alacritty | Terminal, second (`ctrl-alt-shift-enter`) | ✓ | config only | – | – |
 | foot | Terminal (Wayland) | – | ✓ | – | – |
 | Windows Terminal | Terminal | – | – | – | ✓ |
 | tmux + resurrect + continuum | Sessions per project, surviving reboots; `t`, `tp`, `Ctrl+a` `f` | ✓ | ✓ | ✓ | – |
@@ -65,7 +65,7 @@ and Raspberry Pi.
 
 | Tool | For | macOS | Arch | Debian | Windows |
 |---|---|:-:|:-:|:-:|:-:|
-| AeroSpace / Hyprland / GlazeWM | Tiling window manager, same `hjkl` keys | AeroSpace | Hyprland | – | GlazeWM |
+| AeroSpace / Hyprland / GlazeWM | Tiling window manager, same `hjkl` keys (⌃⌥ / Super / Alt) | AeroSpace | Hyprland | – | GlazeWM |
 | sketchybar / waybar / zebar | Status bar (Nord) | sketchybar | waybar | – | zebar |
 | JankyBorders | Window borders | ✓ | – | – | – |
 | AutoRaise | Focus follows mouse | ✓ | (Hyprland) | – | – |

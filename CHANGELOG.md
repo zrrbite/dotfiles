@@ -23,6 +23,25 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-07: AeroSpace moves from ⌥ to ⌃⌥ (Control+Option)
+
+### On other machines
+- **macOS:** pull, then `aerospace reload-config` (the running AeroSpace keeps
+  the old keys until then). Every shortcut is now **⌃⌥** plus the same key:
+  `ctrl-alt-1`–`9` for workspaces, `ctrl-alt-h/j/k/l` to focus,
+  `ctrl-alt-enter` for Ghostty, and so on.
+- **Arch, Windows:** nothing. Hyprland (SUPER) and GlazeWM (alt) keep theirs.
+
+### What changed
+On the Danish layout Option types `[ ] { } | \` (⌥ 8, ⌥ 9, ⌥⇧ 8/9, ⌥ i,
+⌥⇧ 7), and AeroSpace's bindings are global, so with plain alt those keys
+switched workspaces or resized instead of typing, in every app. Measured from
+the layout itself: those six were the only code symbols it took. ⌃⌥ plus a
+key types nothing on a Mac. The letters are unchanged; docs, the Ghostty
+comment and the installer's summary name the new keys.
+
+---
+
 ## 2026-10-07: tmux `Ctrl+a v` and `Ctrl+a Enter` for Danish keyboards; window names in narrow windows
 
 ### On other machines

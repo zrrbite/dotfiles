@@ -23,8 +23,8 @@ background-opacity = 0.95
 macos-titlebar-style = hidden
 
 # Left unset on purpose: on the Danish layout Option types { } [ ] | @ $, and
-# treating it as Alt would break that. AeroSpace's alt-bindings are global and
-# never reach the terminal anyway.
+# treating it as Alt would break that. AeroSpace binds ctrl-alt, not alt, for
+# the same reason.
 # macos-option-as-alt =
 
 # -- Cursor and selection ----------------------------------------------------

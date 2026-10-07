@@ -198,9 +198,9 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `tmux` | mac, Linux | ✅ | `Ctrl+a` prefix. |
 | `gdb` | Linux | ✅ | `~/.gdbinit`. It has hardcoded `/home/zrrbite` paths, so on another user account those lines do nothing. |
 | `clang` | all | ✅ with care | `~/.clang-format`/`~/.clang-tidy` are only fallbacks. A repo's own config wins, but a work repo *without* one would pick up Allman/Unreal Engine style. |
-| `ghostty` | mac | ✅ | Default terminal (`alt-enter`), Nord. `ghostty` cask. |
+| `ghostty` | mac | ✅ | Default terminal (`ctrl-alt-enter`), Nord. `ghostty` cask. |
 | `yazi` | mac, Arch | ✅ | Terminal file manager; `y` in zsh launches it. Needs `yazi` plus, for previews, `ffmpeg`, `poppler` and `sevenzip`. Image previews need Ghostty, and `allow-passthrough on` inside tmux (set in `tmux/.tmux.conf`). |
-| `alacritty` | mac (Linux optional) | ✅ | Second terminal (`alt-shift-enter`), same Nord config. Only one of the two is needed. |
+| `alacritty` | mac (Linux optional) | ✅ | Second terminal (`ctrl-alt-shift-enter`), same Nord config. Only one of the two is needed. |
 | `zsh` | mac, Linux | ⚠️ ask | Replaces `~/.zshrc`. Put work-specific lines (proxy, SDK paths, corporate tooling) in `~/.zshrc.local`, which it loads. On Linux the installer also makes zsh the login shell. |
 | `zsh-linux` | Linux | ⚠️ ask | Replaces `~/.zprofile`: one ssh-agent per login, Hyprland on TTY1 if installed. |
 | `fastfetch` | all | ✅ | On macOS, create `~/.config/fastfetch` first, stow with `--ignore='config\.jsonc'`, and link `config-darwin.jsonc` in its place (see `install_darwin.sh`). |
