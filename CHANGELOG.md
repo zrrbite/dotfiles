@@ -23,15 +23,17 @@ app settings outside stow, and manual installs.
 
 ---
 
-## 2026-10-07: tmux `Ctrl+a v` splits side by side
+## 2026-10-07: tmux `Ctrl+a v` splits side by side; window names in narrow windows
 
 ### On other machines
 In tmux: `Ctrl+a` `r` to reload. Nothing else.
 
 ### What changed
-`Ctrl+a v` splits a pane side by side, like vim's `:vsplit`, next to the
-existing `Ctrl+a |`. On a Danish Mac layout `|` is Option+i, and AeroSpace
-takes alt-i for resizing, so `Ctrl+a |` did nothing there.
+- `Ctrl+a v` splits a pane side by side, like vim's `:vsplit`, next to the
+  existing `Ctrl+a |`. On a Danish Mac layout `|` is Option+i, and AeroSpace
+  takes alt-i for resizing, so `Ctrl+a |` did nothing there.
+- The status bar lists every session only when the window is 120+ columns
+  wide. In a narrower one the list crowded out the window names.
 
 ---
 

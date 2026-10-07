@@ -71,7 +71,8 @@ Gotchas:
 - **The status bar:**
   - left: your session, in a pill that turns **yellow while `Ctrl+a` is
     pressed**, plus **COPY** in copy mode;
-  - right: all sessions (the current one bright) and the machine name.
+  - right: all sessions (the current one bright), only when the window is
+    120+ columns wide so window names keep their room, and the machine name.
 - **Config changes don't reach running sessions.** Reload with `Ctrl+a` `r`.
   Terminal features such as colour need a detach and reattach as well.
 
