@@ -239,6 +239,16 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
             warn "$proc is not running (AeroSpace starts it at login; launch AeroSpace once)"
         fi
     done
+    # AeroSpace keeps the bindings it loaded until reload-config. Since
+    # 2026-10-07 they are ctrl-alt: plain alt took [ ] { } | \ from the Danish
+    # layout, in every app. `aerospace config` asks the running instance.
+    if keys="$(aerospace config --get mode.main.binding --keys 2>/dev/null)"; then
+        if echo "$keys" | grep -q '^alt-'; then
+            fail "AeroSpace is running old alt- keybindings, which take [ ] { } | \\ from the Danish layout -- run: aerospace reload-config"
+        else
+            pass "AeroSpace keybindings are ctrl-alt"
+        fi
+    fi
     if brew services list 2>/dev/null | grep -q -E '^autoraise[[:space:]]+started'; then
         pass "AutoRaise service is started"
     else

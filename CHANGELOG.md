@@ -29,7 +29,8 @@ app settings outside stow, and manual installs.
 - **macOS:** pull, then `aerospace reload-config` (the running AeroSpace keeps
   the old keys until then). Every shortcut is now **⌃⌥** plus the same key:
   `ctrl-alt-1`–`9` for workspaces, `ctrl-alt-h/j/k/l` to focus,
-  `ctrl-alt-enter` for Ghostty, and so on.
+  `ctrl-alt-enter` for Ghostty, and so on. `scripts/verify.sh` fails until
+  the running AeroSpace has the new keys.
 - **Arch, Windows:** nothing. Hyprland (SUPER) and GlazeWM (alt) keep theirs.
 
 ### What changed

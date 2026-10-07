@@ -137,6 +137,8 @@ Each top-level directory is a stow package that mirrors the home directory struc
 - **claude**: Claude Code global skills (`/review`, `/fix-issue`, `/bootstrap`)
 - **tmux**: Terminal multiplexer, `Ctrl+a` prefix and Nord status line. Stowed
   and installed on Arch, Debian/WSL/Raspbian and macOS; not on Windows.
+  `Ctrl+a v` and `Ctrl+a Enter` are Option-free alternatives to `|` and `[`
+  (both Option keys on the Danish layout).
 - **bat**: one line, `--theme="Nord"`, matching delta. Stowed on Arch,
   Debian/WSL/Raspbian (where the binary is `batcat`) and macOS; not on Windows,
   whose bat config lives under `%APPDATA%`.
@@ -193,7 +195,10 @@ stow list.
 
 **macOS:**
 - **aerospace**: i3-style tiling WM (same keys as GlazeWM/Hyprland under a ctrl-alt (⌃⌥) modifier, because
-  on the Danish layout Option alone types `[ ] { } | \`; `~/.config/aerospace/aerospace.toml`)
+  on the Danish layout Option alone types `[ ] { } | \`; `~/.config/aerospace/aerospace.toml`).
+  **Rule: every new AeroSpace binding uses `ctrl-alt-`, never plain `alt-`**, which can take a character
+  the Danish layout types with Option, in every app. `scripts/verify.sh` fails while a Mac still runs
+  `alt-` bindings; the fix is `aerospace reload-config`.
 - **sketchybar**: Nord-themed status bar, pinned to the top; workspace pills show app icons
   (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
   (auto-launched by AeroSpace).
