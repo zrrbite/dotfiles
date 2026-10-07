@@ -67,7 +67,7 @@ Gotchas:
   minutes of layout changes are lost. `Ctrl+a` `Ctrl+s` right before a
   restart loses nothing. Auto-save only runs while there's a single tmux
   server (normal use). To start truly empty, delete the saves in
-  `~/.local/share/tmux/resurrect` first.
+  `~/.tmux/resurrect` first.
 - **The status bar:**
   - left: your session, in a pill that turns **yellow while `Ctrl+a` is
     pressed**, plus **COPY** in copy mode;
