@@ -35,7 +35,7 @@ and Raspberry Pi.
 
 | Tool | For | macOS | Arch | Debian | Windows |
 |---|---|:-:|:-:|:-:|:-:|
-| yazi | Terminal file manager, `y`; git status, Markdown preview | ✓ | ✓ | – | – |
+| yazi | Terminal file manager, `y`; git status, Markdown preview; keys in `doc/yazi.md` | ✓ | ✓ | – | – |
 | chafa | Images in the terminal; `fimg` | ✓ | ✓ | – | – |
 | glow | Markdown in the terminal (and yazi previews) | ✓ | ✓ | – | – |
 | zoxide | Frecent `cd` (`cd` is zoxide on macOS) | ✓ | ✓ | ✓ | ✓ |

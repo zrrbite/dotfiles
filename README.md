@@ -754,6 +754,9 @@ installed by `ya pkg install` (the installers run it):
 project root (yazi.nvim). Pick a file and it opens in nvim. neo-tree is still
 on `Space` `e`.
 
+**Cheat sheet and practice plan:** [`doc/yazi.md`](doc/yazi.md), in the order
+you use the keys to copy and move files.
+
 **Key bindings** (checked against yazi 26.9's own keymap; `~` shows them all):
 - `h` `j` `k` `l` - up a folder / down / up / into
 - `Enter` / `o` - open with the default app
