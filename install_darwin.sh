@@ -125,8 +125,10 @@ run brew tap dimentium/autoraise
 
 # Homebrew 6 refuses to load formulae from an untrusted tap, so tapping alone is
 # not enough -- `brew install sketchybar` fails with "Refusing to load formula
-# ... from untrusted tap". Trusting is a separate, explicit step. Older Homebrew
-# has no `brew trust` command, hence the guard.
+# ... from untrusted tap". Homebrew 7 does the same for casks, so AeroSpace
+# won't install or upgrade, and `brew list --cask --versions` errors out.
+# Trusting is a separate, explicit step. Older Homebrew has no `brew trust`
+# command, hence the guard.
 if brew trust --help >/dev/null 2>&1; then
     info "Trusting third-party taps..."
     for tap in nikitabobko/tap FelixKratz/formulae dimentium/autoraise; do
@@ -169,10 +171,16 @@ BREW_PACKAGES=(
     procs
     starship
     fastfetch
+    tree
+    wget
 
     # Development
     neovim
     git
+    gh         # GitHub from the terminal: PRs, issues, Actions runs
+    # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
+    cmake
+    ninja
     clang-format
     # lldb ships inside the llvm formula; there is no `lldb` formula, and naming
     # one makes the whole `brew install` below fail under `set -e`.
@@ -200,6 +208,10 @@ BREW_CASKS=(
     alacritty
     # Default terminal (ctrl-alt-enter), on trial against Alacritty; see CLAUDE.md
     ghostty
+    # Launcher, kept after the 2026-10 trial against Alfred. Its settings live
+    # in its own database, not here; add scripts/raycast/ as a script directory
+    # (Settings > Extensions > + > Add Script Directory).
+    raycast
 )
 
 # `brew install <already-installed-but-outdated>` upgrades it. That makes a

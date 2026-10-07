@@ -23,6 +23,48 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-07: macOS installer adds gh, cmake, ninja, tree, wget and Raycast; Homebrew catch-up
+
+### On other machines
+- **macOS:** pull, then `./install_darwin.sh`. It installs only what's
+  missing: gh, cmake, ninja, tree, wget and Raycast. It also trusts the three
+  third-party taps. That step matters on Homebrew 7, which refuses casks from
+  an untrusted tap: AeroSpace won't install or upgrade, and
+  `brew list --cask --versions` errors out. Then add `scripts/raycast/` in
+  Raycast (Settings → Extensions → + → Add Script Directory).
+- **macOS, if `brew outdated | wc -l` is large** (this Mac had 150, git from
+  March 2023): `brew upgrade`, after saving `brew list --versions` somewhere.
+  Watch for:
+  - **AutoRaise and AeroSpace:** macOS ties their Accessibility permission to
+    the binary, so upgrade them only when you can re-grant it straight after
+    (System Settings → Privacy & Security → Accessibility).
+  - **llvm** carries the clang-format and clang-tidy the git hooks use. Here
+    it went 21 → 23; `clang-tidy --verify-config --config-file=clang/.clang-tidy`
+    still passes.
+  - **sketchybar and borders** keep running the old binary until restarted:
+    `brew services restart sketchybar`, and restart borders with the
+    arguments from `aerospace.toml`'s `after-startup-command`.
+  - Casks that ask for your password (Docker Desktop, Logitech G HUB): run
+    those upgrades yourself.
+  - `brew untap homebrew/core homebrew/cask` frees about 1 GB of package
+    lists Homebrew no longer reads (it uses its online API).
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `install_darwin.sh` (and `doc/tools.md`): gh, cmake, ninja, tree and wget
+  were on the main Mac but not in the installer, so a fresh Mac lacked them;
+  `scripts/bootstrap-cpp-project.sh` needs cmake. Raycast stays after its
+  trial and is now a cask in the installer.
+- The installer's tap-trust comment now covers Homebrew 7's casks.
+
+### What the repo can't do
+- Raycast's settings and hotkey live in its own database. Alfred is still
+  installed on the main Mac (paused), not removed by the repo.
+- Package versions aren't pinned: each Mac is as current as its last
+  `brew upgrade`.
+
+---
+
 ## 2026-10-07: AeroSpace moves from ⌥ to ⌃⌥ (Control+Option)
 
 ### On other machines

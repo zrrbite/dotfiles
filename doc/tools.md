@@ -45,6 +45,7 @@ and Raspberry Pi.
 | bat | `cat` with syntax highlighting, Nord theme (`batcat` on Debian; default theme on Windows) | ✓ | ✓ | ✓ | ✓ |
 | duf, procs, btop | Disks, processes, system monitor (btop in Nord, via `scripts/seed-btop-config.sh`) | ✓ | ✓ | ✓ | duf, procs |
 | tldr | Short man pages | ✓ | ✓ | ✓ | – |
+| tree, wget | Directory trees, downloads | ✓ | – | – | – |
 | ffmpeg, poppler, 7-Zip | yazi preview helpers (video, PDF, archives) | ✓ | – | – | – |
 
 ## Git and code
@@ -54,6 +55,8 @@ and Raspberry Pi.
 | git + delta | Shared config; identity in `~/.gitconfig.local`; delta for diffs | ✓ | ✓ | ✓ | ✓ |
 | Global git hooks | clang-format on commit, clang-tidy / TS checks on push | ✓ | ✓ | ✓ | ✓ |
 | neovim | Editor: LSP, treesitter, DAP, yazi.nvim | ✓ | ✓ | ✓ | ✓ |
+| gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
+| cmake + ninja | C++ builds (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |
 | gdb (+ dashboard) / lldb | Debuggers (lldb on macOS, via llvm) | lldb | gdb | gdb | – |
 | node | TypeScript language server for nvim | ✓ | – | – | – |
@@ -69,7 +72,7 @@ and Raspberry Pi.
 | sketchybar / waybar / zebar | Status bar (Nord) | sketchybar | waybar | – | zebar |
 | JankyBorders | Window borders | ✓ | – | – | – |
 | AutoRaise | Focus follows mouse | ✓ | (Hyprland) | – | – |
-| rofi + cliphist | Launcher, clipboard history | – | ✓ | – | – |
+| Raycast / rofi + cliphist | Launcher, clipboard history; Raycast runs `scripts/raycast/` | Raycast | rofi | – | – |
 | mako, hyprlock, hypridle, wlogout | Notifications, lock screen, idle, logout menu | – | ✓ | – | – |
 | grim, slurp, satty, wf-recorder | Screenshots and recording | – | ✓ | – | – |
 | JetBrains Mono Nerd Font | Font everywhere; sketchybar-app-font for bar icons (macOS) | ✓ | ✓ | – | ✓ |
@@ -79,9 +82,9 @@ and Raspberry Pi.
 
 Installed by hand, or decided per machine. Each has a `CHANGELOG.md` note.
 
-- **Raycast** (macOS): launcher, on trial. `brew install --cask raycast`,
-  then add `scripts/raycast/` in its settings. Not in the installer until the
-  trial ends.
+- **Raycast's settings** (macOS): the installer installs Raycast, but its
+  settings live in its own database. Add `scripts/raycast/` once, in Settings →
+  Extensions → + → Add Script Directory.
 - **Alfred, Rectangle Pro** (macOS): they conflict with Raycast and
   AeroSpace. On Martin's main Mac, Alfred is paused and Rectangle Pro is
   uninstalled.
