@@ -50,6 +50,8 @@ app settings outside stow, and manual installs.
 - GitHub's merge button is per repo: turn off "Allow merge commits", or add
   a `required_linear_history` rule to a ruleset.
 
+---
+
 ## 2026-10-07: macOS uses Homebrew's dotnet, not the old /usr/local/share/dotnet
 
 ### On other machines
