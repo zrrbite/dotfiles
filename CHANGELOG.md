@@ -23,6 +23,25 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-07: macOS uses Homebrew's dotnet, not the old /usr/local/share/dotnet
+
+### On other machines
+- **macOS:** pull, then open a new terminal. `dotnet --version` should print Homebrew's version (10.x) if
+  `brew list dotnet` has it. Without Homebrew's dotnet nothing changes: the old install is still on the PATH
+  through `/etc/paths.d/dotnet`, just no longer in front.
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `zsh/.config/zsh/darwin.zsh` (`f2333f6`): dropped `path_prepend "/usr/local/share/dotnet"`. That folder holds a
+  2022 Microsoft install (SDK 6.0 and 7.0, both out of support), and putting it first hid Homebrew's dotnet 10
+  after `brew upgrade` brought it in. The old SDKs cannot build .NET 10 projects (valheim-smith moved to
+  `net10.0` today).
+
+### What the repo can't do
+The old Microsoft install is still on disk. Removing it is manual and needs sudo:
+`sudo rm -rf /usr/local/share/dotnet /etc/paths.d/dotnet`. Only do that if nothing still needs the .NET 6 or 7
+runtime. `~/Development/unity/pantheon` targets `net6.0`; it builds with SDK 10, with an out-of-support warning.
+
 ## 2026-10-07: macOS installer adds gh, cmake, ninja, tree, wget and Raycast; Homebrew catch-up
 
 ### On other machines
