@@ -135,6 +135,10 @@ prune = true
 [merge]
 tool = meld
 conflictStyle = zdiff3
+# Linear history: `git merge` only fast-forwards, so a diverged branch is
+# refused instead of getting a merge commit. Rebase it first (`git pull`
+# already rebases, see [pull]). `git merge --no-ff` still merges on purpose.
+ff = only
 
 [diff]
 tool = meld

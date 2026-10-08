@@ -249,6 +249,9 @@ stow list.
   - Batch fixes: `Space+cf` (C++)
 
 - **git**: Extensive git aliases (`git cf` for formatting), global hooks for code quality
+  - Linear history: `pull.rebase = true` and `merge.ff = only`, so a merge that
+    can't fast-forward is refused. The rules for agents are in
+    `claude/.claude/CLAUDE.md` ("History: linear, no merge commits")
   - Uses meld for diff/merge. meld isn't installed on macOS, so set
     `diff.tool`/`merge.tool = nvimdiff` in `~/.gitconfig.local` there
   - Global hooks at `~/.git-hooks/` (automatically symlinked via stow, applies to all repos)
