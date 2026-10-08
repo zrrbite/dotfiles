@@ -7,3 +7,10 @@
 require("git"):setup {
 	order = 1500,
 }
+
+-- session (built in): share yanks between yazi instances, so `y` in one window
+-- and `p` in another works. Two yazi windows side by side then act like Far's
+-- two panels. Restart every running yazi after changing this.
+require("session"):setup {
+	sync_yanked = true,
+}

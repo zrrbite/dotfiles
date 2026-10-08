@@ -4,7 +4,8 @@ A cheat sheet for yazi, the terminal file manager, in the order you use it to
 copy and move files between folders. Then a practice plan. Config:
 `yazi/.config/yazi/`. Every key here was checked against yazi 26.9.1's own
 keymap (`yazi-config/preset/keymap-default.toml` in its repo); keys were
-renamed between releases, so check again after a big upgrade.
+renamed between releases, so check again after a big upgrade. This setup's
+own additions (`g D`, `g .`, `g T`, `Tab`, `i`) are in `keymap.toml`.
 
 ## The one idea: choose, mark, go, paste
 
@@ -43,7 +44,9 @@ workspace of its own (`⌃⌥⇧ 5`) and reach it with `⌃⌥ 5`.
 | A folder you use often, by name (zoxide) | `Z`, type part of the name, `Enter` |
 | A file or folder anywhere below here (fzf) | `z` |
 | Narrow this folder's list as you type (`Esc` clears) | `f` |
+| Bookmarks: ~/Development / the dotfiles / the todo repo | `g` `D` / `g` `.` / `g` `T` |
 | Home / Downloads / `~/.config` / type a path | `g` `h` / `g` `d` / `g` `c` / `g` `Space` |
+| The hovered file's details (size, dates, type) | `i` |
 | Search names / contents below here (fd / ripgrep) | `s` / `S` |
 
 ## Choose files
@@ -70,9 +73,15 @@ With a selection, it acts on the selection only, not on the cursor's file.
 | Paste a symlink instead (absolute / relative path) | `-` / `_` |
 | Progress of a big copy (it runs in the background) | `w` |
 
-**Between two folders, use two tabs:** `t` `t` opens a tab in the same
-folder, `Z` takes it to the destination, and `1` / `2` switch tabs. Mark in
-one, switch, paste. `t` `r` names a tab.
+**Between two folders, use two tabs,** like Far's two panels: `t` `t`
+clones the current folder into a new tab, `Z` or a `g` bookmark takes it to
+the destination, and **`Tab`** flips between the tabs (`1`–`9` jump to one).
+Mark in one, `Tab`, paste. `t` `r` names a tab.
+
+**Or two yazi windows side by side:** open a second Ghostty window with
+yazi, and AeroSpace tiles the two. A `y` in one and a `p` in the other works,
+because yazi shares copy marks between instances here (`sync_yanked` in
+`init.lua`).
 
 ## Create, rename, delete
 
@@ -113,8 +122,8 @@ with a modified and an untracked file), one step at a time:
    `archive/2026/`, rename a note with `r`.
 3. **Copy and move in one tree:** select three notes, `y`, paste them into
    another folder; cut two with `x` and move them; cancel a mark with `Y`.
-4. **Between two tabs:** `t` `t`, `Z` to the destination, copy across with
-   `1` / `2`.
+4. **Between two tabs:** `t` `t`, `Z` or `g` `D` to the destination, copy
+   across with `Tab`. Then the same with two yazi windows side by side.
 5. **Clashes and links:** paste the same file twice (`_1`), `P` to
    overwrite, `-` for a symlink, `w` during a copy.
 6. **Delete:** `d`, then find it in the Trash; `D` on something you don't

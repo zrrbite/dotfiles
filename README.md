@@ -768,8 +768,10 @@ you use the keys to copy and move files.
 - `s` - search names (fd), `S` - search contents (ripgrep), `f` - filter
 - `z` - fuzzy-jump (fzf), `Z` - jump with zoxide
 - `c` - copy a path or filename to the clipboard
-- `t` `t` - new tab (`t` `r` renames it), `1`-`9` - switch tab
-- `Y` - cancel a copy or cut
+- `t` `t` - new tab (`t` `r` renames it), `Tab` - next tab (Far-style), `1`-`9` - switch tab
+- `g` `D` / `g` `.` / `g` `T` - bookmarks: ~/Development, the dotfiles, the todo repo
+- `i` - the hovered file's details
+- `Y` - cancel a copy or cut. A copy in one yazi window pastes in another
 - `q` - quit
 
 ### fd - Better Find

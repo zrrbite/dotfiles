@@ -23,6 +23,28 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: yazi bookmarks, Far-style Tab between tabs, copy between yazi windows
+
+### On other machines
+- **macOS, Arch:** pull, then quit and restart every running yazi. The yazi
+  config folder links into the repo, so the new `keymap.toml` needs no
+  re-stow. New keys: `g D` (~/Development), `g .` (the dotfiles, wherever
+  they're cloned), `g T` (~/Development/todo; missing on most machines, and
+  then it does nothing), `Tab` flips between tabs, and `i` shows a file's
+  details (it was `Tab`). A `y` in one yazi and a `p` in another now works.
+- **Debian, Windows:** nothing (no yazi there).
+
+### What changed
+- `yazi/.config/yazi/keymap.toml` (new): additions to the 26.9 preset only.
+  `g .` finds the repo from where `~/.zshrc` links, since it's cloned to
+  `~/Development/dotfiles` on the Mac but `~/dotfiles` elsewhere.
+- `init.lua`: the built-in session plugin with `sync_yanked = true`.
+- Tested by driving two yazi instances in a throwaway tmux server: every
+  bookmark, `Tab` and `i`, and a file yanked in one and pasted in the other.
+- `doc/yazi.md`, README and CLAUDE.md list the new keys.
+
+---
+
 ## 2026-10-08: git merges only fast-forward; Claude's global rules ask for linear history
 
 ### On other machines

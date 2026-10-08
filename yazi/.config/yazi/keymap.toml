@@ -1,0 +1,20 @@
+# yazi keymap -- only additions to yazi 26.9's preset (yazi-config/preset/
+# keymap-default.toml). prepend_keymap puts them ahead of the defaults, so the
+# rest of the preset still applies. Cheat sheet: doc/yazi.md.
+
+[mgr]
+prepend_keymap = [
+	# Bookmarks: g plus a key, next to the preset's g h (home), g d (Downloads)
+	# and g c (~/.config).
+	{ on = [ "g", "D" ], run = "cd ~/Development",      desc = "Go to ~/Development" },
+	{ on = [ "g", "T" ], run = "cd ~/Development/todo", desc = "Go to the todo repo" },
+	# The dotfiles are cloned to ~/Development/dotfiles on the Mac but to
+	# ~/dotfiles elsewhere, so find them from where ~/.zshrc links to.
+	{ on = [ "g", "." ], run = 'shell -- ya emit cd "$(dirname "$(dirname "$(readlink -f "$HOME/.zshrc")")")"', desc = "Go to the dotfiles repo" },
+
+	# Far Manager habit: Tab flips between tabs, like Tab between Far's two
+	# panels. `t t` clones the current folder into a new tab to flip to. The
+	# preset's Tab (spot: the hovered file's details) moves to i.
+	{ on = "<Tab>", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },
+	{ on = "i",     run = "spot",                    desc = "Spot hovered file" },
+]

@@ -217,7 +217,9 @@ stow list.
 - **yazi**: Terminal file manager (Finder replacement), macOS and Arch. `y` in
   zsh launches it and leaves the shell where you quit. No theme file: the
   default theme uses ANSI colours, which the terminals map to Nord. Config keys
-  are written against yazi 26.9's preset; they were renamed between releases
+  are written against yazi 26.9's preset; they were renamed between releases.
+  `keymap.toml` holds additions only (`g` bookmarks, Far-style `Tab` between
+  tabs, spot on `i`), and `init.lua` shares yanks between instances
 - **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
   (`ctrl-alt-enter`) since the same day.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,
