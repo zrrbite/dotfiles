@@ -498,14 +498,11 @@ run brew services start dimentium/autoraise/autoraise \
 if [ "$WITH_DESKTOP" = true ]; then
     info "Configuring macOS desktop..."
 
-    # Auto-hide Dock (sketchybar replaces it)
-    run defaults write com.apple.dock autohide -bool true
-    run defaults write com.apple.dock autohide-delay -float 0
-    run defaults write com.apple.dock autohide-time-modifier -float 0.3
-    run_ok killall Dock
-
-    # Auto-hide menu bar (sketchybar replaces it)
-    run defaults write NSGlobalDomain _HIHideMenuBar -bool true
+    # Dock and menu bar hidden (sketchybar replaces both), AeroSpace's
+    # recommended Mission Control settings, no smart quotes or autocorrect.
+    # Also runnable alone; --undo reverts it, and verify.sh checks it. It
+    # restarts the Dock itself.
+    run "$DOTFILES_DIR/scripts/macos-defaults.sh"
 
     # Hide desktop icons
     run defaults write com.apple.finder CreateDesktop -bool false

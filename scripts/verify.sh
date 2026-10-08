@@ -257,6 +257,13 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
         # once by a person, so they only warn.
         fail "AutoRaise service not started: brew services start dimentium/autoraise/autoraise"
     fi
+    # WARN, not FAIL: the installer applies these only with --with-desktop.
+    if differ="$("$DOTFILES_DIR/scripts/macos-defaults.sh" --check)"; then
+        pass "macOS settings match scripts/macos-defaults.sh"
+    else
+        warn "macOS settings differ from scripts/macos-defaults.sh (run it to apply):"
+        echo "$differ"
+    fi
     if command -v sshfs >/dev/null 2>&1; then
         pass "sshfs is installed (remote <host> mount)"
     else
