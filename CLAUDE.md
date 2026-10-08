@@ -227,6 +227,13 @@ stow list.
   opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
   protocol and a native window. Alacritty stays until the trial is decided;
   don't remove either one without asking
+- **remote**: `~/.local/bin/remote`, the safe operations on a remote machine
+  over SSH (mount with FUSE-T sshfs, read, search, read-only git, build,
+  test). Claude may run it without asking (`Bash(remote:*)` in
+  `~/.claude/settings.json`, added by `scripts/claude-remote-permissions.sh`).
+  Its skill, `remote-machine`, is the one dotfiles skill that is
+  model-invoked. Tests: `scripts/test-remote.sh` against the stand-in from
+  `scripts/remote-test-host.sh up`. See `doc/remote-machine.md`
 
 **Windows 10/11:**
 - **Git, Neovim, Clang, Starship**: All work identically to Linux/macOS
@@ -285,7 +292,7 @@ stow list.
   - `/review` - Code review current diff for bugs, security issues, style violations
   - `/fix-issue <number>` - Read a GitHub issue and implement a fix
   - `/bootstrap [name]` - Interactive project scaffolding (C++, TypeScript variants)
-  - All skills use `disable-model-invocation: true` (user-triggered only)
+  - All skills except `remote-machine` use `disable-model-invocation: true` (user-triggered only)
 
 ### Install Scripts
 

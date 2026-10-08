@@ -23,6 +23,42 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: Claude works on a remote machine over SSH (`remote`, a mount, a skill)
+
+### On other machines
+- **macOS:** pull, then `./install_darwin.sh`. It installs FUSE-T and its
+  sshfs (two `.pkg` installers: they ask for your password), stows the new
+  `remote` package (`~/.local/bin/remote`), and adds two rules to
+  `~/.claude/settings.json` (`Bash(remote:*)`, `Read(~/remote/**)`).
+  `scripts/verify.sh` checks all three. A new skill, `remote-machine`, arrives
+  with the `claude` package.
+- **To use it with the work Mac:** the one-time setup in
+  `doc/remote-machine.md` (Remote Login, your key, a cable, an ssh alias).
+- **Arch, Debian, Windows:** nothing. (Windows links the new skill too; it
+  says it is for macOS and Linux.)
+
+### What changed
+`33c4863`..this entry's commit:
+- `remote` command (`remote/.local/bin/remote`): status, mount, unmount, ls,
+  cat, grep, find, read-only git, build, test. Every subcommand is read-only
+  or a build/test, and options that could run a program or write are refused,
+  which is why Claude may run it without asking.
+- `remote-machine` skill (model-invoked): when to use the mount, when to
+  search on the remote, what asks first.
+- `scripts/claude-remote-permissions.sh`, `scripts/remote-test-host.sh` (a
+  stand-in work Mac on this Mac: user `workmac-sim`, SSH only from this Mac),
+  `scripts/test-remote.sh` (end-to-end tests against it).
+- Spec `doc/specs/2026-10-08-remote-machine-design.md`; plan
+  `doc/plans/2026-10-08-remote-machine.md`; guide `doc/remote-machine.md`.
+
+### What the repo can't do
+- The work Mac's side (Remote Login, its authorized key, the cable) is set up
+  by hand, once.
+- This Mac's test host (`scripts/remote-test-host.sh up`) is optional and per
+  machine; `down` removes it and turns Remote Login off.
+
+---
+
 ## 2026-10-08: Claude Code sees the todo list at session start
 
 ### On other machines
