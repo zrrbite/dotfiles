@@ -10,7 +10,10 @@ elif [ -x /usr/local/bin/brew ]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-path_prepend "/usr/local/share/dotnet"
+# dotnet comes from Homebrew (brew shellenv above). The old Microsoft installer's
+# /usr/local/share/dotnet is no longer put in front: its SDKs (6.0, 7.0) cannot
+# build .NET 10 projects, and it shadowed Homebrew's (2026-10-07). path_helper
+# still lists it from /etc/paths.d, after Homebrew.
 path_prepend "$HOME/.dotnet/tools"
 path_prepend "/Library/Frameworks/Mono.framework/Versions/Current/Commands"
 path_prepend "/opt/homebrew/opt/llvm/bin"
