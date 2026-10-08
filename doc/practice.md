@@ -116,6 +116,8 @@ shows what comes next.
 | **Find** | |
 | Files / text in files (grep) / open buffers | `Space` `f` `f` / `Space` `f` `g` / `Space` `f` `b` |
 | Symbols in this file / project / C++ macros | `Space` `f` `s` / `Space` `f` `w` / `Space` `f` `m` |
+| Word under the cursor / reopen the last search | `Space` `f` `c` / `Space` `f` `r` |
+| Recent files / search this file | `Space` `f` `o` / `Space` `/` |
 | Diagnostics / help | `Space` `f` `d` / `Space` `f` `h` |
 | **Files** | |
 | yazi at this file / at the project root | `Space` `-` / `Space` `_` |
@@ -257,7 +259,10 @@ path.
 ### nvim
 
 **N1. Find.** `cd /tmp/practice && nvim .`, then `Space` `f` `f` and
-`main`, `Space` `f` `g` and `Total`, `Space` `f` `b` to come back.
+`main`, `Space` `f` `g` and `Total`, `Space` `f` `b` to come back. In
+`util.cpp`, `Space` `f` `s` and `Enter` on `Scale`; on `Add`, `Space` `f` `c`.
+`Space` `f` `r` brings the last search back. The full set, with exercises, is
+Level 8 of [`nvim-tutorial.md`](nvim-tutorial.md).
 *Got it when you stop opening files by walking a tree.*
 
 **N2. The error.** In `projects/alpha/main.cpp`: `Space` `d` on the red line

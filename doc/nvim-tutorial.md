@@ -387,6 +387,144 @@ bool active;
 
 ---
 
+## Level 8: Finding Your Way Around a Codebase
+
+The keys a developer uses all day: get to a file, search the project, jump between a symbol and its uses, and
+change something everywhere. Practise in the throwaway folder from [`practice.md`](practice.md)
+(`scripts/practice-folder.sh` builds `/tmp/practice`, with a small C++ project in `projects/alpha`), then in a
+real repo. Every picker below is telescope: type to filter, `Enter` to open (Exercise 8.5 has the rest).
+
+### Exercise 8.1: Find a File
+
+**Keys in your setup:**
+```
+Space+ff    Find files by name (fuzzy; skips git-ignored and hidden files)
+Space+fo    Recently opened files
+Space+fb    Files open right now (buffers)
+```
+
+**Do this:**
+1. `cd /tmp/practice && nvim .`
+2. Press `Space+ff` and type `alpmain`: fuzzy matching takes letters in order, so a bit of the folder and a
+   bit of the name find `projects/alpha/main.cpp`. `Enter` opens it.
+3. Open `util.cpp` the same way, then `Space+fb` to switch back to `main.cpp`.
+4. Quit nvim, start it again, and press `Space+fo`: the files you just had open are at the top.
+
+### Exercise 8.2: Search the Whole Project
+
+**Keys in your setup:**
+```
+Space+fg    Live grep: results update as you type (ripgrep, so a regex works)
+Space+fc    Grep the word under the cursor
+Space+/     Fuzzy search inside this file only
+Space+fr    Reopen the last search, with its text and position
+*  / #      Next / previous match of the word, this file only (Level 2)
+```
+
+**Do this:**
+1. `Space+fg`, type `Total`: every line in the project that says it, with a preview. `Enter` on one.
+2. `Space+fg` again, type `Scale\(`: a regex, so you get the calls and the declaration, not the comment.
+3. In `main.cpp`, put the cursor on `Add` and press `Space+fc`: everything that says `Add`, no typing.
+4. `Space+/`, type `Doub`: matches in this file only.
+5. Close the picker (`Esc` `Esc`), then `Space+fr`: the same search comes back where you left it.
+
+### Exercise 8.3: Symbols - Jump to a Function by Name
+
+**Keys in your setup:**
+```
+Space+fs    Symbols in this file (functions, classes, variables), from the language server
+Space+fw    Symbols across the project: type part of a name
+gO          This file's outline, in the location list (built into Neovim)
+```
+
+**Do this:**
+1. In `util.cpp`, `Space+fs`: `Add` and `Scale`. `Enter` on `Scale` jumps to it.
+2. `Space+fw`, type `Sca`: `Scale`, wherever the language server has seen it.
+3. `gO`: the same outline as a list under the file. `Enter` on a line jumps; `:lclose` closes it.
+
+clangd indexes a whole project when it has a `compile_commands.json` (CMake writes one with
+`-DCMAKE_EXPORT_COMPILE_COMMANDS=ON`). Without it, as in the practice folder, `Space+fw` knows only the files
+you have opened.
+
+### Exercise 8.4: Who Uses This? Definitions and References
+
+**Keys in your setup:**
+```
+gd / gD     Go to the definition / declaration
+gr          All references, in the quickfix list
+gI          Go to the implementation
+Space+D     Go to the type's definition
+]q / [q     Next / previous entry in the quickfix list
+:copen      Show the quickfix list (:cclose hides it)
+Ctrl+o      Back where you came from (repeat it)
+```
+
+**Do this:**
+1. In `main.cpp`, cursor on `Scale`, press `gd`: you land on `Scale` in `util.cpp` (or its declaration in
+   `util.h`). `Ctrl+o` comes back.
+2. Open `util.h`, cursor on `Scale`, press `gr`: its uses go into the quickfix list, which opens below.
+3. `]q` steps to the next use, `[q` back. `:copen` shows them all; `Enter` on a line jumps there.
+4. `Ctrl+o` a few times walks back through everywhere you jumped.
+
+### Exercise 8.5: Inside Any Picker
+
+**Keys while a picker is open** (you are typing in it):
+```
+Ctrl+n / Ctrl+p       Next / previous result
+Enter                 Open it here
+Ctrl+v / Ctrl+x       Open it in a side-by-side / stacked split
+Ctrl+t                Open it in a new tab
+Ctrl+u / Ctrl+d       Scroll the preview up / down
+Ctrl+q                Send ALL results to the quickfix list
+Ctrl+/                Show the picker's keys
+Esc Esc               Close (the first Esc stops typing; then ? also shows the keys)
+```
+
+**Do this:**
+1. `Space+fg`, type `Total`, `Ctrl+n` to the second result, `Ctrl+v`: it opens beside the file you had.
+2. `Space+fr`, then `Ctrl+q`: every result is now in the quickfix list. `]q` walks them.
+
+`Alt+q` (send only the results you marked with `Tab`) needs Option to act as Alt, which this Ghostty setup
+leaves off for the Danish layout. Narrow the search instead, then `Ctrl+q`.
+
+### Exercise 8.6: Change Something Everywhere
+
+**Keys in your setup:**
+```
+Space+rn                      Rename a symbol, in every file the language server knows
+Space+ca                      Code actions: the language server's fixes and refactors
+:cdo s/old/new/g | update     A substitution on every quickfix entry, saving each file
+```
+
+**Do this:**
+1. Rename a symbol: in `main.cpp`, cursor on `Total`, `Space+rn`, type `Sum`, `Enter`. Every use changes,
+   and only that variable: the word `Total` inside the string stays.
+2. Change text everywhere: `Space+fg`, type `Doubled`, `Ctrl+q`, then
+   `:cdo s/Doubled/Twice/g | update`. Each listed line is changed and its file saved.
+3. In a shell, `git -C /tmp/practice diff` shows both changes.
+   `scripts/practice-folder.sh --fresh` puts everything back.
+
+Use `Space+rn` for code: it knows scope, so a local variable and a function of the same name stay apart. Use
+`:cdo` for plain text: comments, strings, docs.
+
+### Exercise 8.7: Every Error at Once
+
+**Keys in your setup:**
+```
+Space+fd    Diagnostics in every open file, searchable
+Space+q     This file's diagnostics in the location list
+]d / [d     Next / previous diagnostic in this file
+```
+
+**Do this:**
+1. Open `main.cpp` and `util.cpp`. `main.cpp` has the `Scale` error, unless you fixed it in drill N2
+   (`--fresh` brings it back).
+2. `Space+fd`: the error is listed, with the file. `Enter` jumps to it, and `Space+d` reads it.
+
+✅ **Checkpoint:** You can reach any file, line, symbol, or use of a symbol in a few keys, without the tree.
+
+---
+
 ## Quick Reference Card
 
 ### Movement
@@ -414,9 +552,19 @@ yiw yi" yi(  Yank inside
 ```
 Ctrl+o / Ctrl+i  Jump back / forward
 gd               Go to definition
-gr               Go to references
-Space+ff         Find files
-Space+fg         Find by grep
+gr               Go to references (quickfix list)
+]q / [q          Next / previous quickfix entry
+```
+
+### Finding (Level 8)
+```
+Space+ff / fo / fb   Files: by name / recent / open now
+Space+fg / fc        Grep the project / the word under the cursor
+Space+/              Search this file
+Space+fs / fw        Symbols: this file / the project
+Space+fd             Diagnostics in open files
+Space+fr             Reopen the last search
+In a picker          Ctrl+v/x/t split or tab, Ctrl+q all to quickfix
 ```
 
 ---
@@ -430,6 +578,7 @@ Space+fg         Find by grep
 - [ ] Level 5: Registers & Macros
 - [ ] Level 6: LSP Navigation
 - [ ] Level 7: Visual Block Mode
+- [ ] Level 8: Finding Your Way Around a Codebase
 
 **Date Started:** ___________
 **Date Completed:** ___________

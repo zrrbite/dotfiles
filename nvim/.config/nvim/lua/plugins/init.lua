@@ -79,6 +79,10 @@ return {
       vim.keymap.set("n", "<leader>fm", function()
         builtin.grep_string({ search = "#define" })
       end, { desc = "[F]ind [M]acros (#define)" })
+      vim.keymap.set("n", "<leader>fc", builtin.grep_string, { desc = "[F]ind the word under the [C]ursor" })
+      vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "[F]ind: [R]esume the last search" })
+      vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = "[F]ind [O]ld (recent) files" })
+      vim.keymap.set("n", "<leader>/", builtin.current_buffer_fuzzy_find, { desc = "[/] Fuzzy search in this file" })
     end,
   },
 
