@@ -264,6 +264,12 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
         warn "macOS settings differ from scripts/macos-defaults.sh (run it to apply):"
         echo "$differ"
     fi
+    # WARN: setting it up needs the password, which a check can't ask for.
+    if "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --check >/dev/null; then
+        pass "Touch ID for sudo, also inside tmux"
+    else
+        warn "Touch ID for sudo is not set up: scripts/touch-id-sudo.sh"
+    fi
     if command -v sshfs >/dev/null 2>&1; then
         pass "sshfs is installed (remote <host> mount)"
     else

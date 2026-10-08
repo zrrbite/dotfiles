@@ -197,6 +197,9 @@ BREW_PACKAGES=(
 
     # Focus follows mouse -- AeroSpace has no setting for it
     autoraise
+
+    # Touch ID for sudo inside tmux (scripts/touch-id-sudo.sh)
+    pam-reattach
 )
 
 BREW_CASKS=(
@@ -458,6 +461,15 @@ if [ "$DRY_RUN" = true ]; then
 else
     "$DOTFILES_DIR/scripts/claude-remote-permissions.sh" ||
         FAILURES+=("claude-remote-permissions.sh failed; Claude will ask before each remote command")
+fi
+
+# Touch ID for sudo, also inside tmux. Writes /etc/pam.d/sudo_local, so it
+# asks for the password once. Refuses to replace a sudo_local it didn't write.
+if [ "$DRY_RUN" = true ]; then
+    "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --dry-run || true
+elif ! "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --check >/dev/null; then
+    "$DOTFILES_DIR/scripts/touch-id-sudo.sh" ||
+        FAILURES+=("touch-id-sudo.sh failed; sudo keeps asking for the password")
 fi
 
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
