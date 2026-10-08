@@ -509,6 +509,21 @@ On Windows, `stow_windows.ps1 claude` and `install_windows.ps1` link only
 `~/.claude/settings.json`. That is a per-machine choice; the package does not
 ship a `settings.json`.
 
+`hooks/todo-brief.py` (2026-10-08) shows the open items of `~/Development/todo/TODO.md`
+at the start of every session: the sections that mention the repo you start in,
+and a count of the rest. Register it the same way:
+
+```json
+"hooks": {
+  "SessionStart": [
+    { "hooks": [ { "type": "command", "command": "$HOME/.claude/hooks/todo-brief.py" } ] }
+  ]
+}
+```
+
+It needs `python3` and the todo repo cloned at `~/Development/todo` (or `TODO_FILE`
+pointing at the list); without them it prints nothing.
+
 ## Undo
 
 - Stow: `stow -D -t ~ <pkg>` removes that package's symlinks. Then restore the

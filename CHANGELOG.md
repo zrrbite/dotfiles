@@ -23,6 +23,26 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: Claude Code sees the todo list at session start
+
+### On other machines
+- **Every machine where Claude Code runs (macOS, Arch, Debian):** pull. `~/.claude/hooks` is this repo's, so
+  the new hook is already there. Then register it in that machine's `~/.claude/settings.json`; the snippet is
+  in `doc/applying-the-setup.md` ("todo-brief"). It needs `python3` and `~/Development/todo` cloned; without
+  them it prints nothing. **Done on this Mac.**
+
+### What changed
+- `claude/.claude/hooks/todo-brief.py`: a SessionStart hook. It prints the `TODO.md` sections that mention the
+  repo the session starts in (open items only) and one line counting the rest; outside a repo, only the count.
+  It fails open. Martin: "I need to remember to tell you to call up this todo once in a while". Now he doesn't.
+- `claude/.claude/CLAUDE.md`: says the brief is there, and to raise what it shows when it matters.
+- `doc/applying-the-setup.md`: how to register it.
+
+### What the repo can't do
+Register the hook: `settings.json` is per machine, as for the PreModelSwitch hook.
+
+---
+
 ## 2026-10-08: nvim finder keys, and the tutorial's Level 8 (finding your way around a codebase)
 
 ### On other machines

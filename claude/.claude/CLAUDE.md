@@ -8,6 +8,13 @@ I keep a task list at `~/Development/todo` (private repo `zrrbite/todo`);
 `TODO.md` is the list, `log/YYYY-MM.md` is the per-session history, and its
 `README.md` documents the conventions.
 
+**At session start, a hook shows you the open items** (`hooks/todo-brief.py`,
+registered per machine as a SessionStart hook): the sections that mention the
+repo you start in, in full, and a count of the rest. Read them. When the work
+at hand touches an item, or an item is due or blocked on something this
+session can do, say so without being asked; I shouldn't have to remember to
+point you at the list.
+
 **When a session produces something I need to act on later, write it there** —
 don't only report it in chat, where it dies with the session. Worth logging:
 
