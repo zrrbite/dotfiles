@@ -130,6 +130,72 @@ t_hint() {
     expect_has "privacy hint" "$out" "Allow full disk access for remote users"
 }
 
+t_mount() {
+    local mp="$HOME/remote/$H" out start pid
+    R $H unmount >/dev/null 2>&1
+    expect_rc "mount" 0 R $H mount
+    if mount | grep -qF " on $mp "; then ok "mount: in the mount table"; else bad "mount: not in the mount table"; fi
+    out="$(R $H status 2>&1)"; expect_has "status: healthy" "$out" "(healthy)"
+    out="$(R $H mount 2>&1)"; expect_has "mount again: says so" "$out" "already mounted"
+    out="$(cat "$mp/src/hello/hello.cpp" 2>&1)"; expect_has "read through the mount" "$out" "hello from workmac-sim"
+    out="$(cat "$mp/src/hello/with space.txt" 2>&1)"; expect_has "mount: path with a space" "$out" "spaced out"
+    printf 'edited through the mount %s\n' "$$" > "$mp/src/hello/notes.txt"
+    out="$(R $H cat src/hello/notes.txt 2>&1)"; expect_has "edit through the mount lands remotely" "$out" "edited through the mount $$"
+    rm -f "$mp/src/hello/notes.txt"
+    expect_rc "unmount" 0 R $H unmount
+    if mount | grep -qF " on $mp "; then bad "unmount: still mounted"; else ok "unmount: gone from the mount table"; fi
+    if [ -e "$mp" ]; then bad "unmount: $mp left behind"; else ok "unmount: folder removed"; fi
+
+    # Review focus 4: a leftover empty folder
+    mkdir -p "$mp"
+    out="$(R $H status 2>&1)"; expect_has "leftover folder: status says not mounted" "$out" "not mounted"
+    expect_rc "leftover folder: unmount tidies" 0 R $H unmount
+    if [ -e "$mp" ]; then bad "leftover folder: still there"; else ok "leftover folder: removed"; fi
+    # Review focus 3: a folder that isn't empty
+    mkdir -p "$mp"; touch "$mp/mine.txt"
+    expect_rc "non-empty folder: mount refuses" 2 R $H mount
+    if [ -f "$mp/mine.txt" ]; then ok "non-empty folder: left alone"; else bad "non-empty folder: file gone"; fi
+    rm -f "$mp/mine.txt"; rmdir "$mp"
+
+    # The remote disappears while mounted (through a relay we can kill)
+    python3 - "$RELAY_PORT" 22 > /dev/null 2>&1 <<'PY' &
+import socket, sys, threading
+lport, dport = int(sys.argv[1]), int(sys.argv[2])
+s = socket.socket(); s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+s.bind(("127.0.0.1", lport)); s.listen(5)
+def pipe(a, b):
+    try:
+        while True:
+            d = a.recv(65536)
+            if not d: break
+            b.sendall(d)
+    except OSError: pass
+    finally:
+        for x in (a, b):
+            try: x.shutdown(socket.SHUT_RDWR)
+            except OSError: pass
+while True:
+    c, _ = s.accept()
+    u = socket.create_connection(("127.0.0.1", dport))
+    threading.Thread(target=pipe, args=(c, u), daemon=True).start()
+    threading.Thread(target=pipe, args=(u, c), daemon=True).start()
+PY
+    pid=$!
+    sleep 1
+    local RR="REMOTE_SSH_CONFIG=$CFG"
+    expect_rc "relay: mount" 0 env "$RR" "$REMOTE" remote-test-relay mount
+    kill "$pid"; wait "$pid" 2>/dev/null
+    start=$(date +%s)
+    out="$(env "$RR" "$REMOTE" remote-test-relay status 2>&1)"; local rc=$?
+    if [ "$rc" -ne 0 ]; then ok "dead mount: status fails"; else bad "dead mount: status exit 0"; fi
+    expect_has "dead mount: status says so" "$out" "NOT"
+    if [ $(( $(date +%s) - start )) -le 15 ]; then ok "dead mount: status within 15 s"; else bad "dead mount: status took $(( $(date +%s) - start )) s"; fi
+    start=$(date +%s)
+    expect_rc "dead mount: unmount" 0 env "$RR" "$REMOTE" remote-test-relay unmount
+    if [ $(( $(date +%s) - start )) -le 20 ]; then ok "dead mount: unmount within 20 s"; else bad "dead mount: unmount took $(( $(date +%s) - start )) s"; fi
+    if mount | grep -qF " on $HOME/remote/remote-test-relay "; then bad "dead mount: still mounted"; else ok "dead mount: gone"; fi
+}
+
 ALL="status read refuse git hint mount build perms"
 # (Not GROUPS: that is a bash built-in, and assigning to it does nothing.)
 RUN_GROUPS="${*:-$ALL}"

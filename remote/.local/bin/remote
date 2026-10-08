@@ -29,8 +29,10 @@ set -uo pipefail
 MOUNT_ROOT="${REMOTE_MOUNT_ROOT:-$HOME/remote}"
 TIMEOUT="${REMOTE_TIMEOUT:-5}"
 SSH=(ssh -n -o BatchMode=yes -o ConnectTimeout=5)
+SSHFS_CFG=()
 if [ -n "${REMOTE_SSH_CONFIG:-}" ]; then
     SSH+=(-F "$REMOTE_SSH_CONFIG")
+    SSHFS_CFG=(-F "$REMOTE_SSH_CONFIG")
 fi
 
 usage() { sed -n '8,17p' "$0" | sed 's/^# \{0,1\}//'; }
@@ -94,6 +96,44 @@ cmd_status() {
         echo "mount: not mounted (remote $HOST mount)"
     fi
     return "$rc"
+}
+
+cmd_mount() {
+    command -v sshfs >/dev/null 2>&1 ||
+        refuse "sshfs is not installed (macOS: brew install --cask macos-fuse-t/cask/fuse-t-sshfs)"
+    if is_mounted; then echo "already mounted at $MP"; return 0; fi
+    if [ -d "$MP" ] && [ -n "$(ls -A "$MP" 2>/dev/null)" ]; then
+        refuse "$MP exists and isn't empty; move its contents away first"
+    fi
+    "${SSH[@]}" "$HOST" true 2>/dev/null ||
+        { echo "remote: could not reach $HOST over ssh (is it on and connected?)" >&2; return 255; }
+    mkdir -p "$MP"
+    if sshfs ${SSHFS_CFG[@]+"${SSHFS_CFG[@]}"} "$HOST:" "$MP" \
+        -o "volname=$HOST,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,BatchMode=yes,ConnectTimeout=5"; then
+        echo "mounted $HOST's home at $MP"
+    else
+        rmdir "$MP" 2>/dev/null
+        echo "remote: sshfs could not mount $HOST" >&2; return 1
+    fi
+}
+
+cmd_unmount() {
+    if ! is_mounted; then
+        rmdir "$MP" 2>/dev/null
+        echo "not mounted"; return 0
+    fi
+    if command -v fusermount >/dev/null 2>&1; then
+        with_timeout fusermount -u "$MP" 2>/dev/null
+    else
+        with_timeout umount "$MP" 2>/dev/null ||
+            with_timeout diskutil unmount force "$MP" >/dev/null 2>&1 ||
+            with_timeout umount -f "$MP" 2>/dev/null
+    fi
+    if is_mounted; then
+        echo "remote: could not unmount $MP; try: diskutil unmount force $MP" >&2; return 1
+    fi
+    rmdir "$MP" 2>/dev/null
+    echo "unmounted $MP"
 }
 
 cmd_ls() {
@@ -191,6 +231,8 @@ MP="$MOUNT_ROOT/$HOST"
 
 case "$SUB" in
     status) [ $# -eq 0 ] || refuse "usage: remote $HOST status"; cmd_status ;;
+    mount) [ $# -eq 0 ] || refuse "usage: remote $HOST mount"; cmd_mount ;;
+    unmount) [ $# -eq 0 ] || refuse "usage: remote $HOST unmount"; cmd_unmount ;;
     ls) cmd_ls "$@" ;;
     cat) cmd_cat "$@" ;;
     grep) cmd_grep "$@" ;;
