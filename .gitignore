@@ -10,3 +10,8 @@ yazi/.config/yazi/flavors/
 # Agent worktrees (git worktree checkouts made by Claude Code subagents).
 # They are separate checkouts of this repo; never track them.
 .claude/worktrees/
+
+# Karabiner-Elements keeps dated copies of karabiner.json next to it. The
+# whole ~/.config/karabiner folder links here (Karabiner replaces the file
+# when it saves, which would break a link to the file alone).
+karabiner/.config/karabiner/automatic_backups/

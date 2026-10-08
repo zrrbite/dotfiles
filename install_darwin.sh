@@ -216,6 +216,9 @@ BREW_CASKS=(
     # in its own database, not here; add scripts/raycast/ as a script directory
     # (Settings > Extensions > + > Add Script Directory).
     raycast
+    # Caps Lock: Escape when tapped, Control when held (karabiner/). A .pkg:
+    # asks for the password, then for its driver and Input Monitoring.
+    karabiner-elements
     # sshfs for `remote <host> mount` (doc/remote-machine.md): FUSE-T, which
     # needs no kernel extension. Both are .pkg installers and ask for the
     # password.
@@ -325,6 +328,8 @@ CONFIGS_TO_BACKUP=(
     ~/.config/aerospace/aerospace.toml
     ~/.config/sketchybar
     ~/.config/AutoRaise
+    # Karabiner writes a default config on first launch; the repo's replaces it
+    ~/.config/karabiner
     ~/.clang-tidy
     ~/.git-hooks
     ~/.gitignore-global
