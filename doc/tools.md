@@ -56,6 +56,7 @@ and Raspberry Pi.
 | Global git hooks | clang-format on commit, clang-tidy / TS checks on push | ✓ | ✓ | ✓ | ✓ |
 | neovim | Editor: LSP, treesitter, DAP, yazi.nvim | ✓ | ✓ | ✓ | ✓ |
 | gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
+| remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
 | cmake + ninja | C++ builds (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |
 | gdb (+ dashboard) / lldb | Debuggers (lldb on macOS, via llvm) | lldb | gdb | gdb | – |

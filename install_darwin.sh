@@ -122,6 +122,7 @@ info "Adding Homebrew taps..."
 run brew tap nikitabobko/tap
 run brew tap FelixKratz/formulae
 run brew tap dimentium/autoraise
+run brew tap macos-fuse-t/homebrew-cask
 
 # Homebrew 6 refuses to load formulae from an untrusted tap, so tapping alone is
 # not enough -- `brew install sketchybar` fails with "Refusing to load formula
@@ -131,7 +132,7 @@ run brew tap dimentium/autoraise
 # command, hence the guard.
 if brew trust --help >/dev/null 2>&1; then
     info "Trusting third-party taps..."
-    for tap in nikitabobko/tap FelixKratz/formulae dimentium/autoraise; do
+    for tap in nikitabobko/tap FelixKratz/formulae dimentium/autoraise macos-fuse-t/cask; do
         run brew trust "$tap" || warn "  Failed to trust $tap"
     done
 fi
@@ -212,6 +213,11 @@ BREW_CASKS=(
     # in its own database, not here; add scripts/raycast/ as a script directory
     # (Settings > Extensions > + > Add Script Directory).
     raycast
+    # sshfs for `remote <host> mount` (doc/remote-machine.md): FUSE-T, which
+    # needs no kernel extension. Both are .pkg installers and ask for the
+    # password.
+    fuse-t
+    macos-fuse-t/cask/fuse-t-sshfs
 )
 
 # `brew install <already-installed-but-outdated>` upgrades it. That makes a
@@ -401,9 +407,10 @@ info "Stowing packages..."
 # of the files inside it. On a fresh Mac that turns ~/.config into a symlink
 # into this repo, so every app writing its config would write into the working
 # tree. The same goes for ~/.claude (Claude Code's history and settings), and
-# for ~/.config/fastfetch, where the macOS config is linked in below.
+# for ~/.config/fastfetch, where the macOS config is linked in below, and
+# ~/.local/bin, where the `remote` package links its command.
 # scripts/verify.sh checks that none of these ended up as a symlink.
-run mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
+run mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.local/bin"
 
 # shellcheck source=scripts/packages.sh
 source "$DOTFILES_DIR/scripts/packages.sh"
@@ -443,6 +450,15 @@ fi
 # sets the theme line once and leaves the file to btop.
 DRY_RUN="$DRY_RUN" "$DOTFILES_DIR/scripts/seed-btop-config.sh" \
     || FAILURES+=("seed-btop-config.sh failed; btop keeps its default theme")
+
+# Claude Code may run `remote` and read ~/remote without asking
+# (doc/remote-machine.md). settings.json is per machine, so it isn't stowed.
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${BLUE}[DRY]${NC} scripts/claude-remote-permissions.sh"
+else
+    "$DOTFILES_DIR/scripts/claude-remote-permissions.sh" ||
+        FAILURES+=("claude-remote-permissions.sh failed; Claude will ask before each remote command")
+fi
 
 # tmux-resurrect: save/restore tmux sessions across reboots. Loaded by
 # tmux/.tmux.conf if present; pinned to a release tag.

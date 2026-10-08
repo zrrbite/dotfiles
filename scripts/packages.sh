@@ -12,6 +12,6 @@
 #
 # shellcheck disable=SC2034  # read by the scripts that source this file
 
-PACKAGES_DARWIN=(git clang nvim starship bat alacritty ghostty aerospace sketchybar autoraise zsh tmux yazi direnv claude)
+PACKAGES_DARWIN=(git clang nvim starship bat alacritty ghostty aerospace sketchybar autoraise zsh tmux yazi direnv claude remote)
 PACKAGES_ARCH=(hypr foot waybar rofi mako wlogout cava gtk mimeapps discord slack fastfetch alacritty nvim starship bat git clang gdb tmux yazi direnv zsh zsh-linux typescript claude)
 PACKAGES_DEBIAN=(git clang gdb nvim starship bat tmux direnv zsh zsh-linux claude)

@@ -227,6 +227,22 @@ t_build() {
     R $H unmount >/dev/null
 }
 
+t_perms() {
+    local S="$DOTFILES_DIR/scripts/claude-remote-permissions.sh" f="$TMP/settings.json" out
+    rm -f "$f"
+    expect_rc "perms: creates a missing file" 0 "$S" "$f"
+    out="$(jq -c '.permissions.allow' "$f")"
+    if [ "$out" = '["Bash(remote:*)","Read(~/remote/**)"]' ]; then ok "perms: both rules"; else bad "perms: got $out"; fi
+    printf '{"model":"x","permissions":{"allow":["Bash(ls:*)"],"deny":["Read(./.env)"]}}' > "$f"
+    expect_rc "perms: existing file" 0 "$S" "$f"
+    expect_rc "perms: second run" 0 "$S" "$f"
+    out="$(jq -c '[.model, .permissions.allow, .permissions.deny]' "$f")"
+    if [ "$out" = '["x",["Bash(ls:*)","Bash(remote:*)","Read(~/remote/**)"],["Read(./.env)"]]' ]; then ok "perms: keeps the rest, adds each rule once"; else bad "perms: got $out"; fi
+    printf '{ not json' > "$f"
+    expect_rc "perms: invalid JSON exits 1" 1 "$S" "$f"
+    if [ "$(cat "$f")" = '{ not json' ]; then ok "perms: invalid file untouched"; else bad "perms: invalid file changed"; fi
+}
+
 ALL="status read refuse git hint mount build perms"
 # (Not GROUPS: that is a bash built-in, and assigning to it does nothing.)
 RUN_GROUPS="${*:-$ALL}"

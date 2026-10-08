@@ -154,7 +154,7 @@ fi
 # If stow "folds" one of these into a single symlink, anything that later writes
 # there -- apps writing config, Claude Code writing its history, the installer
 # linking fastfetch's macOS config -- writes inside the repo instead.
-for d in "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"; do
+for d in "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.local/bin"; do
     if [ -L "$d" ]; then
         case "$(realpath "$d")" in
             "$REPO_REAL"/*) fail "$d is a symlink into the repo; apps will write into the working tree" ;;
@@ -256,6 +256,17 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
         # a real failure. The three processes above need AeroSpace launched
         # once by a person, so they only warn.
         fail "AutoRaise service not started: brew services start dimentium/autoraise/autoraise"
+    fi
+    if command -v sshfs >/dev/null 2>&1; then
+        pass "sshfs is installed (remote <host> mount)"
+    else
+        fail "sshfs is missing: brew install --cask macos-fuse-t/cask/fuse-t-sshfs"
+    fi
+    if jq -e '.permissions.allow | index(["Bash(remote:*)"]) and index(["Read(~/remote/**)"])' \
+        "$HOME/.claude/settings.json" >/dev/null 2>&1; then
+        pass "Claude may run remote and read ~/remote without asking"
+    else
+        fail "Claude's remote permissions are missing: scripts/claude-remote-permissions.sh"
     fi
     echo
     echo "Cannot be checked from a script -- confirm by hand:"
