@@ -1,0 +1,200 @@
+#!/usr/bin/env bash
+#
+# remote -- the safe ways to work on another machine over SSH. Every
+# subcommand is read-only or a build/test, which is why Claude may run
+# `remote` without asking (doc/remote-machine.md). Anything else on the remote
+# is plain `ssh <host> '...'`, which asks.
+#
+#   remote <host> status                  reachable? mounted? mount healthy?
+#   remote <host> mount                   mount the remote home at ~/remote/<host>
+#   remote <host> unmount                 unmount, forcing it if the remote is gone
+#   remote <host> ls   <path>
+#   remote <host> cat  <file> [first:last]
+#   remote <host> grep [-i] [-w] [-l] [--include <glob>] [--] <pattern> <path>
+#   remote <host> find <path> [-name <glob>] [-type f|d]
+#   remote <host> git  <path> status|diff|log|show|branch [args]
+#   remote <host> build <dir> [--preset P | --build-dir D]
+#   remote <host> test  <dir> [--preset P | --build-dir D]
+#
+# <host> is an ~/.ssh/config alias. Relative paths are from the remote home,
+# which is what ~/remote/<host> shows. A path may not start with '-' (write
+# ./-name). Exit codes: the remote command's own; 2 for a refused or malformed
+# request (nothing was run); 255 when the host can't be reached.
+#
+# Environment: REMOTE_SSH_CONFIG (an ssh config file instead of
+# ~/.ssh/config), REMOTE_MOUNT_ROOT (default ~/remote), REMOTE_TIMEOUT (seconds
+# a mount check or an unmount may take; default 5).
+set -uo pipefail
+
+MOUNT_ROOT="${REMOTE_MOUNT_ROOT:-$HOME/remote}"
+TIMEOUT="${REMOTE_TIMEOUT:-5}"
+SSH=(ssh -n -o BatchMode=yes -o ConnectTimeout=5)
+if [ -n "${REMOTE_SSH_CONFIG:-}" ]; then
+    SSH+=(-F "$REMOTE_SSH_CONFIG")
+fi
+
+usage() { sed -n '8,17p' "$0" | sed 's/^# \{0,1\}//'; }
+refuse() { echo "remote: $*" >&2; exit 2; }
+q() { printf '%q' "$1"; }
+
+# A time limit for things that can hang on a dead mount. perl ships with macOS
+# and Linux; its alarm survives exec. A timeout exits 142.
+with_timeout() { perl -e 'alarm shift; exec @ARGV' "$TIMEOUT" "$@"; }
+
+# Refuse a path that could be read as an option. Runs in this shell (not in a
+# $(...)), so the refusal really exits.
+check_path() {
+    case "$1" in
+        "") refuse "empty path" ;;
+        -*) refuse "a path may not start with '-': $1 (write ./$1)" ;;
+    esac
+}
+
+# Commands over SSH don't load the login shell's setup, so Homebrew's tools
+# (cmake above all) would be missing from PATH. Add its folders where they
+# exist, instead of depending on the remote's shell config.
+# shellcheck disable=SC2016  # expanded on the remote
+PRELUDE='for d in /usr/local/bin /opt/homebrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done; export PATH;'
+
+# Run a command on the host. Output (stdout and stderr together) shows as it
+# arrives and is kept, so a failure can be explained afterwards.
+run_remote() {
+    local out rc
+    out="$(mktemp)"
+    "${SSH[@]}" "$HOST" "$PRELUDE $1" 2>&1 | tee "$out"
+    rc=${PIPESTATUS[0]}
+    if [ "$rc" -eq 255 ]; then
+        echo "remote: could not reach $HOST over ssh (is it on and connected?)" >&2
+    elif grep -q 'Operation not permitted' "$out"; then
+        echo "remote: \"Operation not permitted\" on a Mac remote is usually its privacy protection of ~/Documents, ~/Desktop and ~/Downloads over SSH. On the remote: System Settings > General > Sharing > Remote Login (i) > Allow full disk access for remote users." >&2
+    fi
+    rm -f "$out"
+    return "$rc"
+}
+
+is_mounted() {
+    mount | awk -v mp="$MP" '{ for (i = 1; i < NF; i++) if ($i == "on" && $(i + 1) == mp) found = 1 }
+                             END { exit !found }'
+}
+
+cmd_status() {
+    local rc=0
+    if "${SSH[@]}" "$HOST" true 2>/dev/null; then
+        echo "host: $HOST is reachable"
+    else
+        echo "host: $HOST is NOT reachable over ssh"; rc=1
+    fi
+    if is_mounted; then
+        if with_timeout ls "$MP" >/dev/null 2>&1; then
+            echo "mount: $MP (healthy)"
+        else
+            echo "mount: $MP is mounted but NOT responding -- run: remote $HOST unmount"; rc=1
+        fi
+    else
+        echo "mount: not mounted (remote $HOST mount)"
+    fi
+    return "$rc"
+}
+
+cmd_ls() {
+    [ $# -eq 1 ] || refuse "usage: remote $HOST ls <path>"
+    check_path "$1"
+    run_remote "ls -la $(q "$1")"
+}
+
+cmd_cat() {
+    { [ $# -ge 1 ] && [ $# -le 2 ]; } || refuse "usage: remote $HOST cat <file> [first:last]"
+    check_path "$1"
+    if [ $# -eq 2 ]; then
+        case "$2" in
+            *[!0-9:]* | :* | *: | *:*:*) refuse "a range is first:last, e.g. 10:40" ;;
+            *:*) ;;
+            *) refuse "a range is first:last, e.g. 10:40" ;;
+        esac
+        run_remote "sed -n $(q "${2%%:*},${2##*:}p") $(q "$1")"
+    else
+        run_remote "cat $(q "$1")"
+    fi
+}
+
+cmd_grep() {
+    local opts="" pattern="" path="" npos=0 only_pos=0
+    while [ $# -gt 0 ]; do
+        if [ "$only_pos" -eq 0 ]; then
+            case "$1" in
+                --) only_pos=1; shift; continue ;;
+                -i | -w | -l) opts="$opts $1"; shift; continue ;;
+                --include) [ $# -ge 2 ] || refuse "--include needs a glob"
+                    opts="$opts --include=$(q "$2")"; shift 2; continue ;;
+                --include=*) opts="$opts --include=$(q "${1#--include=}")"; shift; continue ;;
+                -*) refuse "grep option not allowed: $1 (allowed: -i -w -l --include; use -- before a pattern starting with -)" ;;
+            esac
+        fi
+        case "$npos" in
+            0) pattern="$1" ;;
+            1) check_path "$1"; path="$1" ;;
+            *) refuse "too many arguments: $1" ;;
+        esac
+        npos=$((npos + 1)); shift
+    done
+    [ "$npos" -eq 2 ] || refuse "usage: remote $HOST grep [-i] [-w] [-l] [--include <glob>] [--] <pattern> <path>"
+    run_remote "grep -rnI$opts -e $(q "$pattern") $(q "$path")"
+}
+
+cmd_find() {
+    [ $# -ge 1 ] || refuse "usage: remote $HOST find <path> [-name <glob>] [-type f|d]"
+    check_path "$1"
+    local path="$1" expr=""
+    shift
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -name) [ $# -ge 2 ] || refuse "-name needs a glob"; expr="$expr -name $(q "$2")"; shift 2 ;;
+            -type) case "${2:-}" in f | d) expr="$expr -type $2" ;; *) refuse "-type is f or d" ;; esac; shift 2 ;;
+            *) refuse "find option not allowed: $1 (allowed: -name <glob>, -type f|d)" ;;
+        esac
+    done
+    run_remote "find $(q "$path")$expr"
+}
+
+cmd_git() {
+    [ $# -ge 2 ] || refuse "usage: remote $HOST git <path> status|diff|log|show|branch [args]"
+    check_path "$1"
+    local path="$1" sub="$2" args="" a safe
+    shift 2
+    case "$sub" in
+        status | diff | log | show)
+            for a in "$@"; do
+                case "$a" in
+                    --ext-diff | --textconv | --output | --output=* | -c | -c* | --exec* | --upload-pack* | --open-files-in-pager* | -O*)
+                        refuse "git option not allowed: $a" ;;
+                esac
+                args="$args $(q "$a")"
+            done ;;
+        branch)
+            for a in "$@"; do
+                case "$a" in
+                    -a | -r | -v | -vv | --all | --remotes | --list | --show-current | --verbose) args="$args $a" ;;
+                    *) refuse "git branch: only listing is allowed (-a -r -v -vv --list --show-current), not: $a" ;;
+                esac
+            done ;;
+        *) refuse "git: only status, diff, log, show and branch are allowed, not: $sub" ;;
+    esac
+    safe=" --no-ext-diff --no-textconv"
+    case "$sub" in status | branch) safe="" ;; esac
+    run_remote "git -c core.fsmonitor=false -C $(q "$path") --no-pager $sub$safe$args"
+}
+
+[ $# -ge 2 ] || { usage; exit 2; }
+HOST="$1"; SUB="$2"; shift 2
+case "$HOST" in "" | -* | */*) refuse "not a host alias: $HOST" ;; esac
+MP="$MOUNT_ROOT/$HOST"
+
+case "$SUB" in
+    status) [ $# -eq 0 ] || refuse "usage: remote $HOST status"; cmd_status ;;
+    ls) cmd_ls "$@" ;;
+    cat) cmd_cat "$@" ;;
+    grep) cmd_grep "$@" ;;
+    find) cmd_find "$@" ;;
+    git) cmd_git "$@" ;;
+    *) refuse "unknown subcommand: $SUB (see: remote with no arguments)" ;;
+esac
