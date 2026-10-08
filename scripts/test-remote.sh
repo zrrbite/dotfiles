@@ -196,6 +196,37 @@ PY
     if mount | grep -qF " on $HOME/remote/remote-test-relay "; then bad "dead mount: still mounted"; else ok "dead mount: gone"; fi
 }
 
+t_build() {
+    local out mp="$HOME/remote/$H"
+    out="$(ssh -n $H 'command -v cmake || echo NO-CMAKE' 2>&1)"
+    expect_has "bare PATH has no cmake (the problem the prelude fixes)" "$out" "NO-CMAKE"
+    expect_rc "build with presets" 0 R $H build src/hello
+    out="$(R $H find src/hello/build/debug -name hello -type f 2>&1)"; expect_has "build: binary in the preset's folder" "$out" "build/debug/hello"
+    expect_rc "test with presets" 0 R $H test src/hello
+    expect_rc "build --preset debug" 0 R $H build src/hello --preset debug
+    expect_rc "build --build-dir" 0 R $H build src/hello --build-dir build/plain
+    expect_rc "test --build-dir" 0 R $H test src/hello --build-dir build/plain
+    expect_rc "refuse: --preset and --build-dir" 2 RD build src/hello --preset debug --build-dir b
+    expect_rc "refuse: unknown build option" 2 RD build src/hello --target all
+    # An edit through the mount reaches the build; a failing test exits non-zero
+    R $H mount >/dev/null
+    sed -i '' 's/hello from workmac-sim/goodbye/' "$mp/src/hello/hello.cpp"
+    expect_rc "build after an edit through the mount" 0 R $H build src/hello
+    out="$(R $H test src/hello 2>&1)"; local rc=$?
+    if [ "$rc" -ne 0 ]; then ok "test fails after the edit (the build saw it)"; else bad "test passed after the edit"; fi
+    # A broken build exits non-zero. The pause matters: macOS's make (GNU Make
+    # 3.81) compares file times in whole seconds, so an edit in the same second
+    # as the last build's object file looks up to date (Ninja doesn't care).
+    sleep 1
+    printf 'this is not C++;\n' >> "$mp/src/hello/hello.cpp"
+    out="$(R $H build src/hello 2>&1)"; rc=$?
+    if [ "$rc" -ne 0 ]; then ok "broken build exits non-zero"; else bad "broken build exit 0"; fi
+    ssh -n $H 'git -C src/hello checkout -- hello.cpp'
+    expect_rc "restored: build passes again" 0 R $H build src/hello
+    expect_rc "restored: test passes again" 0 R $H test src/hello
+    R $H unmount >/dev/null
+}
+
 ALL="status read refuse git hint mount build perms"
 # (Not GROUPS: that is a bash built-in, and assigning to it does nothing.)
 RUN_GROUPS="${*:-$ALL}"

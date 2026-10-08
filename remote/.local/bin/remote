@@ -224,6 +224,61 @@ cmd_git() {
     run_remote "git -c core.fsmonitor=false -C $(q "$path") --no-pager $sub$safe$args"
 }
 
+# Set DIR, PRESET and BDIR from: <dir> [--preset P | --build-dir D]
+parse_build_args() {
+    [ $# -ge 1 ] || refuse "usage: remote $HOST $SUB <dir> [--preset P | --build-dir D]"
+    check_path "$1"
+    DIR="$1"; PRESET=""; BDIR=""
+    shift
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --preset) [ $# -ge 2 ] || refuse "--preset needs a name"; PRESET="$2"; shift 2 ;;
+            --build-dir) [ $# -ge 2 ] || refuse "--build-dir needs a folder"; check_path "$2"; BDIR="$2"; shift 2 ;;
+            *) refuse "$SUB option not allowed: $1 (allowed: --preset P, --build-dir D)" ;;
+        esac
+    done
+    if [ -n "$PRESET" ] && [ -n "$BDIR" ]; then refuse "use --preset or --build-dir, not both"; fi
+}
+
+# Both run on the remote as `sh -c '<script>' remote "$DIR" "$PRESET" "$BDIR"`.
+# With a CMakePresets.json (and no --build-dir) they use presets, defaulting to
+# the first one CMake lists; otherwise a build folder (default: build).
+# shellcheck disable=SC2016  # expanded on the remote
+BUILD_SH='cd "$1" || exit 1
+if [ -z "$3" ] && [ -f CMakePresets.json ]; then
+    p="$2"
+    [ -n "$p" ] || p="$(cmake --list-presets=build 2>/dev/null | sed -n "s/^  \"\([^\"]*\)\".*/\1/p" | head -n 1)"
+    [ -n "$p" ] || { echo "remote: CMakePresets.json has no build preset" >&2; exit 2; }
+    if cmake --list-presets=configure 2>/dev/null | grep -q "^  \"$p\""; then
+        cmake --preset "$p" || exit $?
+    fi
+    cmake --build --preset "$p"
+else
+    b="${3:-build}"
+    [ -f "$b/CMakeCache.txt" ] || cmake -S . -B "$b" || exit $?
+    cmake --build "$b"
+fi'
+# shellcheck disable=SC2016  # expanded on the remote
+TEST_SH='cd "$1" || exit 1
+if [ -z "$3" ] && [ -f CMakePresets.json ]; then
+    p="$2"
+    [ -n "$p" ] || p="$(ctest --list-presets 2>/dev/null | sed -n "s/^  \"\([^\"]*\)\".*/\1/p" | head -n 1)"
+    [ -n "$p" ] || { echo "remote: CMakePresets.json has no test preset" >&2; exit 2; }
+    ctest --preset "$p" --output-on-failure
+else
+    ctest --test-dir "${3:-build}" --output-on-failure
+fi'
+
+cmd_build() {
+    parse_build_args "$@"
+    run_remote "sh -c $(q "$BUILD_SH") remote $(q "$DIR") $(q "$PRESET") $(q "$BDIR")"
+}
+
+cmd_test() {
+    parse_build_args "$@"
+    run_remote "sh -c $(q "$TEST_SH") remote $(q "$DIR") $(q "$PRESET") $(q "$BDIR")"
+}
+
 [ $# -ge 2 ] || { usage; exit 2; }
 HOST="$1"; SUB="$2"; shift 2
 case "$HOST" in "" | -* | */*) refuse "not a host alias: $HOST" ;; esac
@@ -238,5 +293,7 @@ case "$SUB" in
     grep) cmd_grep "$@" ;;
     find) cmd_find "$@" ;;
     git) cmd_git "$@" ;;
+    build) cmd_build "$@" ;;
+    test) cmd_test "$@" ;;
     *) refuse "unknown subcommand: $SUB (see: remote with no arguments)" ;;
 esac
