@@ -23,6 +23,25 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: nvim finder keys, and the tutorial's Level 8 (finding your way around a codebase)
+
+### On other machines
+- **Every machine with this nvim config (macOS, Arch, Debian, Windows):** pull, then restart nvim. The keys load
+  at startup; nothing to install (they use telescope and ripgrep, already in the installers).
+
+### What changed
+- `nvim/.config/nvim/lua/plugins/init.lua` (`30931da`): `Space f c` greps the word under the cursor, `Space f r`
+  reopens the last search, `Space f o` lists recently opened files, `Space /` fuzzy-searches this file.
+- `doc/nvim-tutorial.md`: Level 8, finding your way around a codebase. It covers files, project grep, symbols,
+  definitions and references through the quickfix list (`]q`/`[q`), the picker's own keys, changing something
+  everywhere (`Space r n`, `:cdo`), and diagnostics. Checked against this config and Neovim 0.12.5.
+  `doc/practice.md`'s cheat sheet and drill N1 point to it.
+
+### What the repo can't do
+Nothing new.
+
+---
+
 ## 2026-10-08: yazi bookmarks, Far-style Tab between tabs, copy and sync between yazi windows
 
 ### On other machines
