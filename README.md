@@ -770,6 +770,7 @@ you use the keys to copy and move files.
 - `c` - copy a path or filename to the clipboard
 - `t` `t` - new tab (`t` `r` renames it), `Tab` - next tab (Far-style), `1`-`9` - switch tab
 - `g` `D` / `g` `.` / `g` `T` - bookmarks: ~/Development, the dotfiles, the todo repo
+- `g` `s` - send this folder to your other yazi windows
 - `i` - the hovered file's details
 - `Y` - cancel a copy or cut. A copy in one yazi window pastes in another
 - `q` - quit

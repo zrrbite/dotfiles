@@ -11,6 +11,9 @@ prepend_keymap = [
 	# The dotfiles are cloned to ~/Development/dotfiles on the Mac but to
 	# ~/dotfiles elsewhere, so find them from where ~/.zshrc links to.
 	{ on = [ "g", "." ], run = 'shell -- ya emit cd "$(dirname "$(dirname "$(readlink -f "$HOME/.zshrc")")")"', desc = "Go to the dotfiles repo" },
+	# Send this folder to every other yazi window (receiver 0 broadcasts);
+	# init.lua makes each one go there. Like syncing Far's other panel.
+	{ on = [ "g", "s" ], run = 'shell -- ya pub-to 0 sync-cd --str "$PWD"', desc = "Send this folder to the other yazi windows" },
 
 	# Far Manager habit: Tab flips between tabs, like Tab between Far's two
 	# panels. `t t` clones the current folder into a new tab to flip to. The

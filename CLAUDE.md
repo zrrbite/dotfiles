@@ -219,7 +219,8 @@ stow list.
   default theme uses ANSI colours, which the terminals map to Nord. Config keys
   are written against yazi 26.9's preset; they were renamed between releases.
   `keymap.toml` holds additions only (`g` bookmarks, Far-style `Tab` between
-  tabs, spot on `i`), and `init.lua` shares yanks between instances
+  tabs, spot on `i`), and `init.lua` shares yanks between instances; `g s`
+  sends the current folder to the other instances (a `sync-cd` message)
 - **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
   (`ctrl-alt-enter`) since the same day.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,

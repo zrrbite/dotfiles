@@ -14,3 +14,9 @@ require("git"):setup {
 require("session"):setup {
 	sync_yanked = true,
 }
+
+-- `g s` (keymap.toml) broadcasts a folder to the other yazi instances; this
+-- makes each one go there.
+ps.sub_remote("sync-cd", function(dir)
+	ya.emit("cd", { dir })
+end)

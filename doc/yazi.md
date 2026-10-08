@@ -5,7 +5,7 @@ copy and move files between folders. Then a practice plan. Config:
 `yazi/.config/yazi/`. Every key here was checked against yazi 26.9.1's own
 keymap (`yazi-config/preset/keymap-default.toml` in its repo); keys were
 renamed between releases, so check again after a big upgrade. This setup's
-own additions (`g D`, `g .`, `g T`, `Tab`, `i`) are in `keymap.toml`.
+own additions (`g D`, `g .`, `g T`, `g s`, `Tab`, `i`) are in `keymap.toml`.
 
 ## The one idea: choose, mark, go, paste
 
@@ -81,7 +81,8 @@ Mark in one, `Tab`, paste. `t` `r` names a tab.
 **Or two yazi windows side by side:** open a second Ghostty window with
 yazi, and AeroSpace tiles the two. A `y` in one and a `p` in the other works,
 because yazi shares copy marks between instances here (`sync_yanked` in
-`init.lua`).
+`init.lua`). **`g` `s`** sends the folder you're in to the other window, so
+both show the same place, like syncing Far's other panel.
 
 ## Create, rename, delete
 

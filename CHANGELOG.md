@@ -23,7 +23,7 @@ app settings outside stow, and manual installs.
 
 ---
 
-## 2026-10-08: yazi bookmarks, Far-style Tab between tabs, copy between yazi windows
+## 2026-10-08: yazi bookmarks, Far-style Tab between tabs, copy and sync between yazi windows
 
 ### On other machines
 - **macOS, Arch:** pull, then quit and restart every running yazi. The yazi
@@ -31,16 +31,19 @@ app settings outside stow, and manual installs.
   re-stow. New keys: `g D` (~/Development), `g .` (the dotfiles, wherever
   they're cloned), `g T` (~/Development/todo; missing on most machines, and
   then it does nothing), `Tab` flips between tabs, and `i` shows a file's
-  details (it was `Tab`). A `y` in one yazi and a `p` in another now works.
+  details (it was `Tab`). A `y` in one yazi and a `p` in another now works,
+  and `g s` sends the folder you're in to your other yazi windows.
 - **Debian, Windows:** nothing (no yazi there).
 
 ### What changed
 - `yazi/.config/yazi/keymap.toml` (new): additions to the 26.9 preset only.
   `g .` finds the repo from where `~/.zshrc` links, since it's cloned to
   `~/Development/dotfiles` on the Mac but `~/dotfiles` elsewhere.
-- `init.lua`: the built-in session plugin with `sync_yanked = true`.
+- `init.lua`: the built-in session plugin with `sync_yanked = true`, and a
+  listener for `g s`, which broadcasts the folder (`ya pub-to 0 sync-cd`).
 - Tested by driving two yazi instances in a throwaway tmux server: every
-  bookmark, `Tab` and `i`, and a file yanked in one and pasted in the other.
+  bookmark, `Tab` and `i`, a file yanked in one and pasted in the other, and
+  `g s` both ways, including a folder name with a space.
 - `doc/yazi.md`, README and CLAUDE.md list the new keys.
 
 ---
