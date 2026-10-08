@@ -125,6 +125,5 @@ first.**
 **Day 7: Review and tune.**
 - List the keys you actually reach for and the ones that feel clumsy, and
   change the config to fit.
-- One candidate: the status bar repeats the date and time sketchybar already
-  shows. That space could show the prefix being active, or the current
-  command.
+- The status bar's right side is the place for anything new (it already
+  dropped the date and time, which sketchybar shows).
