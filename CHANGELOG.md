@@ -23,6 +23,33 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: git merges only fast-forward; Claude's global rules ask for linear history
+
+### On other machines
+- **Every machine:** pull. `~/.gitconfig` links into the repo, so it takes
+  effect at once. From then on, `git merge <branch>` refuses a branch that
+  has diverged ("Not possible to fast-forward, aborting"). Rebase the branch
+  first, or use `git merge --no-ff` when you do want a merge commit.
+  `git pull` already rebased; that's unchanged.
+- **Claude Code** (where the `claude` package is stowed; Windows links only
+  the skills): the global `~/.claude/CLAUDE.md` has a new "History: linear,
+  no merge commits" section, read by every new session after the pull.
+
+### What changed
+`e29a70a`:
+- `git/.gitconfig`: `merge.ff = only`, next to the existing
+  `pull.rebase = true`. Tested in scratch repos: a diverged merge is refused,
+  fast-forwards and `--no-ff` still work, and `git pull` on a diverged branch
+  still rebases.
+- `claude/.claude/CLAUDE.md`: how to integrate without merge commits, which
+  commits to fold together and which to keep, and a non-interactive rebase
+  recipe (`--autosquash`, `GIT_SEQUENCE_EDITOR`, `--exec`), each step tested.
+
+### What the repo can't do
+- A repo's own `.git/config` can set `merge.ff` back.
+- GitHub's merge button is per repo: turn off "Allow merge commits", or add
+  a `required_linear_history` rule to a ruleset.
+
 ## 2026-10-07: macOS uses Homebrew's dotnet, not the old /usr/local/share/dotnet
 
 ### On other machines
