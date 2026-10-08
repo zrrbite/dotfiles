@@ -94,8 +94,10 @@ Either nudge directly, or enter a mode and stay there:
 | `ctrl-alt-r` | Enter resize mode |
 
 In resize mode, `h`/`l` change width, `j`/`k` change height, and `esc` or
-`enter` returns to main mode. Nothing else is bound there, so if the keyboard
-seems dead, you are probably still in resize mode — press escape.
+`enter` returns to main mode. While it's on, sketchybar shows a yellow
+**RESIZE** pill after the workspaces (yellow like tmux's prefix pill: a key
+layer is armed). Nothing else is bound there, so if the keyboard seems dead,
+look for the pill and press escape.
 
 ## Layouts, and the trap in them
 
@@ -148,6 +150,22 @@ If the tree itself is tangled, flatten it:
 aerospace flatten-workspace-tree     # applies to the focused workspace
 ```
 
+## Where apps open
+
+`[[on-window-detected]]` rules at the end of `aerospace.toml`, matching
+Hyprland's window rules on Arch:
+
+| App | Goes to |
+|---|---|
+| Google Chrome | workspace 2 |
+| Discord, Slack, WhatsApp, Telegram, DeltaChat, Messages | workspace 3 |
+| System Settings, Calculator, PrivadoVPN, Steam, Battle.net | floating, where it opens |
+
+Every new window of these apps goes there, including one opened while you're
+on another workspace. To add an app, find its id with `aerospace list-apps`
+and copy a block; `aerospace reload-config` applies it to windows opened from
+then on.
+
 ## Restarting loses your window placement
 
 AeroSpace has **no session persistence**. Restarting it re-detects every window
@@ -156,7 +174,9 @@ workspaces is gone. There is also no `restart` subcommand — only
 `reload-config`, which re-reads the config but does not re-run
 `after-startup-command`.
 
-So capture the layout before restarting:
+The rules in "Where apps open" run at startup too, so the browser and chat
+apps go back to 2 and 3; everything else collapses. So capture the layout
+before restarting:
 
 ```bash
 aerospace list-windows --all --format '%{window-id} %{workspace}' > /tmp/layout

@@ -73,6 +73,8 @@ stow -R -t ~ <package>      # Re-stow (useful after adding files)
 ./reload.sh                 # git pull + re-stow this OS's packages + reload the desktop
 scripts/verify.sh           # Read-only: is everything applied? Exit 0 = yes
 scripts/finder-defaults.sh  # macOS: Finder settings (--dry-run, --undo); part of --with-desktop
+scripts/macos-defaults.sh   # macOS: Dock, menu bar, Mission Control, text input (--dry-run, --check, --undo); part of --with-desktop
+scripts/touch-id-sudo.sh    # macOS: Touch ID for sudo, also in tmux (--dry-run, --check, --undo); the installer runs it
 ```
 Which packages each OS gets is defined once, in `scripts/packages.sh`. The
 installers, `verify.sh` and `reload.sh` all read it, so add a package there.
@@ -227,6 +229,11 @@ stow list.
   opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
   protocol and a native window. Alacritty stays until the trial is decided;
   don't remove either one without asking
+- **karabiner**: Caps Lock is Escape when tapped, Control when held
+  (Karabiner-Elements). Stowed as the whole `~/.config/karabiner` folder,
+  deliberately folded: Karabiner replaces `karabiner.json` when it saves, which
+  would break a link to the file. So the installer must not pre-create that
+  folder, and Karabiner's own saves show up in `git status`
 - **remote**: `~/.local/bin/remote`, the safe operations on a remote machine
   over SSH (mount with FUSE-T sshfs, read, search, read-only git, build,
   test). Claude may run it without asking (`Bash(remote:*)` in

@@ -66,10 +66,14 @@ cd ~/dotfiles && ./install_darwin.sh                   # add --with-desktop on a
 
 `--with-desktop` also makes Finder bearable (hidden files, extensions, path
 bar, list view, no `.DS_Store` on network or USB drives). Run that part on
-its own, or undo it, with `scripts/finder-defaults.sh [--undo]`.
+its own, or undo it, with `scripts/finder-defaults.sh [--undo]`. The rest of
+its macOS settings (hidden Dock and menu bar, AeroSpace's Mission Control
+settings, no smart quotes or autocorrect) are `scripts/macos-defaults.sh
+[--dry-run | --check | --undo]`; `verify.sh` warns when one differs.
 
 Needs Command Line Tools first (`xcode-select --install`). Afterwards, grant
-Accessibility to AeroSpace and AutoRaise. The script ends by running
+Accessibility to AeroSpace and AutoRaise, and allow Karabiner-Elements' driver
+and Input Monitoring when it asks. The script ends by running
 `scripts/verify.sh`, and exits non-zero if anything failed.
 
 The script is safe to re-run: by default it installs only missing packages and
@@ -78,7 +82,7 @@ leaves your desktop settings alone.
 | Flag | Effect |
 |---|---|
 | `-n`, `--dry-run` | Print every action without doing any of it |
-| `--with-desktop` | Also auto-hide the Dock and menu bar, hide desktop icons, **set the wallpaper**, and restart Dock and Finder. For a fresh machine |
+| `--with-desktop` | Also auto-hide the Dock and menu bar, hide desktop icons, **set the wallpaper**, apply `scripts/macos-defaults.sh` and `finder-defaults.sh`, and restart Dock and Finder. For a fresh machine |
 | `--upgrade` | Pass every package to `brew install` even when present, upgrading outdated ones |
 
 `--upgrade` is off by default deliberately: `brew install` upgrades an
@@ -99,6 +103,21 @@ Installs via Homebrew:
 - sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)
 - JankyBorders for the active-window glow
 - AutoRaise for focus-follows-mouse
+- Karabiner-Elements: Caps Lock is Escape when tapped, Control when held
+- pam-reattach, for Touch ID on `sudo` inside tmux
+
+**Caps Lock.** Tapped alone it's Escape (nvim), held it's Control (tmux's
+`Ctrl+a`, AeroSpace's `ctrl-alt`). The rule is
+`karabiner/.config/karabiner/karabiner.json`; the whole `~/.config/karabiner`
+folder links to the repo, because Karabiner replaces the file when it saves.
+So a change made in Karabiner's settings shows up in `git status`: commit it
+or `git checkout` it. If Caps Lock switched between Danish and U.S. before,
+use the 🌐 key now.
+
+**Touch ID for sudo.** `scripts/touch-id-sudo.sh` writes
+`/etc/pam.d/sudo_local`, which survives macOS updates, and works inside tmux
+too. The installer runs it (it asks for the password once); `--undo` removes
+it. Run `--undo` before uninstalling pam-reattach.
 
 **Focus follows mouse.** AeroSpace has no setting for this, so AutoRaise
 supplies the behaviour Hyprland gives us on Linux. It is configured in

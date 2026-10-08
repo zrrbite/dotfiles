@@ -23,6 +23,57 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: Caps Lock as Escape/Control, Touch ID for sudo, app placement, a RESIZE pill, macOS settings
+
+### On other machines
+- **macOS:** pull, then `./install_darwin.sh`. It installs Karabiner-Elements
+  (a `.pkg`: asks for the password) and pam-reattach, stows the new
+  `karabiner` package (an existing `~/.config/karabiner` is moved to the
+  backup folder first), and runs `scripts/touch-id-sudo.sh` (asks for the
+  password once; refuses if `/etc/pam.d/sudo_local` exists and it didn't
+  write it, so merge that by hand).
+- **Then, by hand:**
+  - Open Karabiner-Elements once and allow what it asks for: its driver
+    (System Settings → General → Login Items & Extensions → Driver
+    Extensions) and Input Monitoring. Pick ISO if it asks for the keyboard
+    type. If it rewrote `karabiner/.config/karabiner/karabiner.json`, commit
+    that or `git checkout` it.
+  - `aerospace reload-config` and `sketchybar --reload`: the placement rules
+    and the RESIZE pill.
+  - `scripts/macos-defaults.sh` (the installer runs it only with
+    `--with-desktop`; `verify.sh` warns until it's applied). Quit and reopen
+    apps, or log out and in, for the text settings.
+  - If Caps Lock switched between input sources, use the 🌐 key now.
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+`8324281`..this entry's commit:
+- `karabiner` package: Caps Lock is Escape when tapped, Control when held.
+  The whole `~/.config/karabiner` folder links to the repo (Karabiner
+  replaces the file when it saves); `automatic_backups/` is ignored.
+- `scripts/touch-id-sudo.sh`: Touch ID for sudo, also inside tmux, in
+  `/etc/pam.d/sudo_local` (survives macOS updates). `--check`, `--undo`;
+  run `--undo` before uninstalling pam-reattach.
+- AeroSpace: Chrome opens on workspace 2, chat apps on 3, fixed-size
+  windows float (`doc/aerospace-macos.md`, "Where apps open"); a yellow
+  RESIZE pill in sketchybar while resize mode is on.
+- `scripts/macos-defaults.sh`: the installer's Dock and menu bar settings
+  moved here, plus Mission Control grouped by app and no click-to-reveal
+  desktop (AeroSpace's guide), ctrl+cmd-drag for any window, no smart
+  quotes, dashes or autocorrect, and held keys repeat. `--check`, `--undo`.
+- `verify.sh` checks all of it; the installer's closing summary shows the
+  ctrl-alt keys (it still said alt).
+
+### What the repo can't do
+- Karabiner's driver and Input Monitoring permissions, and the password for
+  Touch ID's file, are yours to give.
+- Karabiner's settings window writes into the repo's `karabiner.json`;
+  review those changes like any other.
+- On Martin's MacBook the Dock's hide speed was 0.5, by hand; the script
+  sets the repo's 0.3.
+
+---
+
 ## 2026-10-08: Claude works on a remote machine over SSH (`remote`, a mount, a skill)
 
 ### On other machines

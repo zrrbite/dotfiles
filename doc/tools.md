@@ -78,6 +78,9 @@ and Raspberry Pi.
 | grim, slurp, satty, wf-recorder | Screenshots and recording | – | ✓ | – | – |
 | JetBrains Mono Nerd Font | Font everywhere; sketchybar-app-font for bar icons (macOS) | ✓ | ✓ | – | ✓ |
 | Finder settings | Hidden files, path bar, list view (`scripts/finder-defaults.sh`) | ✓ | – | – | – |
+| macOS settings | Hidden Dock and menu bar, AeroSpace's Mission Control settings, no smart quotes (`scripts/macos-defaults.sh`) | ✓ | – | – | – |
+| Karabiner-Elements | Caps Lock: Escape when tapped, Control when held | ✓ | – | – | – |
+| pam-reattach | Touch ID for `sudo`, also inside tmux (`scripts/touch-id-sudo.sh`) | ✓ | – | – | – |
 
 ## Not installed by the repo
 
