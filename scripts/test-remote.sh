@@ -78,6 +78,11 @@ t_read() {
     out="$(R $H grep spaced 'src/hello/with space.txt' 2>&1)"; expect_has "grep: path with a space" "$out" "spaced out"
     # Review focus 2: a pattern that starts with -
     out="$(R $H grep -- -Wall src 2>&1)"; expect_has "grep -- -Wall" "$out" "flags.txt"
+    # A leading = (zsh expands =word) or ~ (bash 3.2 leaves it bare) must stay literal
+    out="$(R $H grep '=x' src 2>&1)"; expect_lacks "grep: pattern starting with = reaches grep" "$out" "not found"
+    out="$(R $H find src -name '=*' 2>&1)"; local rc=$?
+    if [ "$rc" -eq 0 ]; then ok "find: -name starting with ="; else bad "find -name =*: exit $rc: $out"; fi
+    out="$(/bin/bash "$REMOTE" $H ls '~root' 2>&1)"; expect_has "ls under bash 3.2: ~ stays literal" "$out" "No such file"
     # Review focus 5: a missing file fails with the remote's error, no hint
     expect_rc "cat: missing file exits 1" 1 R $H cat src/hello/nope.txt
     out="$(R $H cat src/hello/nope.txt 2>&1)"; expect_lacks "cat: missing file, no privacy hint" "$out" "full disk access"
@@ -88,6 +93,8 @@ t_read() {
     R $H ls "src; touch /tmp/$tag-3" >/dev/null 2>&1
     R $H cat "src/hello/\`touch /tmp/$tag-4\`" >/dev/null 2>&1
     R $H find src -name "*; touch /tmp/$tag-5" >/dev/null 2>&1
+    R $H grep "$(printf 'x\ntouch /tmp/%s-6' "$tag")" src >/dev/null 2>&1
+    R $H git src/hello log -1 "--format=%s;\$(touch /tmp/$tag-7)" >/dev/null 2>&1
     out="$(ls /tmp/"$tag"-* 2>/dev/null)"
     if [ -z "$out" ]; then ok "injection: nothing ran"; else bad "injection: created $out"; fi
 }
@@ -102,6 +109,10 @@ t_refuse() {
     expect_rc "refuse: unknown subcommand" 2 RD rm src
     expect_rc "refuse: bad cat range" 2 RD cat src/x 5
     expect_rc "refuse: host alias with a slash" 2 R ../etc status
+    expect_rc "refuse: host alias with a comma (sshfs -o injection)" 2 R "work,ssh_command=touch" status
+    expect_rc "refuse: host alias .." 2 R .. status
+    expect_rc "refuse: host alias ." 2 R . status
+    expect_rc "refuse: host alias with a space" 2 R "a b" status
 }
 
 t_git() {
@@ -188,7 +199,7 @@ PY
     start=$(date +%s)
     out="$(env "$RR" "$REMOTE" remote-test-relay status 2>&1)"; local rc=$?
     if [ "$rc" -ne 0 ]; then ok "dead mount: status fails"; else bad "dead mount: status exit 0"; fi
-    expect_has "dead mount: status says so" "$out" "NOT"
+    expect_has "dead mount: status says the mount is not responding" "$out" "NOT responding"
     if [ $(( $(date +%s) - start )) -le 15 ]; then ok "dead mount: status within 15 s"; else bad "dead mount: status took $(( $(date +%s) - start )) s"; fi
     start=$(date +%s)
     expect_rc "dead mount: unmount" 0 env "$RR" "$REMOTE" remote-test-relay unmount

@@ -37,7 +37,10 @@ fi
 
 usage() { sed -n '8,17p' "$0" | sed 's/^# \{0,1\}//'; }
 refuse() { echo "remote: $*" >&2; exit 2; }
-q() { printf '%q' "$1"; }
+# Quote one argument for the remote shell. Single quotes, because bash, zsh
+# and sh all read them the same way; printf %q does not (zsh expands a leading
+# = it leaves bare, and bash 3.2 also leaves a leading ~).
+q() { local sq="'" rep="'\\''"; printf "'%s'" "${1//$sq/$rep}"; }
 
 # A time limit for things that can hang on a dead mount. perl ships with macOS
 # and Linux; its alarm survives exec. A timeout exits 142.
@@ -281,7 +284,9 @@ cmd_test() {
 
 [ $# -ge 2 ] || { usage; exit 2; }
 HOST="$1"; SUB="$2"; shift 2
-case "$HOST" in "" | -* | */*) refuse "not a host alias: $HOST" ;; esac
+# An alias is plain characters only: it also lands in a path (~/remote/<host>)
+# and in sshfs's comma-separated -o list, where a comma would add options.
+case "$HOST" in "" | -* | . | .. | *[!A-Za-z0-9._@-]*) refuse "not a host alias: $HOST" ;; esac
 MP="$MOUNT_ROOT/$HOST"
 
 case "$SUB" in
