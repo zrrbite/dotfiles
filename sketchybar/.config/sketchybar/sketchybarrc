@@ -95,6 +95,20 @@ sketchybar --add item spaces left \
     --subscribe spaces aerospace_workspace_change front_app_switched \
         space_windows_change system_woke
 
+# -- AeroSpace mode (left, hidden in main mode) --
+# Yellow fill, like tmux's prefix pill: a key layer is armed. Shown while
+# resize mode (ctrl-alt-r) is on, until esc or enter.
+sketchybar --add event aerospace_mode_change
+sketchybar --add item mode left \
+    --set mode \
+        drawing=off \
+        icon="󰩨" \
+        icon.color=$NORD0 \
+        label.color=$NORD0 \
+        background.color=$NORD13 \
+        script="$PLUGIN_DIR/mode.sh" \
+    --subscribe mode aerospace_mode_change
+
 # -- Front app name (center-left) --
 # Unfilled bold label, like waybar's #window, led by the app's icon from the
 # same sketchybar-app-font as the workspace pills.

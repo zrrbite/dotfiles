@@ -22,6 +22,10 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
+# Tells sketchybar the mode changed, so the bar shows a RESIZE pill while
+# resize mode is on (sketchybar/.config/sketchybar/plugins/mode.sh).
+on-mode-changed = ['exec-and-forget sketchybar --trigger aerospace_mode_change']
+
 # Mouse follows focus: warp the cursor to a window when focus moves to it.
 # This is the opposite direction from focus-follows-mouse, and it is what makes
 # AutoRaise usable -- without it, focusing a window by keyboard would leave the
