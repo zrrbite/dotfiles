@@ -23,6 +23,27 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-08: Clipboard history on ⌃⌥⇧V, lazygit on trial
+
+### On other machines
+- **macOS:** pull, then `aerospace reload-config` for the key. The first
+  press asks Raycast to allow the link; tick "always". `brew install
+  lazygit`, or re-run `./install_darwin.sh`, which installs it.
+- **Arch, Debian, Windows:** nothing. (Arch has had `Super+Shift+V`.)
+
+### What changed
+- `ctrl-alt-shift-v` in `aerospace.toml` opens Raycast's Clipboard History
+  through its deeplink, so the key is in the repo, not in Raycast's
+  settings (`doc/aerospace-macos.md`).
+- lazygit in `install_darwin.sh`, on trial; no config, its defaults use the
+  terminal's Nord colours.
+
+### What the repo can't do
+- Raycast's clipboard settings (how long it keeps history, which apps it
+  ignores) live in Raycast.
+
+---
+
 ## 2026-10-08: Caps Lock as Escape/Control, Touch ID for sudo, app placement, a RESIZE pill, macOS settings
 
 ### On other machines

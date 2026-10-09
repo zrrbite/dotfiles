@@ -82,6 +82,7 @@ that.
 | `ctrl-alt-shift-enter` | New Alacritty window (kept alongside while Ghostty is on trial) |
 | `ctrl-alt-shift-q` | Close the focused window |
 | `ctrl-alt-shift-r` | Reload the config |
+| `ctrl-alt-shift-v` | Clipboard history (Raycast's), like `Super+Shift+V` on Hyprland |
 
 ### Resizing
 

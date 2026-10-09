@@ -120,6 +120,11 @@ ctrl-alt-shift-enter = 'exec-and-forget open -na Alacritty'
 # Reload config (matches alt+shift+r in GlazeWM)
 ctrl-alt-shift-r = 'reload-config'
 
+# Clipboard history (matches Super+Shift+V on Hyprland): Raycast's built-in
+# Clipboard History, opened by its deeplink so the key lives here rather than
+# in Raycast's settings. The first press asks to allow the link.
+ctrl-alt-shift-v = 'exec-and-forget open raycast://extensions/raycast/clipboard-history/clipboard-history'
+
 # Focus workspace (matches alt+N in GlazeWM/Hyprland)
 ctrl-alt-1 = 'workspace 1'
 ctrl-alt-2 = 'workspace 2'

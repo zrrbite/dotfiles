@@ -56,6 +56,7 @@ and Raspberry Pi.
 | Global git hooks | clang-format on commit, clang-tidy / TS checks on push | ✓ | ✓ | ✓ | ✓ |
 | neovim | Editor: LSP, treesitter, DAP, yazi.nvim | ✓ | ✓ | ✓ | ✓ |
 | gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
+| lazygit | Terminal UI for git: stage hunks, fixup, reorder, reword (on trial since 2026-10-08) | ✓ | – | – | – |
 | remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
 | cmake + ninja | C++ builds (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |
@@ -73,7 +74,7 @@ and Raspberry Pi.
 | sketchybar / waybar / zebar | Status bar (Nord) | sketchybar | waybar | – | zebar |
 | JankyBorders | Window borders | ✓ | – | – | – |
 | AutoRaise | Focus follows mouse | ✓ | (Hyprland) | – | – |
-| Raycast / rofi + cliphist | Launcher, clipboard history; Raycast runs `scripts/raycast/` | Raycast | rofi | – | – |
+| Raycast / rofi + cliphist | Launcher, clipboard history (`⌃⌥⇧V` / `Super+Shift+V`); Raycast runs `scripts/raycast/` | Raycast | rofi | – | – |
 | mako, hyprlock, hypridle, wlogout | Notifications, lock screen, idle, logout menu | – | ✓ | – | – |
 | grim, slurp, satty, wf-recorder | Screenshots and recording | – | ✓ | – | – |
 | JetBrains Mono Nerd Font | Font everywhere; sketchybar-app-font for bar icons (macOS) | ✓ | ✓ | – | ✓ |

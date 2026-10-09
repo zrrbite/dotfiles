@@ -179,6 +179,7 @@ BREW_PACKAGES=(
     neovim
     git
     gh         # GitHub from the terminal: PRs, issues, Actions runs
+    lazygit    # terminal UI for git; on trial since 2026-10-08
     # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
     cmake
     ninja
