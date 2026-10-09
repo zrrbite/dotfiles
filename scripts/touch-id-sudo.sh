@@ -103,3 +103,7 @@ else
     sudo install -m 444 -o root -g wheel "$tmp" "$TARGET"
 fi
 echo "Wrote $TARGET. Try it in a new tmux pane: sudo -k; sudo true"
+if bioutil -c 2>/dev/null | grep -q ':[[:space:]]*0 biometric'; then
+    echo "No fingerprint is enrolled yet, so sudo will still ask for the password:"
+    echo "  System Settings > Touch ID & Password > Add Fingerprint"
+fi

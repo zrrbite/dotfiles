@@ -279,9 +279,17 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     fi
     # WARN: setting it up needs the password, which a check can't ask for.
     if "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --check >/dev/null; then
-        pass "Touch ID for sudo, also inside tmux"
+        pass "Touch ID for sudo is configured, also for tmux (/etc/pam.d/sudo_local)"
     else
         warn "Touch ID for sudo is not set up: scripts/touch-id-sudo.sh"
+    fi
+    # Configured isn't working: with no fingerprint enrolled, pam_tid fails
+    # with "Biometry is not enrolled" and sudo asks for the password.
+    fingers="$(bioutil -c 2>/dev/null | sed -n 's/^User [0-9]*:[[:space:]]*\([0-9]*\) biometric.*/\1/p')"
+    if [ "${fingers:-0}" -gt 0 ]; then
+        pass "Touch ID has $fingers fingerprint(s) enrolled"
+    else
+        warn "No fingerprint enrolled for Touch ID, so sudo asks for the password: System Settings > Touch ID & Password > Add Fingerprint"
     fi
     if command -v sshfs >/dev/null 2>&1; then
         pass "sshfs is installed (remote <host> mount)"
