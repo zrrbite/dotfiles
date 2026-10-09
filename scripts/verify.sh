@@ -264,11 +264,18 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
         warn "macOS settings differ from scripts/macos-defaults.sh (run it to apply):"
         echo "$differ"
     fi
-    # The karabiner package above only proves the config is linked.
-    if [ -d /Applications/Karabiner-Elements.app ]; then
-        pass "Karabiner-Elements is installed (Caps Lock: Escape / Control)"
-    else
+    # The karabiner package above only proves the config is linked. Karabiner
+    # remaps nothing until it runs and its driver is approved by hand; until
+    # then Caps Lock is still Caps Lock.
+    if [ ! -d /Applications/Karabiner-Elements.app ]; then
         warn "Karabiner-Elements is not installed: brew install --cask karabiner-elements"
+    elif ! pgrep -x Karabiner-Core-Service >/dev/null 2>&1; then
+        warn "Karabiner-Elements isn't running: open it once and allow what it asks for"
+    elif ! systemextensionsctl list 2>/dev/null |
+        grep 'org.pqrs.Karabiner-DriverKit-VirtualHIDDevice' | grep -q 'activated enabled'; then
+        warn "Karabiner's driver isn't approved, so Caps Lock isn't remapped: System Settings > General > Login Items & Extensions > Driver Extensions"
+    else
+        pass "Karabiner-Elements runs with its driver (Caps Lock: Escape / Control)"
     fi
     # WARN: setting it up needs the password, which a check can't ask for.
     if "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --check >/dev/null; then
@@ -292,8 +299,8 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     echo "  - Accessibility is granted to AeroSpace and AutoRaise"
     echo "    (System Settings > Privacy & Security > Accessibility)"
     echo "  - a new terminal shows the Nord starship prompt"
-    echo "  - Karabiner's driver is allowed and it has Input Monitoring, and"
-    echo "    tapping Caps Lock is Escape (Karabiner-EventViewer shows it)"
+    echo "  - Karabiner has Input Monitoring, and tapping Caps Lock is Escape"
+    echo "    (Karabiner-EventViewer shows it)"
 fi
 
 echo
