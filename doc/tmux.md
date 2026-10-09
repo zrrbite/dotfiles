@@ -52,6 +52,7 @@ lists every binding.
 | Save every session now (e.g. right before a restart) | `Ctrl+a` `Ctrl+s` |
 | Restore the last save by hand | `Ctrl+a` `Ctrl+r` |
 | **Other** | |
+| lazygit for this pane's repo, in a popup (`q` closes it) | `Ctrl+a` `g` |
 | tmux command prompt | `Ctrl+a` `:` |
 | Reload the config | `Ctrl+a` `r` |
 | Send a literal `Ctrl+a` (line start in the shell, or an inner tmux) | `Ctrl+a` `Ctrl+a` |
