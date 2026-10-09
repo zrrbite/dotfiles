@@ -33,7 +33,7 @@ lists every binding.
 | Back to the previous session | `Ctrl+a` `Tab` |
 | Previous / next session | `Ctrl+a` `⌘ ←` / `⌘ →`. Keep pressing ⌘ → to cycle without the prefix. (`Ctrl+a` `(` / `)` also work.) |
 | **Panes** | |
-| Split side by side / stacked | `Ctrl+a` `v` (or `\|`) / `Ctrl+a` `-`. On a Danish Mac, `\|` is ⌥ i, which AeroSpace takes, so use `v` |
+| Split side by side / stacked | `Ctrl+a` `v` (or `\|`) / `Ctrl+a` `-`. On a Danish Mac, `\|` is ⌥ i, so `v` is quicker |
 | Move between panes | `Ctrl+a` `h` `j` `k` `l`, or click |
 | Zoom a pane / back | `Ctrl+a` `z` |
 | Resize (hold to repeat) | `Ctrl+a` `H` `J` `K` `L` |
@@ -44,7 +44,7 @@ lists every binding.
 | Rename window | `Ctrl+a` `,` |
 | Tree of every session and window | `Ctrl+a` `w` |
 | **Scrollback and copying** (vi keys) | |
-| Enter copy mode | `Ctrl+a` `Enter` (or `[`; on a Danish Mac `[` is ⌥ 8, which AeroSpace takes), or just scroll up |
+| Enter copy mode | `Ctrl+a` `Enter` (or `[`, which is ⌥ 8 on a Danish Mac), or just scroll up |
 | Move / page / search | `j` `k`, `Ctrl+u` `Ctrl+d`, `g` `G`, `/` |
 | Select / copy / leave | `v` / `y` / `q`. Paste with `⌘V`. |
 | **Surviving a reboot** (tmux-resurrect + tmux-continuum) | |

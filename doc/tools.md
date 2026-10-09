@@ -56,7 +56,7 @@ and Raspberry Pi.
 | Global git hooks | clang-format on commit, clang-tidy / TS checks on push | ✓ | ✓ | ✓ | ✓ |
 | neovim | Editor: LSP, treesitter, DAP, yazi.nvim | ✓ | ✓ | ✓ | ✓ |
 | gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
-| lazygit | Terminal UI for git: stage hunks, fixup, reorder, reword (on trial since 2026-10-08) | ✓ | – | – | – |
+| lazygit | Terminal UI for git: stage lines, fixup, reorder, reword; `Ctrl+a g` in tmux, `Space gg` in nvim (`doc/lazygit.md`; on trial since 2026-10-08) | ✓ | – | – | – |
 | remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
 | cmake + ninja | C++ builds (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |

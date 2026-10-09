@@ -160,6 +160,12 @@ folder of the next nvim split. Use `1`–`9` for yazi tabs inside nvim.
 
 ---
 
+## lazygit
+
+Not drilled here: it has its own guide and seven steps in
+[lazygit.md](lazygit.md), in the same practice folder. From this setup:
+`Ctrl+a` `g` in tmux, `Space` `g` `g` in nvim.
+
 ## The Danish Mac layout
 
 Option types `[ ] { } | \ @ ~`, so keys that need those symbols are awkward.

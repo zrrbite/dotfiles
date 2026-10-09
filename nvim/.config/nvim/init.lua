@@ -64,6 +64,41 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Show [D]iagnostic in float" })
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
+-- lazygit in a floating window, for the repo of the file you're in (nvim's
+-- folder for a buffer without one). Like tmux's Ctrl+a g, but it works
+-- outside tmux too. q in lazygit closes it, and buffers it changed on disk
+-- (a discarded change) reload.
+vim.keymap.set("n", "<leader>gg", function()
+  if vim.fn.executable("lazygit") == 0 then
+    vim.notify("lazygit is not installed here", vim.log.levels.WARN)
+    return
+  end
+  local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
+  if not dir or vim.fn.isdirectory(dir) == 0 then dir = vim.fn.getcwd() end
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  local width, height = math.floor(vim.o.columns * 0.9), math.floor(vim.o.lines * 0.9)
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor", style = "minimal", border = "rounded",
+    title = " lazygit ", title_pos = "center",
+    width = width, height = height,
+    row = math.floor((vim.o.lines - height) / 2), col = math.floor((vim.o.columns - width) / 2),
+  })
+  vim.fn.jobstart({ "lazygit" }, {
+    term = true,
+    cwd = dir,
+    on_exit = vim.schedule_wrap(function()
+      if vim.api.nvim_win_is_valid(win) then vim.api.nvim_win_close(win, true) end
+      if vim.api.nvim_buf_is_valid(buf) then vim.api.nvim_buf_delete(buf, { force = true }) end
+      vim.cmd("checktime")
+    end),
+  })
+  -- lazygit uses Esc to go back. The global <Esc><Esc> (leave terminal mode)
+  -- would delay a single Esc and swallow a double one, so here Esc is lazygit's.
+  vim.keymap.set("t", "<Esc>", "<Esc>", { buffer = buf, nowait = true })
+  vim.cmd("startinsert")
+end, { desc = "Lazygit for this file's repo" })
+
 -- Window navigation
 vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })

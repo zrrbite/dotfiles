@@ -420,6 +420,7 @@ Use the bootstrap script to create TypeScript projects with multiple framework o
 - F5: Start/Continue, F10: Step over, F11: Step into, F12: Step out
 - `Space+b`: Toggle breakpoint, `Space+du`: Toggle debug UI
 - `Space+gb`: Toggle git blame, `Space+hp`: Preview hunk, `Space+hs`: Stage hunk
+- `Space+gg`: lazygit in a floating window, for the current file's repo (`doc/lazygit.md`)
 - `Space+ff`: Find files, `Space+fg`: Live grep, `Space+fs`: Find symbols
 
 ### Git Hooks (Automatic Code Quality)

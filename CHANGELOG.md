@@ -23,7 +23,7 @@ app settings outside stow, and manual installs.
 
 ---
 
-## 2026-10-08: Clipboard history on ⌃⌥⇧V, lazygit on trial (also `Ctrl+a g` in tmux)
+## 2026-10-08: Clipboard history on ⌃⌥⇧V, lazygit on trial (`Ctrl+a g` in tmux, `Space gg` in nvim, `doc/lazygit.md`)
 
 ### On other machines
 - **macOS:** pull, then `aerospace reload-config` for the key. The first
@@ -39,7 +39,9 @@ app settings outside stow, and manual installs.
   settings (`doc/aerospace-macos.md`).
 - lazygit in `install_darwin.sh`, on trial; no config, its defaults use the
   terminal's Nord colours. `Ctrl+a` `g` opens it in a tmux popup for the
-  current pane's folder (`doc/tmux.md`).
+  current pane's folder (`doc/tmux.md`), `Space gg` in nvim for the current
+  file's repo (a floating terminal, no plugin; Esc goes to lazygit). Guide
+  and practice steps: `doc/lazygit.md`.
 
 ### What the repo can't do
 - Raycast's clipboard settings (how long it keeps history, which apps it

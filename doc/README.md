@@ -83,6 +83,9 @@ make clean
 - **[tmux.md](tmux.md)** — why tmux is worth it alongside AeroSpace and
   Ghostty, every key this config gives you, and a one-week plan for getting
   fluent.
+- **[lazygit.md](lazygit.md)** — the git UI on trial: panels, staging by
+  line, tidying commits before a push (fixup, reword, reorder), and seven
+  practice steps. Opens from tmux (`Ctrl+a` `g`) and nvim (`Space` `g` `g`).
 - **[nvim-tutorial.md](nvim-tutorial.md)** — Neovim setup walkthrough.
 - **[vscode.md](vscode.md)** — default VS Code shortcuts on all three
   platforms. Note that this repo does not manage VS Code configuration.
