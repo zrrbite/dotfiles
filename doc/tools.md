@@ -141,7 +141,7 @@ Installed by hand, or decided per machine. Each has a `CHANGELOG.md` note.
 - **Raycast's settings** (macOS): the installer installs Raycast, but its
   settings live in its own database. Add `scripts/raycast/` once, in Settings →
   Extensions → + → Add Script Directory.
-- **Alfred, Rectangle Pro** (macOS): they conflict with Raycast and
-  AeroSpace. Both are uninstalled on Martin's main Mac (Alfred on
-  2026-10-12; its settings folder stays, with the Powerpack licence).
+- **Alfred and Rectangle Pro** (macOS) are uninstalled on Martin's main Mac:
+  Alfred clashed with Raycast, Rectangle Pro with AeroSpace. Alfred went on
+  2026-10-12; its settings folder stays, with the Powerpack licence.
 - **Per-project `.envrc` files:** they live in each project, not here.
