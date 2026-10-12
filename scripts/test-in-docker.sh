@@ -37,7 +37,7 @@ FAILS=0
 ok()  { echo -e "${GREEN}ok${NC}   $1"; }
 bad() { echo -e "${RED}FAIL${NC} $1"; FAILS=$((FAILS + 1)); }
 
-docker info >/dev/null 2>&1 || { echo "Docker isn't running: open -a Docker, then retry"; exit 2; }
+docker info >/dev/null 2>&1 || { echo "Docker isn't running: open -a OrbStack, then retry"; exit 2; }
 
 platform=()
 case "$IMAGE" in
@@ -51,8 +51,11 @@ cleanup() {
 }
 trap cleanup EXIT
 
-as_root()   { docker exec "$cid" bash -c "$1"; }
-as_tester() { docker exec -u tester -e USER=tester -e HOME=/home/tester -w /home/tester "$cid" bash -c "$1"; }
+# umask 022, as on a real machine: OrbStack's `docker exec` starts with 0000
+# (Docker Desktop's had 022), which made /etc/sudoers.d/tester world
+# writable, so sudo ignored it and the installer stopped at its first sudo.
+as_root()   { docker exec "$cid" bash -c "umask 022; $1"; }
+as_tester() { docker exec -u tester -e USER=tester -e HOME=/home/tester -w /home/tester "$cid" bash -c "umask 022; $1"; }
 
 echo "== $IMAGE: a user with sudo"
 if [ "$INSTALLER" = install_arch.sh ]; then
