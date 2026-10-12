@@ -67,7 +67,8 @@ Gotchas:
   minutes, and the first tmux start afterwards restores them, so at most 15
   minutes of layout changes are lost. `Ctrl+a` `Ctrl+s` right before a
   restart loses nothing. Auto-save only runs while there's a single tmux
-  server (normal use). To start truly empty, delete the saves in
+  server (normal use); `scripts/verify.sh` warns when there are more, and
+  names them. To start truly empty, delete the saves in
   `~/.tmux/resurrect` first.
 - **The status bar:**
   - left: your session, in a pill that turns **yellow while `Ctrl+a` is

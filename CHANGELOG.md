@@ -23,6 +23,20 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: verify.sh warns when more than one tmux server runs
+
+### On other machines
+- **Nothing to do.** If `scripts/verify.sh` warns, stop the extra server it
+  names: `tmux -L <name> kill-server`.
+
+### What changed
+- tmux-continuum stops auto-saving while a second tmux server runs (a test
+  server left behind did it on 2026-10-07), and nothing said so.
+  `verify.sh` now counts the servers that answer on their sockets (old dead
+  sockets don't count) and warns, naming them. `doc/tmux.md` points at it.
+
+---
+
 ## 2026-10-12: `remote <host> unmount` removes the `._` files the mount left
 
 ### On other machines

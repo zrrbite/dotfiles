@@ -228,6 +228,21 @@ if command -v tmux >/dev/null 2>&1; then
     else
         warn "tmux-continuum missing: saving is manual, prefix Ctrl-s (the installers clone it)"
     fi
+    # tmux-continuum only auto-saves while one tmux server runs; a second one
+    # (often a test server left behind, as on 2026-10-07) stops it silently.
+    # Count the sockets a server answers on; dead ones left by old servers
+    # don't matter.
+    servers=""
+    for sock in "${TMUX_TMPDIR:-/tmp}/tmux-$(id -u)"/*; do
+        [ -S "$sock" ] && tmux -S "$sock" list-sessions >/dev/null 2>&1 &&
+            servers="$servers ${sock##*/}"
+    done
+    count=$(echo "$servers" | wc -w | tr -d ' ')
+    if [ "$count" -gt 1 ]; then
+        warn "$count tmux servers run (${servers# }), so tmux-continuum has stopped auto-saving; stop the extra ones: tmux -L <name> kill-server"
+    elif [ "$count" -eq 1 ]; then
+        pass "one tmux server (${servers# }): auto-save works"
+    fi
 fi
 
 # -- Running services (macOS desktop) -----------------------------------------
