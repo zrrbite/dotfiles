@@ -199,7 +199,7 @@ BREW_PACKAGES=(
     sketchybar
     borders
 
-    # Focus follows mouse -- AeroSpace has no setting for it
+    # Focus follows mouse -- AeroSpace had no setting for it before 0.21
     autoraise
 
     # Touch ID for sudo inside tmux (scripts/touch-id-sudo.sh)

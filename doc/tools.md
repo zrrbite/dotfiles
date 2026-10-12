@@ -94,7 +94,7 @@ re-check it.
 
 | Tool | Checked against | After a big upgrade |
 |---|---|---|
-| AeroSpace | 0.21.3 | **Restart it** (`killall AeroSpace && open -a AeroSpace`): until then the old version keeps running and every `aerospace` command fails with "client and server versions are incompatible". Restarting drops all windows on one workspace; capture the layout first (`doc/aerospace-macos.md`). `verify.sh` checks the bindings are `ctrl-alt` |
+| AeroSpace | 0.21.3, `config-version = 2` | **Restart it** (`killall AeroSpace && open -a AeroSpace`): until then the old version keeps running and every `aerospace` command fails with "client and server versions are incompatible". Restarting drops all windows on one workspace; capture the layout first (`doc/aerospace-macos.md`). `verify.sh` checks the bindings are `ctrl-alt` |
 | AutoRaise | 5.7 | `brew services restart autoraise`. If focus stops following the mouse, macOS took its Accessibility away: remove it in System Settings → Privacy & Security → Accessibility and add `/opt/homebrew/opt/autoraise/bin/AutoRaise` again |
 | sketchybar, sketchybar-app-font | 2.24.0, font 3.0.5 | The font must be at least the release `plugins/icon_map.sh` was vendored from, or app names show as text in the workspace pills. `sketchybar --reload` |
 | yazi | 26.9.1 | `keymap.toml`'s keys were written against this preset, and yazi renames keys between releases: compare with the new preset. `ya pkg upgrade` for the plugins |

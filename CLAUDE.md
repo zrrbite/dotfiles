@@ -205,7 +205,8 @@ stow list.
   (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
   (auto-launched by AeroSpace).
   Shares waybar's colour contract — see `doc/status-bar-theming.md`
-- **autoraise**: focus-follows-mouse. AeroSpace has no setting for this, so AutoRaise
+- **autoraise**: focus-follows-mouse. AeroSpace had no setting for this before 0.21
+  (0.21's `focus-follows-mouse.enabled` is untried here), so AutoRaise
   (`brew tap dimentium/autoraise`) supplies it, configured in
   `~/.config/AutoRaise/config` and run as a launchd service
   (`brew services start dimentium/autoraise/autoraise`) so it survives an

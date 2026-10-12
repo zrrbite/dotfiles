@@ -1,5 +1,5 @@
 # AutoRaise -- focus follows mouse for macOS.
-# AeroSpace has no focus-follows-mouse setting of its own, so this supplies the
+# AeroSpace had no focus-follows-mouse setting of its own before 0.21, so this supplies the
 # behaviour that Hyprland gives us on Linux.
 # Docs: https://github.com/sbmpost/AutoRaise
 

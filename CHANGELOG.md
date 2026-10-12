@@ -23,6 +23,26 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: AeroSpace config-version 2 (AeroSpace 0.21)
+
+### On other machines
+- **macOS, after upgrading AeroSpace to 0.21:** pull and
+  `aerospace reload-config`. The config is written for 0.21 and wasn't
+  tried on 0.20, so upgrade first (`brew upgrade --cask aerospace`, then
+  restart it; see `doc/tools.md`, "Versions and upgrading").
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `aerospace.toml` declares `config-version = 2` and lists workspaces 1-9
+  in `persistent-workspaces`. 0.21 warned on every reload that version 1 is
+  outdated; version 2 no longer infers persistent workspaces from the key
+  bindings, so they're listed to keep all nine (and sketchybar's pills).
+- AeroSpace 0.21 has its own `focus-follows-mouse.enabled`. The docs said it
+  had none; they now say "before 0.21". AutoRaise stays until the built-in
+  one is tried.
+
+---
+
 ## 2026-10-12: Alacritty dropped from macOS (Ghostty won the trial); lazygit kept
 
 ### On other machines

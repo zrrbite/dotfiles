@@ -2,6 +2,13 @@
 # Keybinds mirror GlazeWM (Windows) and Hyprland (Linux) from this dotfiles repo.
 # Docs: https://nikitabobko.github.io/AeroSpace/guide
 
+# Config version 2 (AeroSpace 0.21+). Version 1 kept every workspace a key
+# binding names alive even when empty; version 2 keeps only those listed
+# here. 1-9 are the ones the ctrl-alt-N keys reach, and sketchybar makes one
+# pill per workspace that exists when it starts.
+config-version = 2
+persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
 start-at-login = true
 after-login-command = []
 after-startup-command = [
@@ -12,7 +19,8 @@ after-startup-command = [
     'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=5.0 style=round hidpi=on'
 ]
 
-# Focus-follows-mouse comes from AutoRaise, which AeroSpace cannot do itself.
+# Focus-follows-mouse comes from AutoRaise. AeroSpace couldn't do it before
+# 0.21; its own focus-follows-mouse.enabled (0.21+) is untried here.
 # It runs as a launchd service rather than from after-startup-command, so it
 # survives restarting AeroSpace and starts at login independently:
 #   brew services start dimentium/autoraise/autoraise

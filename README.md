@@ -119,7 +119,8 @@ use the 🌐 key now.
 too. The installer runs it (it asks for the password once); `--undo` removes
 it. Run `--undo` before uninstalling pam-reattach.
 
-**Focus follows mouse.** AeroSpace has no setting for this, so AutoRaise
+**Focus follows mouse.** AeroSpace had no setting for this until 0.21 (its
+`focus-follows-mouse.enabled` is untried here), so AutoRaise
 supplies the behaviour Hyprland gives us on Linux. It is configured in
 `autoraise/.config/AutoRaise/config` and runs as a launchd service, so it starts
 at login and survives restarting AeroSpace:
@@ -266,7 +267,7 @@ with an AI agent, point it at `AGENTS.md`.
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
 | `alacritty` | GPU-accelerated terminal with Nord theme (config only, for Arch; dropped from macOS 2026-10-12) |
 | `ghostty` | The macOS terminal: native UI, Nord, ligatures and images |
-| `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
+| `autoraise` | macOS focus-follows-mouse config (AeroSpace had no such setting before 0.21) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |

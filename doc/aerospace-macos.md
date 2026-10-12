@@ -205,8 +205,10 @@ to leave nested containers behind.
 
 ## Focus follows mouse
 
-This comes from AutoRaise, not AeroSpace. AeroSpace has no focus-follows-mouse
-setting at all; version 0.20.3-Beta contains no such option.
+This comes from AutoRaise, not AeroSpace. AeroSpace had no focus-follows-mouse
+setting before 0.21. 0.21 added `focus-follows-mouse.enabled`, which is untried
+here; whether it could replace AutoRaise (and its Accessibility trouble on
+upgrades) is in the todo list.
 
 Confusingly, `aerospace.toml` does contain:
 
