@@ -144,7 +144,13 @@ t_hint() {
 t_mount() {
     local mp="$HOME/remote/$H" out start pid
     R $H unmount >/dev/null 2>&1
+    # macOS writes a ._ file next to every file written through the mount
+    # (the remote can't store extended attributes). unmount removes those, and
+    # only those: these two decoys must survive it. One is older than the
+    # mount, the other has no partner file.
+    ssh -n $H 'cd src/hello && printf k > keep.txt && printf d > ._keep.txt && touch -t 202001010000 ._keep.txt'
     expect_rc "mount" 0 R $H mount
+    ssh -n $H 'printf o > src/hello/._orphan'
     if mount | grep -qF " on $mp "; then ok "mount: in the mount table"; else bad "mount: not in the mount table"; fi
     out="$(R $H status 2>&1)"; expect_has "status: healthy" "$out" "(healthy)"
     out="$(R $H mount 2>&1)"; expect_has "mount again: says so" "$out" "already mounted"
@@ -152,8 +158,13 @@ t_mount() {
     out="$(cat "$mp/src/hello/with space.txt" 2>&1)"; expect_has "mount: path with a space" "$out" "spaced out"
     printf 'edited through the mount %s\n' "$$" > "$mp/src/hello/notes.txt"
     out="$(R $H cat src/hello/notes.txt 2>&1)"; expect_has "edit through the mount lands remotely" "$out" "edited through the mount $$"
-    rm -f "$mp/src/hello/notes.txt"
     expect_rc "unmount" 0 R $H unmount
+    out="$(ssh -n $H 'ls -a src/hello' 2>&1)"
+    expect_lacks "unmount: the ._ file the mount made is gone" "$out" "._notes.txt"
+    expect_has "unmount: the edited file itself stays" "$out" "notes.txt"
+    expect_has "unmount: an older ._ file stays" "$out" "._keep.txt"
+    expect_has "unmount: a ._ file with no partner stays" "$out" "._orphan"
+    ssh -n $H 'cd src/hello && rm -f notes.txt keep.txt ._keep.txt ._orphan'
     if mount | grep -qF " on $mp "; then bad "unmount: still mounted"; else ok "unmount: gone from the mount table"; fi
     if [ -e "$mp" ]; then bad "unmount: $mp left behind"; else ok "unmount: folder removed"; fi
 
@@ -236,6 +247,8 @@ t_build() {
     expect_rc "restored: build passes again" 0 R $H build src/hello
     expect_rc "restored: test passes again" 0 R $H test src/hello
     R $H unmount >/dev/null
+    out="$(ssh -n $H 'ls -a src/hello' 2>&1)"
+    expect_lacks "unmount after the build: no ._hello.cpp left" "$out" "._hello.cpp"
 }
 
 t_perms() {

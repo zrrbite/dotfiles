@@ -34,7 +34,10 @@ build/test. Full reference: `doc/remote-machine.md` in the dotfiles.
    setting (Remote Login, "Allow full disk access for remote users"); don't
    look for a way around it.
 8. **When done, `remote <host> unmount`**, and always before the remote is
-   unplugged, sleeps or is shut down.
+   unplugged, sleeps or is shut down. It also removes the `._` files macOS
+   leaves next to every file written through the mount; until then they show
+   up as untracked in the remote's `git status`. Don't delete `._` files
+   yourself.
 
 ## The commands
 

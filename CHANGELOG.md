@@ -23,6 +23,24 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: `remote <host> unmount` removes the `._` files the mount left
+
+### On other machines
+- **macOS:** `git pull`; nothing else (`remote` is linked from the repo).
+
+### What changed
+- Every file written through the sshfs mount got a `._` partner on the
+  remote (AppleDouble: the remote end can't store the extended attributes
+  macOS puts on new files). On the work Mac they'd have littered every repo
+  Claude edited. FUSE-T's sshfs can't prevent it: `noappledouble` is
+  accepted and ignored, and it rejects FUSE-T's `backend=` option.
+- So `mount` leaves a marker on the remote, and `unmount` removes the `._`
+  files newer than it whose partner file exists; other `._` files stay.
+  `scripts/test-remote.sh` checks both (95 checks, all pass).
+- `doc/remote-machine.md` and the `remote-machine` skill say so.
+
+---
+
 ## 2026-10-12: AeroSpace's own focus-follows-mouse replaces AutoRaise
 
 ### On other machines

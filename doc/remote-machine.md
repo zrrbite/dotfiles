@@ -61,7 +61,7 @@ because commands over SSH don't load the shell's setup.
 | Command | Does |
 |---|---|
 | `remote <host> status` | reachable? mounted? mount healthy? |
-| `remote <host> mount` / `unmount` | the remote home at `~/remote/<host>`; `unmount` forces it if the remote is gone |
+| `remote <host> mount` / `unmount` | the remote home at `~/remote/<host>`; `unmount` forces it if the remote is gone, and removes the `._` files the mount left |
 | `remote <host> ls <path>` | `ls -la` |
 | `remote <host> cat <file> [first:last]` | a file, or a range of lines |
 | `remote <host> grep [-i] [-w] [-l] [--include <glob>] [--] <pattern> <path>` | recursive search with line numbers |
@@ -88,6 +88,13 @@ a program or write (`grep --pre`, `find -exec`/`-delete`, `git push`/`commit`,
   `remote`.
 - **Red C++ errors in files under `~/remote/`:** expected and wrong; the
   remote build is the truth.
+- **`._something` files appear on the remote:** macOS writes one next to
+  every file written through the mount, because the remote end can't store
+  extended attributes (the "provenance" tag macOS puts on new files). FUSE-T's
+  sshfs can't prevent it. `remote <host> unmount` removes the ones the mount
+  made (newer than the mount, with their partner file present) and nothing
+  else; until then `git status` on the remote shows them as untracked. A
+  mount left up keeps them; the next unmount still removes them.
 - **A build straight after an edit says nothing changed:** macOS's `make`
   (GNU Make 3.81) compares file times in whole seconds, so an edit in the same
   second as the last build's output looks up to date. Build again a moment

@@ -101,6 +101,37 @@ cmd_status() {
     return "$rc"
 }
 
+# macOS writes a ._ file (AppleDouble) next to every file written through the
+# mount: the remote end can't store extended attributes such as the
+# com.apple.provenance tag macOS puts on new files, and FUSE-T's sshfs has no
+# option against it (noappledouble is accepted and ignored). So mount leaves a
+# marker on the remote, and unmount removes the ._ files newer than it whose
+# partner file exists: the ones this mount made. Any other ._ file stays.
+# The marker survives a failed tidy, so the next unmount still finds them.
+# shellcheck disable=SC2016  # expands on the remote
+MARK_SH='m=/tmp/.remote-mount-$USER; [ -f "$m" ] || touch "$m"'
+# shellcheck disable=SC2016  # expands on the remote
+TIDY_SH='m=/tmp/.remote-mount-$USER
+[ -f "$m" ] || exit 0
+find . -xdev -path ./Library -prune -o -type f -name "._*" -newer "$m" -print 2>/dev/null |
+while IFS= read -r f; do
+    p="${f%/*}/${f##*/._}"
+    if [ -e "$p" ] && rm -f -- "$f"; then echo "$f"; fi
+done
+rm -f "$m"'
+
+tidy_appledouble() {
+    local out n
+    # find walks the whole remote home, so it gets longer than TIMEOUT.
+    if ! out="$(perl -e 'alarm shift; exec @ARGV' 120 "${SSH[@]}" "$HOST" "sh -c $(q "$TIDY_SH")" 2>/dev/null)"; then
+        echo "remote: couldn't remove the ._ files the mount left on $HOST; the next unmount will" >&2
+        return 0
+    fi
+    n="$(printf '%s' "$out" | grep -c .)"
+    [ "$n" -gt 0 ] && echo "removed $n ._ file(s) the mount left on $HOST"
+    return 0
+}
+
 cmd_mount() {
     command -v sshfs >/dev/null 2>&1 ||
         refuse "sshfs is not installed (macOS: brew install --cask macos-fuse-t/cask/fuse-t-sshfs)"
@@ -113,6 +144,7 @@ cmd_mount() {
     mkdir -p "$MP"
     if sshfs ${SSHFS_CFG[@]+"${SSHFS_CFG[@]}"} "$HOST:" "$MP" \
         -o "volname=$HOST,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,BatchMode=yes,ConnectTimeout=5"; then
+        "${SSH[@]}" "$HOST" "sh -c $(q "$MARK_SH")" 2>/dev/null
         echo "mounted $HOST's home at $MP"
     else
         rmdir "$MP" 2>/dev/null
@@ -137,6 +169,7 @@ cmd_unmount() {
     fi
     rmdir "$MP" 2>/dev/null
     echo "unmounted $MP"
+    tidy_appledouble
 }
 
 cmd_ls() {
