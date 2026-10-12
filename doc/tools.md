@@ -111,6 +111,12 @@ re-check it.
 
 ### Upgrading a Mac
 
+`scripts/update.sh` does all of this: it records the versions, saves and
+restores the window layout around an AeroSpace upgrade, updates nvim's and
+yazi's plugins, lists what moved (flagging this table's tools) and ends with
+`verify.sh`. `--dry-run` shows what's outdated first. Afterwards, commit the
+plugin lockfiles it reports once nvim and yazi still work. By hand:
+
 ```bash
 mkdir -p ~/.local/state/dotfiles
 brew list --versions > ~/.local/state/dotfiles/brew-before-$(date +%F).txt

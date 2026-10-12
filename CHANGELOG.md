@@ -23,6 +23,26 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: scripts/update.sh, the upgrade checklist as one command
+
+### On other machines
+- **Nothing to do.** On a Mac, `scripts/update.sh --dry-run` shows what's
+  outdated, `scripts/update.sh` upgrades. Run it in a terminal yourself:
+  `.pkg` casks ask for the password.
+
+### What changed
+- `scripts/update.sh` (macOS) follows `doc/tools.md`'s checklist: records
+  versions before and after in `~/.local/state/dotfiles/`, saves the
+  AeroSpace layout, `brew upgrade`, restarts AeroSpace if it was upgraded and
+  restores the windows, reloads sketchybar, updates nvim's and yazi's plugins,
+  lists what moved (flagging the tools in the versions table), reports the
+  plugin lockfiles to commit, and runs `verify.sh`. It leaves npm's globals
+  (TypeScript stays on 6) and the pinned tmux plugins alone.
+- Tested: `--dry-run`, the version diff and the layout restore. A full run
+  wasn't made: it's Martin's to start.
+
+---
+
 ## 2026-10-12: verify.sh warns when more than one tmux server runs
 
 ### On other machines
