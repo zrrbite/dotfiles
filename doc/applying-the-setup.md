@@ -153,16 +153,39 @@ What the installer does, in order:
 
 ### Human-only, after the installer (macOS)
 
+During the run, the `.pkg` casks (FUSE-T and its sshfs, Karabiner-Elements)
+and `scripts/touch-id-sudo.sh` ask for the password; the human types it.
+Afterwards:
+
 - Grant **Accessibility** to **AeroSpace** and **AutoRaise**: System Settings
   → Privacy & Security → Accessibility. AutoRaise runs as a brew service, so
   if it isn't offered there, add its binary with **+**:
   `$(brew --prefix autoraise)/bin/AutoRaise`.
 - Launch AeroSpace once (it starts at login after that). It starts sketchybar
   and borders.
+- **Karabiner-Elements** (Caps Lock: Escape when tapped, Control when held):
+  open it once and allow Input Monitoring, then its **driver**, which is a
+  separate switch: System Settings → General → Login Items & Extensions →
+  Driver Extensions. Pick ISO if it asks for the keyboard type. Until the
+  driver is on, Caps Lock is plain Caps Lock; `verify.sh` warns.
+- **Touch ID for sudo** needs a fingerprint enrolled for this user (System
+  Settings → Touch ID & Password); without one, sudo asks for the password
+  and `verify.sh` warns. Test in a tmux pane: `sudo -k; sudo true`.
+- **OrbStack** (Docker): open it once, choose Docker, allow its helper
+  (password). Migrating from Docker Desktop is optional; see `CHANGELOG.md`
+  2026-10-12 before removing Docker Desktop, whose uninstall takes
+  OrbStack's `docker` link with it.
+- **Raycast:** the first `⌃⌥⇧V` (clipboard history) asks to allow the link;
+  tick "always". Add `scripts/raycast/` in its Settings → Extensions.
+- **Desktop settings** (`--with-desktop` on a fresh Mac; on an existing one
+  `scripts/macos-defaults.sh` and `scripts/finder-defaults.sh`) change the
+  Dock, menu bar, Finder and text input. Ask before running them on a Mac
+  that's already set up the way its owner likes.
 - First-launch prompts: Ghostty asks about notifications, and oh-my-zsh may
   offer an update. These are the human's calls.
 
-Then run `scripts/verify.sh` again; done is exit 0.
+Then run `scripts/verify.sh` again; done is exit 0. Its "confirm by hand"
+list at the end covers what a script can't see.
 
 ## Path B: work, or someone else's machine
 
