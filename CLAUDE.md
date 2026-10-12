@@ -259,7 +259,7 @@ stow list.
 - **nvim**: Neovim config with lazy.nvim, LSP, treesitter, DAP debugging, gitsigns
   - **C++ (clangd)**: Full IDE features, clang-tidy integration, header/source switching
   - **TypeScript (ts_ls)**: Autocomplete, go-to-definition, refactoring, inlay hints
-  - **Lua (lua_ls)**: For Neovim config development
+  - **Lua (lua_ls)**: configured, but no installer installs `lua-language-server` (Martin doesn't write Lua). `brew install lua-language-server` turns it on; nvim is silent without it
   - Git integration: blame, hunks, staging
   - Telescope fuzzy finder for symbols, files, macros
   - Debugging: codelldb (C++), node2 (TypeScript/JavaScript)
