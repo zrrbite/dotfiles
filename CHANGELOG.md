@@ -23,6 +23,27 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: Alacritty dropped from macOS (Ghostty won the trial); lazygit kept
+
+### On other machines
+- **macOS:** pull, then `stow -D -t ~ alacritty` (removes the
+  `~/.config/alacritty` link), `brew uninstall --cask alacritty`, and
+  `aerospace reload-config` (`ctrl-alt-shift-enter` is gone).
+- **Arch:** nothing. The `alacritty` package stays there, config only; foot
+  is the terminal.
+- **Debian, Windows:** nothing.
+
+### What changed
+- Alacritty is out of `install_darwin.sh` (cask, quarantine step, backup
+  list), `PACKAGES_DARWIN` and AeroSpace's `ctrl-alt-shift-enter`. Ghostty
+  is the macOS terminal. The `alacritty/` package stays for Arch.
+- lazygit stays, no longer "on trial": Martin uses it mostly to look around
+  a repo. Still macOS-only.
+- CLAUDE.md, README, `doc/tools.md`, `doc/aerospace-macos.md`,
+  `doc/applying-the-setup.md`, `doc/tmux.md` and `doc/lazygit.md` say so.
+
+---
+
 ## 2026-10-12: Versions and upgrading (doc/tools.md); verify.sh finds dangling zsh completions
 
 ### On other machines

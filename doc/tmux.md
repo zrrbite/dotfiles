@@ -60,7 +60,7 @@ lists every binding.
 Gotchas:
 - **`Ctrl+a` `t` is tmux's clock, not the `t` command.** `q` leaves it.
 - **Inside tmux, `Ctrl+a` no longer goes to the shell.** For line start, use
-  `⌘ ←`: Ghostty and Alacritty send Home, which works in tmux.
+  `⌘ ←`: Ghostty sends Home, which works in tmux.
 - **Last-session isn't `Ctrl+a` `L`**, tmux's default, because `L` resizes
   here. It's `Tab`.
 - **Sessions survive a reboot automatically.** They're saved every 15

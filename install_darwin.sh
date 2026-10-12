@@ -179,7 +179,7 @@ BREW_PACKAGES=(
     neovim
     git
     gh         # GitHub from the terminal: PRs, issues, Actions runs
-    lazygit    # terminal UI for git; on trial since 2026-10-08
+    lazygit    # terminal UI for git, mostly for looking around a repo
     # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
     cmake
     ninja
@@ -213,8 +213,7 @@ BREW_CASKS=(
     # font with an older map still works, the reverse renders names as text.
     font-sketchybar-app-font
     nikitabobko/tap/aerospace
-    alacritty
-    # Default terminal (ctrl-alt-enter), on trial against Alacritty; see CLAUDE.md
+    # The terminal (ctrl-alt-enter). Alacritty was dropped on 2026-10-12.
     ghostty
     # Launcher, kept after the 2026-10 trial against Alfred. Its settings live
     # in its own database, not here; add scripts/raycast/ as a script directory
@@ -281,8 +280,6 @@ else
     fi
 fi
 
-# Remove Gatekeeper quarantine from Alacritty (unsigned cask)
-run_ok xattr -cr /Applications/Alacritty.app
 
 # TypeScript language server. nvim names `typescript-language-server` as ts_ls's
 # cmd, so without this the TypeScript half of the nvim setup silently does
@@ -327,7 +324,6 @@ BACKUP_DIR="${HOME}/.config-backup-$(date +%Y%m%d-%H%M%S)"
 CONFIGS_TO_BACKUP=(
     ~/.config/nvim
     ~/.config/starship.toml
-    ~/.config/alacritty
     ~/.config/ghostty
     ~/.gitconfig
     ~/.clang-format
@@ -580,7 +576,7 @@ echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, llvm (provides lldb)"
-echo "  - starship prompt, ghostty terminal (ctrl-alt-enter), alacritty alongside (ctrl-alt-shift-enter)"
+echo "  - starship prompt, ghostty terminal (ctrl-alt-enter)"
 echo "  - AeroSpace tiling WM (ctrl-alt-hjkl focus, ctrl-alt-1-9 workspaces)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
@@ -600,7 +596,7 @@ echo "AeroSpace tiling WM:"
 echo "  - Starts at login automatically"
 echo "  - Keybinds match GlazeWM (Windows) and Hyprland (Linux):"
 echo "    ctrl-alt-hjkl focus, ctrl-alt-shift-hjkl move, ctrl-alt-1-9 workspaces"
-echo "    ctrl-alt-enter Ghostty, ctrl-alt-shift-enter Alacritty, ctrl-alt-shift-q close, ctrl-alt-f fullscreen"
+echo "    ctrl-alt-enter Ghostty, ctrl-alt-shift-q close, ctrl-alt-f fullscreen"
 echo "    ctrl-alt-tab cycle windows, ctrl-alt-v toggle split direction"
 echo "    ctrl-alt-r resize mode, ctrl-alt-shift-r reload config"
 echo "  - Chrome opens on workspace 2, chat apps on 3 (doc/aerospace-macos.md)"

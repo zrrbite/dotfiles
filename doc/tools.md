@@ -23,8 +23,8 @@ and Raspberry Pi.
 | bash | Login shell (Git Bash) | – | – | – | ✓ |
 | zsh-autosuggestions, zsh-syntax-highlighting | Grey history suggestions, green/red commands | ✓ | ✓ | ✓ | – |
 | starship | Prompt (Nord) | ✓ | ✓ | ✓ | ✓ |
-| Ghostty | Terminal, default (`ctrl-alt-enter`) | ✓ | – | – | – |
-| Alacritty | Terminal, second (`ctrl-alt-shift-enter`) | ✓ | config only | – | – |
+| Ghostty | Terminal (`ctrl-alt-enter`) | ✓ | – | – | – |
+| Alacritty | Terminal; dropped from macOS 2026-10-12 | – | config only | – | – |
 | foot | Terminal (Wayland) | – | ✓ | – | – |
 | Windows Terminal | Terminal | – | – | – | ✓ |
 | tmux + resurrect + continuum | Sessions per project, surviving reboots; `t`, `tp`, `Ctrl+a` `f` | ✓ | ✓ | ✓ | – |
@@ -57,7 +57,7 @@ and Raspberry Pi.
 | neovim | Editor: LSP, treesitter, DAP, yazi.nvim | ✓ | ✓ | ✓ | ✓ |
 | gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
 | OrbStack | Docker on macOS (`docker`, `docker compose`) for devbox and `scripts/test-in-docker.sh`; replaced Docker Desktop 2026-10-12 | ✓ | – | – | – |
-| lazygit | Terminal UI for git: stage lines, fixup, reorder, reword; `Ctrl+a g` in tmux, `Space gg` in nvim (`doc/lazygit.md`; on trial since 2026-10-08) | ✓ | – | – | – |
+| lazygit | Terminal UI for git: looking around a repo, staging lines, tidying commits; `Ctrl+a g` in tmux, `Space gg` in nvim (`doc/lazygit.md`) | ✓ | – | – | – |
 | remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
 | cmake + ninja + ccache | C++ builds with presets (`cmake --preset debug`) and a compiler cache (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |

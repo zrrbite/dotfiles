@@ -110,12 +110,11 @@ ctrl-alt-f = 'fullscreen'
 # Close focused window (matches alt+shift+q in GlazeWM)
 ctrl-alt-shift-q = 'close'
 
-# Launch the terminal (matches alt+enter in GlazeWM → terminal). Ghostty is
-# the default; `open -na` is what its own help recommends on macOS, since its
-# `+new-window` action is Linux-only. Alacritty stays one modifier away while
-# the two are compared.
+# Launch the terminal (matches alt+enter in GlazeWM → terminal): Ghostty.
+# `open -na` is what its own help recommends on macOS, since its
+# `+new-window` action is Linux-only. (Alacritty was on ctrl-alt-shift-enter
+# until it was dropped on 2026-10-12.)
 ctrl-alt-enter = 'exec-and-forget open -na Ghostty'
-ctrl-alt-shift-enter = 'exec-and-forget open -na Alacritty'
 
 # Reload config (matches alt+shift+r in GlazeWM)
 ctrl-alt-shift-r = 'reload-config'

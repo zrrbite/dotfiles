@@ -8,7 +8,7 @@ Cross-platform personal dotfiles supporting:
 - **Arch Linux**: Full Hyprland desktop environment
 - **WSL (Ubuntu/Debian)**: CLI development tools only
 - **Raspberry Pi (Raspbian)**: CLI development tools only (ARM64)
-- **macOS (M1/M2/Intel)**: CLI tools + Alacritty terminal
+- **macOS (M1/M2/Intel)**: CLI tools + Ghostty terminal
 - **Windows 10/11**: CLI tools + Windows Terminal (via Scoop, no Stow needed)
 
 Linux/macOS managed with [GNU Stow](https://www.gnu.org/software/stow/), Windows uses native PowerShell symlinks.
@@ -50,7 +50,7 @@ Never put identity or credentials back into the tracked file.
 ./install_arch.sh     # Arch Linux (full Hyprland + all tools)
 ./install_wsl.sh      # WSL (CLI only, no GUI)
 ./install_raspbian.sh # Raspberry Pi / Raspbian (CLI only, ARM64)
-./install_darwin.sh   # macOS (Homebrew + Alacritty)
+./install_darwin.sh   # macOS (Homebrew + Ghostty)
                       #   --dry-run       show actions without doing them
                       #   --with-desktop  also set wallpaper/Dock/menu bar (fresh machine)
                       #   --upgrade       allow brew to upgrade existing packages
@@ -215,7 +215,6 @@ stow list.
   `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
   it keeps the cursor on the keyboard-focused window so AutoRaise does not
   immediately steal focus back. Needs Accessibility permission.
-- **alacritty**: Cross-platform terminal with Nord theme (`ctrl-alt-shift-enter`)
 - **yazi**: Terminal file manager (Finder replacement), macOS and Arch. `y` in
   zsh launches it and leaves the shell where you quit. No theme file: the
   default theme uses ANSI colours, which the terminals map to Nord. Config keys
@@ -223,12 +222,11 @@ stow list.
   `keymap.toml` holds additions only (`g` bookmarks, Far-style `Tab` between
   tabs, spot on `i`), and `init.lua` shares yanks between instances; `g s`
   sends the current folder to the other instances (a `sync-cd` message)
-- **ghostty**: On trial alongside Alacritty since 2026-10-05; the default terminal
-  (`ctrl-alt-enter`) since the same day.
+- **ghostty**: The macOS terminal (`ctrl-alt-enter`). It won a trial against
+  Alacritty (2026-10-05 to 2026-10-12), which is no longer installed on macOS.
   `~/.config/ghostty/config.ghostty` mirrors the Alacritty config (font, padding,
   opacity, Nord palette, keybindings) and adds ligatures, the Kitty image
-  protocol and a native window. Alacritty stays until the trial is decided;
-  don't remove either one without asking
+  protocol and a native window
 - **karabiner**: Caps Lock is Escape when tapped, Control when held
   (Karabiner-Elements). Stowed as the whole `~/.config/karabiner` folder,
   deliberately folded: Karabiner replaces `karabiner.json` when it saves, which
@@ -287,10 +285,10 @@ stow list.
   - Four quality gates: Prettier (pre-commit) → TypeScript + ESLint + Vitest (pre-push)
 
 - **alacritty**: GPU-accelerated terminal with Nord theme
-  - Second terminal on macOS (`ctrl-alt-shift-enter`); Ghostty is the default
-  - Optional on Arch/WSL (foot is default on Arch)
+  - Config only, stowed on Arch (foot is the terminal there). Dropped from
+    macOS on 2026-10-12, where Ghostty replaced it
 
-- **ghostty**: Native-UI GPU terminal, on trial on macOS alongside Alacritty
+- **ghostty**: Native-UI GPU terminal, the macOS terminal
   - Config is `config.ghostty`; check edits with `ghostty +validate-config`
   - Keeps a block cursor (`shell-integration-features = no-cursor`) and leaves
     Option alone, because the Danish layout types `{ } [ ] | @ $` with it
@@ -309,7 +307,7 @@ stow list.
   - **install_raspbian.sh**: Symlink to install_debian.sh (auto-detects Raspberry Pi)
   - apt packages + manual installs (starship, zoxide, eza, duf, git-delta, procs, btop)
   - procs skipped on ARM64 (no prebuilt binary available)
-- **install_darwin.sh**: Homebrew packages, Alacritty setup, M2 ARM support
+- **install_darwin.sh**: Homebrew packages, Ghostty, M2 ARM support
 - **install_windows.ps1**: Full setup - Scoop packages, Windows Terminal, and all symlinks
   - Requires: Windows 10 (Developer Mode) or Windows 11
   - Installs: Git, Neovim, LLVM, modern CLI tools via Scoop

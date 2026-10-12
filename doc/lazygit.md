@@ -2,8 +2,8 @@
 
 A cheat sheet for lazygit, a terminal UI for git, in the order you use it:
 look, stage, commit, tidy up before pushing, push. Then a practice plan.
-lazygit is on trial since 2026-10-08 (macOS installer only) and has no config
-here: its defaults use the terminal's Nord colours, and `e` opens nvim
+lazygit is in the macOS installer (kept after a trial, 2026-10-12: mostly for
+looking around a repo) and has no config here: its defaults use the terminal's Nord colours, and `e` opens nvim
 because git's `core.editor` says so. Every key was checked against lazygit
 0.66's defaults (`lazygit --config` prints them); keys move between releases,
 so check again after a big upgrade.

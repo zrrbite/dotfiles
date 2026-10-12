@@ -97,7 +97,7 @@ Preview any run first:
 
 Installs via Homebrew:
 - All CLI tools from WSL setup
-- Ghostty (default, `ctrl-alt-enter`) and Alacritty (`ctrl-alt-shift-enter`), both Nord
+- Ghostty (`ctrl-alt-enter`), Nord
 - Platform-specific tools (lldb instead of gdb)
 - AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland
 - sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)
@@ -264,8 +264,8 @@ with an AI agent, point it at `AGENTS.md`.
 | Package | Description |
 |---------|-------------|
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
-| `alacritty` | GPU-accelerated terminal with Nord theme (second terminal on macOS) |
-| `ghostty` | Native-UI terminal on trial alongside Alacritty (macOS) - same Nord config, adds ligatures and images |
+| `alacritty` | GPU-accelerated terminal with Nord theme (config only, for Arch; dropped from macOS 2026-10-12) |
+| `ghostty` | The macOS terminal: native UI, Nord, ligatures and images |
 | `autoraise` | macOS focus-follows-mouse config (AeroSpace has no such setting) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |

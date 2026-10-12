@@ -223,7 +223,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `clang` | all | ✅ with care | `~/.clang-format`/`~/.clang-tidy` are only fallbacks. A repo's own config wins, but a work repo *without* one would pick up Allman/Unreal Engine style. |
 | `ghostty` | mac | ✅ | Default terminal (`ctrl-alt-enter`), Nord. `ghostty` cask. |
 | `yazi` | mac, Arch | ✅ | Terminal file manager; `y` in zsh launches it. Needs `yazi` plus, for previews, `ffmpeg`, `poppler` and `sevenzip`. Image previews need Ghostty, and `allow-passthrough on` inside tmux (set in `tmux/.tmux.conf`). |
-| `alacritty` | mac (Linux optional) | ✅ | Second terminal (`ctrl-alt-shift-enter`), same Nord config. Only one of the two is needed. |
+| `alacritty` | Linux (optional) | ✅ | Nord config for Alacritty; foot is the Arch terminal. Not on macOS since 2026-10-12, where Ghostty is the terminal. |
 | `zsh` | mac, Linux | ⚠️ ask | Replaces `~/.zshrc`. Put work-specific lines (proxy, SDK paths, corporate tooling) in `~/.zshrc.local`, which it loads. On Linux the installer also makes zsh the login shell. |
 | `zsh-linux` | Linux | ⚠️ ask | Replaces `~/.zprofile`: one ssh-agent per login, Hyprland on TTY1 if installed. |
 | `fastfetch` | all | ✅ | On macOS, create `~/.config/fastfetch` first, stow with `--ignore='config\.jsonc'`, and link `config-darwin.jsonc` in its place (see `install_darwin.sh`). |
@@ -428,7 +428,7 @@ column).
 
 **4. Pick up the changes in running apps.**
 - Open a new shell.
-- In Ghostty, reload with `⌘⇧,` (Alacritty reloads by itself).
+- In Ghostty, reload with `⌘⇧,`.
 - `aerospace reload-config` and `sketchybar --reload`, or let `reload.sh` do it.
 
 **Windows:** do step 1 the same way in Git Bash or PowerShell, then
