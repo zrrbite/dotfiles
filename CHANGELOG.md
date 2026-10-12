@@ -23,6 +23,38 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: AeroSpace's own focus-follows-mouse replaces AutoRaise
+
+### On other machines
+- **macOS:** upgrade AeroSpace to 0.21 first (the setting is new there; see
+  the config-version entry below). Then:
+  1. `brew services stop dimentium/autoraise/autoraise`
+  2. `git pull`, then `rm ~/.config/AutoRaise` (the `autoraise` package is
+     gone, so that link now points nowhere; `rm` removes only the link).
+  3. `brew uninstall autoraise && brew untap dimentium/autoraise`
+  4. `aerospace reload-config`, and check focus follows the mouse.
+  5. Optional: remove AutoRaise from System Settings → Privacy & Security →
+     Accessibility ("−").
+  `scripts/verify.sh` warns while AutoRaise still runs: two
+  focus-follows-mouse implementations fight over focus.
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `aerospace.toml`: `focus-follows-mouse.enabled = true`. Tried on Martin's
+  MacBook with AutoRaise stopped: focus follows, keyboard focus stays put
+  (the `on-focus-changed` warp is kept), floating windows and popups behave.
+  Lost: holding Control no longer pauses it; there's no delay to tune.
+- AutoRaise is gone: the `autoraise` stow package, its formula and tap in
+  `install_darwin.sh`, the service start, and the installer's Accessibility
+  step for it. One app, one service and one Accessibility re-grant per
+  upgrade fewer.
+- `verify.sh`: the "AutoRaise service is started" FAIL became a WARN when
+  AutoRaise still runs.
+- README, CLAUDE.md, `doc/aerospace-macos.md`, `doc/applying-the-setup.md`
+  and `doc/tools.md` (incl. its versions table and upgrade checklist) updated.
+
+---
+
 ## 2026-10-12: AeroSpace config-version 2 (AeroSpace 0.21)
 
 ### On other machines

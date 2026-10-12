@@ -19,13 +19,6 @@ after-startup-command = [
     'exec-and-forget borders active_color=0xff88c0d0 inactive_color=0xff4c566a width=5.0 style=round hidpi=on'
 ]
 
-# Focus-follows-mouse comes from AutoRaise. AeroSpace couldn't do it before
-# 0.21; its own focus-follows-mouse.enabled (0.21+) is untried here.
-# It runs as a launchd service rather than from after-startup-command, so it
-# survives restarting AeroSpace and starts at login independently:
-#   brew services start dimentium/autoraise/autoraise
-# Do not also launch it above -- that would leave two instances running.
-
 exec-on-workspace-change = ['/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
@@ -34,11 +27,15 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 # resize mode is on (sketchybar/.config/sketchybar/plugins/mode.sh).
 on-mode-changed = ['exec-and-forget sketchybar --trigger aerospace_mode_change']
 
-# Mouse follows focus: warp the cursor to a window when focus moves to it.
-# This is the opposite direction from focus-follows-mouse, and it is what makes
-# AutoRaise usable -- without it, focusing a window by keyboard would leave the
-# cursor over the previous window and AutoRaise would immediately take focus
-# back. Focus-follows-mouse itself comes from AutoRaise, started above.
+# Focus follows the mouse, as on Hyprland. AeroSpace's own (0.21+); it
+# replaced AutoRaise on 2026-10-12. Unlike AutoRaise, holding Control doesn't
+# pause it.
+focus-follows-mouse.enabled = true
+
+# Mouse follows focus: warp the cursor to a window when focus moves to it by
+# keyboard. The opposite direction from the setting above, and it must stay:
+# without it the cursor would still be over the previous window, and
+# focus-follows-mouse would take focus straight back.
 on-focus-changed = ['move-mouse window-lazy-center']
 
 # Normalizations

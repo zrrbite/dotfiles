@@ -266,7 +266,7 @@ done
 mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
 
 # An explicit list rather than every directory: the repo also holds macOS
-# packages (aerospace, sketchybar, autoraise, ghostty) and Windows ones
+# packages (aerospace, sketchybar, ghostty) and Windows ones
 # (glazewm, zebar) that have no business in an Arch $HOME.
 info "Stowing packages..."
 # shellcheck source=scripts/packages.sh

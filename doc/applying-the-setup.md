@@ -157,10 +157,9 @@ During the run, the `.pkg` casks (FUSE-T and its sshfs, Karabiner-Elements)
 and `scripts/touch-id-sudo.sh` ask for the password; the human types it.
 Afterwards:
 
-- Grant **Accessibility** to **AeroSpace** and **AutoRaise**: System Settings
-  → Privacy & Security → Accessibility. AutoRaise runs as a brew service, so
-  if it isn't offered there, add its binary with **+**:
-  `$(brew --prefix autoraise)/bin/AutoRaise`.
+- Grant **Accessibility** to **AeroSpace**: System Settings → Privacy &
+  Security → Accessibility. It also does focus-follows-mouse (AutoRaise did
+  that until 2026-10-12).
 - Launch AeroSpace once (it starts at login after that). It starts sketchybar
   and borders.
 - **Karabiner-Elements** (Caps Lock: Escape when tapped, Control when held):
@@ -227,7 +226,7 @@ Each top-level directory is a package. How safe each one is on a work machine:
 | `zsh` | mac, Linux | ⚠️ ask | Replaces `~/.zshrc`. Put work-specific lines (proxy, SDK paths, corporate tooling) in `~/.zshrc.local`, which it loads. On Linux the installer also makes zsh the login shell. |
 | `zsh-linux` | Linux | ⚠️ ask | Replaces `~/.zprofile`: one ssh-agent per login, Hyprland on TTY1 if installed. |
 | `fastfetch` | all | ✅ | On macOS, create `~/.config/fastfetch` first, stow with `--ignore='config\.jsonc'`, and link `config-darwin.jsonc` in its place (see `install_darwin.sh`). |
-| `aerospace`, `sketchybar`, `autoraise` | mac | ✅ needs permissions | The desktop stack. See [macOS desktop](#macos-desktop). |
+| `aerospace`, `sketchybar` | mac | ✅ needs permissions | The desktop stack. See [macOS desktop](#macos-desktop). |
 | `git` | all | ⚠️ after `~/.gitconfig.local` | Identity and credentials come from `~/.gitconfig.local`; create it first. Global hooks and a global ignore still apply. See [Git](#git). |
 | `claude` | all | ⚠️ skills only | See [Claude Code](#claude-code). |
 | `bash` | mac, Windows | ⚠️ ask | `bash/.bashrc-darwin` / `.bashrc-windows` are linked to `~/.bashrc` by the installers; check for existing content first. Linux uses zsh. |
@@ -265,18 +264,15 @@ Finish with `scripts/verify.sh <the packages you applied>`.
 
 ### macOS desktop
 
-AeroSpace (tiling), sketchybar (bar), JankyBorders (`borders`) and AutoRaise
-(focus-follows-mouse) work together:
+AeroSpace (tiling, and focus-follows-mouse), sketchybar (bar) and
+JankyBorders (`borders`) work together:
 
 - AeroSpace starts at login (`start-at-login = true`) and launches sketchybar
   and borders from `after-startup-command` in `aerospace.toml`.
-- AutoRaise runs as a launchd service: `brew services start
-  dimentium/autoraise/autoraise`. Do not also launch it from `aerospace.toml`,
-  or two instances will run.
 - The sketchybar workspace icons need the `font-sketchybar-app-font` cask, and
   the vendored `sketchybar/.config/sketchybar/plugins/icon_map.sh` must come
   from the same release. See `doc/status-bar-theming.md`.
-- **Human-only:** grant Accessibility to AeroSpace and AutoRaise in System
+- **Human-only:** grant Accessibility to AeroSpace in System
   Settings → Privacy & Security. On a managed Mac this may need IT.
 
 Layout fact that breaks silently if changed: the bar is 32pt tall, and

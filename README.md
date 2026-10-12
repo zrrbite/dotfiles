@@ -72,7 +72,7 @@ settings, no smart quotes or autocorrect) are `scripts/macos-defaults.sh
 [--dry-run | --check | --undo]`; `verify.sh` warns when one differs.
 
 Needs Command Line Tools first (`xcode-select --install`). Afterwards, grant
-Accessibility to AeroSpace and AutoRaise, and allow Karabiner-Elements' driver
+Accessibility to AeroSpace, and allow Karabiner-Elements' driver
 and Input Monitoring when it asks. The script ends by running
 `scripts/verify.sh`, and exits non-zero if anything failed.
 
@@ -99,10 +99,9 @@ Installs via Homebrew:
 - All CLI tools from WSL setup
 - Ghostty (`ctrl-alt-enter`), Nord
 - Platform-specific tools (lldb instead of gdb)
-- AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland
+- AeroSpace tiling WM, with keybinds matching GlazeWM and Hyprland, and focus following the mouse
 - sketchybar status bar sharing waybar's Nord colours — see [doc/status-bar-theming.md](doc/status-bar-theming.md)
 - JankyBorders for the active-window glow
-- AutoRaise for focus-follows-mouse
 - Karabiner-Elements: Caps Lock is Escape when tapped, Control when held
 - pam-reattach, for Touch ID on `sudo` inside tmux
 
@@ -119,37 +118,16 @@ use the 🌐 key now.
 too. The installer runs it (it asks for the password once); `--undo` removes
 it. Run `--undo` before uninstalling pam-reattach.
 
-**Focus follows mouse.** AeroSpace had no setting for this until 0.21 (its
-`focus-follows-mouse.enabled` is untried here), so AutoRaise
-supplies the behaviour Hyprland gives us on Linux. It is configured in
-`autoraise/.config/AutoRaise/config` and runs as a launchd service, so it starts
-at login and survives restarting AeroSpace:
+**Focus follows mouse,** as Hyprland does on Linux, comes from AeroSpace
+itself: `focus-follows-mouse.enabled = true` in `aerospace.toml` (AeroSpace
+0.21+). Until 2026-10-12 a separate app, AutoRaise, did this; AeroSpace's own
+is one setting, needs no service and no permission of its own. It has no
+options: no delay to tune, and holding Control doesn't pause it.
 
-```bash
-brew services start dimentium/autoraise/autoraise   # start now + at login
-brew services stop dimentium/autoraise/autoraise    # stop
-brew services list | grep autoraise                 # check status
-```
-
-Do not also launch it from AeroSpace's `after-startup-command` — that leaves two
-instances running. The options that matter:
-
-| Option | Value | Why |
-|---|---|---|
-| `pollMillis` | `50` | Cursor poll interval, in ms. 20 is the minimum; lower costs CPU. |
-| `delay` | `1` | Raise delay in units of `pollMillis`. Mostly affects floating windows, since tiled ones do not overlap. |
-| `requireMouseStop` | `false` | Focus while the cursor is still moving, like Hyprland. The default `true` feels like focus lagging behind. |
-| `altTaskSwitcher` | `true` | AeroSpace moves focus with its own keybinds rather than command-tab. |
-| `disableKey` | `control` | Hold control to suspend focus-follows-mouse. |
-
-`warpX` / `warpY` are deliberately unset: AeroSpace already warps the cursor to
-the focused window via `on-focus-changed`, and a second warp would fight it.
-That warp is also what makes AutoRaise usable — without it, focusing a window
-by keyboard would leave the cursor over the *previous* window and AutoRaise
-would immediately take focus back.
-
-AutoRaise needs Accessibility permission: **System Settings → Privacy &
-Security → Accessibility**.
+`on-focus-changed = ['move-mouse window-lazy-center']`, next to it, is the
+**opposite** direction (mouse follows focus) and must stay. It puts the cursor
+on a window you focus by keyboard; without it the cursor would still be over
+the previous window, and focus-follows-mouse would take focus straight back.
 
 ## Updating Your Config
 
@@ -267,7 +245,6 @@ with an AI agent, point it at `AGENTS.md`.
 | `aerospace` | macOS tiling WM - i3-style, keybinds match GlazeWM and Hyprland |
 | `alacritty` | GPU-accelerated terminal with Nord theme (config only, for Arch; dropped from macOS 2026-10-12) |
 | `ghostty` | The macOS terminal: native UI, Nord, ligatures and images |
-| `autoraise` | macOS focus-follows-mouse config (AeroSpace had no such setting before 0.21) |
 | `cava`  | Audio visualizer with Nord gradient theme |
 | `clang` | clang-format (LLVM style) and clang-tidy (modern C++ checks) |
 | `gdb`   | GDB debugger config - gdb-dashboard, pretty printing, custom commands |

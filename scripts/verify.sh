@@ -249,13 +249,13 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
             pass "AeroSpace keybindings are ctrl-alt"
         fi
     fi
-    if brew services list 2>/dev/null | grep -q -E '^autoraise[[:space:]]+started'; then
-        pass "AutoRaise service is started"
+    # AeroSpace's own focus-follows-mouse replaced AutoRaise on 2026-10-12. A
+    # Mac set up before then may still run AutoRaise, and two of them fight
+    # over which window has focus.
+    if pgrep -f 'autoraise/bin/AutoRaise' >/dev/null 2>&1; then
+        warn "AutoRaise still runs next to AeroSpace's own focus-follows-mouse: brew services stop dimentium/autoraise/autoraise && brew uninstall autoraise"
     else
-        # FAIL, not WARN: the installer starts this itself, so not running is
-        # a real failure. The three processes above need AeroSpace launched
-        # once by a person, so they only warn.
-        fail "AutoRaise service not started: brew services start dimentium/autoraise/autoraise"
+        pass "no AutoRaise (AeroSpace does focus-follows-mouse itself)"
     fi
     # WARN, not FAIL: the installer applies these only with --with-desktop.
     if differ="$("$DOTFILES_DIR/scripts/macos-defaults.sh" --check)"; then
@@ -315,7 +315,7 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     fi
     echo
     echo "Cannot be checked from a script -- confirm by hand:"
-    echo "  - Accessibility is granted to AeroSpace and AutoRaise"
+    echo "  - Accessibility is granted to AeroSpace"
     echo "    (System Settings > Privacy & Security > Accessibility)"
     echo "  - a new terminal shows the Nord starship prompt"
     echo "  - Karabiner has Input Monitoring, and tapping Caps Lock is Escape"

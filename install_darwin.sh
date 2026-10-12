@@ -121,7 +121,6 @@ fi
 info "Adding Homebrew taps..."
 run brew tap nikitabobko/tap
 run brew tap FelixKratz/formulae
-run brew tap dimentium/autoraise
 run brew tap macos-fuse-t/homebrew-cask
 
 # Homebrew 6 refuses to load formulae from an untrusted tap, so tapping alone is
@@ -132,7 +131,7 @@ run brew tap macos-fuse-t/homebrew-cask
 # command, hence the guard.
 if brew trust --help >/dev/null 2>&1; then
     info "Trusting third-party taps..."
-    for tap in nikitabobko/tap FelixKratz/formulae dimentium/autoraise macos-fuse-t/cask; do
+    for tap in nikitabobko/tap FelixKratz/formulae macos-fuse-t/cask; do
         run brew trust "$tap" || warn "  Failed to trust $tap"
     done
 fi
@@ -198,9 +197,6 @@ BREW_PACKAGES=(
     # Status bar + window borders (pairs with AeroSpace)
     sketchybar
     borders
-
-    # Focus follows mouse -- AeroSpace had no setting for it before 0.21
-    autoraise
 
     # Touch ID for sudo inside tmux (scripts/touch-id-sudo.sh)
     pam-reattach
@@ -333,7 +329,6 @@ CONFIGS_TO_BACKUP=(
     ~/.tmux.conf
     ~/.config/aerospace/aerospace.toml
     ~/.config/sketchybar
-    ~/.config/AutoRaise
     # Karabiner writes a default config on first launch; the repo's replaces it
     ~/.config/karabiner
     ~/.clang-tidy
@@ -508,14 +503,6 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
         || FAILURES+=("oh-my-zsh clone failed; zsh still works without it")
 fi
 
-# Focus follows mouse. Started as a launchd service rather than from AeroSpace's
-# after-startup-command so it survives restarting AeroSpace. This has to run
-# after stowing, or AutoRaise starts before ~/.config/AutoRaise/config exists
-# and comes up with defaults instead.
-info "Starting AutoRaise service (focus follows mouse)..."
-run brew services start dimentium/autoraise/autoraise \
-    || FAILURES+=("AutoRaise service did not start: brew services start dimentium/autoraise/autoraise")
-
 # Desktop settings are opt-in. They overwrite the wallpaper and restart Dock and
 # Finder, which is right on a fresh machine and unwelcome on a re-run.
 if [ "$WITH_DESKTOP" = true ]; then
@@ -567,7 +554,7 @@ echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal (zsh is the login shell; ~/.zshrc is linked)"
 echo "  2. ctrl-alt-enter opens Ghostty once AeroSpace is running"
-echo "  3. Grant Accessibility to AeroSpace AND AutoRaise:"
+echo "  3. Grant Accessibility to AeroSpace:"
 echo "     System Settings > Privacy & Security > Accessibility"
 echo "  4. Open Karabiner-Elements once: allow its driver and Input Monitoring"
 echo "  5. Check the result: $DOTFILES_DIR/scripts/verify.sh"
@@ -577,10 +564,9 @@ echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
 echo "  - duf, git-delta, procs"
 echo "  - neovim, git, clang-format, llvm (provides lldb)"
 echo "  - starship prompt, ghostty terminal (ctrl-alt-enter)"
-echo "  - AeroSpace tiling WM (ctrl-alt-hjkl focus, ctrl-alt-1-9 workspaces)"
+echo "  - AeroSpace tiling WM (ctrl-alt-hjkl focus, ctrl-alt-1-9 workspaces, focus follows mouse)"
 echo "  - sketchybar status bar (Nord theme, workspace indicators)"
 echo "  - JankyBorders (active window glow, Nord blue)"
-echo "  - AutoRaise (focus follows mouse, like Hyprland)"
 echo "  - Karabiner-Elements (Caps Lock: Escape tapped, Control held)"
 echo "  - Touch ID for sudo, also inside tmux"
 echo ""

@@ -205,17 +205,13 @@ stow list.
   (sketchybar-app-font, map vendored as `plugins/icon_map.sh`) and hide when empty
   (auto-launched by AeroSpace).
   Shares waybar's colour contract — see `doc/status-bar-theming.md`
-- **autoraise**: focus-follows-mouse. AeroSpace had no setting for this before 0.21
-  (0.21's `focus-follows-mouse.enabled` is untried here), so AutoRaise
-  (`brew tap dimentium/autoraise`) supplies it, configured in
-  `~/.config/AutoRaise/config` and run as a launchd service
-  (`brew services start dimentium/autoraise/autoraise`) so it survives an
-  AeroSpace restart. Do not also start it from `after-startup-command` — that
-  would leave two instances running.
-  Note that `on-focus-changed = ['move-mouse window-lazy-center']` in
-  `aerospace.toml` is the *opposite* direction (mouse follows focus) and must stay:
-  it keeps the cursor on the keyboard-focused window so AutoRaise does not
-  immediately steal focus back. Needs Accessibility permission.
+- **Focus follows mouse** is AeroSpace's own, `focus-follows-mouse.enabled = true`
+  in `aerospace.toml` (0.21+). It replaced AutoRaise on 2026-10-12; don't bring
+  AutoRaise back alongside it, two of them fight over focus (`verify.sh`
+  warns if one still runs). `on-focus-changed = ['move-mouse window-lazy-center']`
+  is the *opposite* direction (mouse follows focus) and must stay: it keeps
+  the cursor on the keyboard-focused window so focus-follows-mouse doesn't
+  take focus straight back.
 - **yazi**: Terminal file manager (Finder replacement), macOS and Arch. `y` in
   zsh launches it and leaves the shell where you quit. No theme file: the
   default theme uses ANSI colours, which the terminals map to Nord. Config keys

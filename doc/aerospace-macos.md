@@ -22,18 +22,16 @@ Keys).
 
 ## What actually runs
 
-Four processes, started three different ways:
+Three processes, started two ways:
 
 | Process | What it does | How it starts |
 |---|---|---|
 | AeroSpace | Tiles windows, owns the keybinds | `start-at-login = true` |
 | sketchybar | Status bar | AeroSpace `after-startup-command` |
 | borders | 5pt rounded border: cyan on the active window, grey on the rest | AeroSpace `after-startup-command` |
-| AutoRaise | Focus follows mouse | launchd service (`brew services`) |
 
-AutoRaise is deliberately *not* in `after-startup-command`. As a launchd service
-it starts at login on its own and survives restarting AeroSpace; listing it in
-both places would leave two instances polling the cursor. See
+Focus follows the mouse through AeroSpace itself (see below); until
+2026-10-12 a fourth process, AutoRaise, did that. See
 [status-bar-theming.md](status-bar-theming.md) for the bar itself.
 
 ## Keybindings
@@ -197,20 +195,20 @@ killall AeroSpace && open -a AeroSpace
 ```
 
 sketchybar and borders detect a running instance and will not duplicate when
-`after-startup-command` fires again. AutoRaise is untouched by this entirely,
-since launchd owns it.
+`after-startup-command` fires again.
 
 Expect to run `flatten-workspace-tree` afterwards — unwinding the collapse tends
 to leave nested containers behind.
 
 ## Focus follows mouse
 
-This comes from AutoRaise, not AeroSpace. AeroSpace had no focus-follows-mouse
-setting before 0.21. 0.21 added `focus-follows-mouse.enabled`, which is untried
-here; whether it could replace AutoRaise (and its Accessibility trouble on
-upgrades) is in the todo list.
+AeroSpace does it itself: `focus-follows-mouse.enabled = true` (added in
+0.21). Until 2026-10-12 a separate app, AutoRaise, did it; it was dropped
+once the built-in one felt the same, which removed a service, a config file
+and an Accessibility re-grant on every upgrade. What was lost: holding
+Control no longer pauses it, and there's no delay to tune.
 
-Confusingly, `aerospace.toml` does contain:
+Next to it, `aerospace.toml` contains:
 
 ```toml
 on-focus-changed = ['move-mouse window-lazy-center']
@@ -218,11 +216,8 @@ on-focus-changed = ['move-mouse window-lazy-center']
 
 That is the **opposite** direction — mouse follows focus — and it must stay.
 It warps the cursor onto whatever window you focus by keyboard. Without it the
-cursor would still be sitting over the *previous* window, and AutoRaise would
-immediately take focus straight back.
-
-Hold `control` to suspend focus-follows-mouse temporarily. Configuration and
-options are in the [README](../README.md#macos-m1m2intel).
+cursor would still be sitting over the *previous* window, and
+focus-follows-mouse would immediately take focus straight back.
 
 ## Gaps
 
