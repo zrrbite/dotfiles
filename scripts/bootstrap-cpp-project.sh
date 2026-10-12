@@ -74,27 +74,30 @@ if [ -f "$TEMPLATE_DIR/.nvim.lua.template" ]; then
 fi
 
 # Create minimal source files
-cat > "$PROJECT_DIR/src/main.cpp" << 'EOF'
+# Names are filled in while writing rather than with `sed -i`, whose syntax
+# differs between GNU and macOS (on a Mac this script stopped right here).
+cat > "$PROJECT_DIR/src/main.cpp" << EOF
 #include <iostream>
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello from PROJECT_NAME!" << std::endl;
+    std::cout << "Hello from $PROJECT_NAME!" << std::endl;
     return 0;
 }
 EOF
-sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" "$PROJECT_DIR/src/main.cpp"
 info "  ✓ src/main.cpp"
 
-cat > "$PROJECT_DIR/include/${PROJECT_NAME}.h" << 'EOF'
-#ifndef PROJECT_NAME_H
-#define PROJECT_NAME_H
+# A header guard must be an identifier: my-renderer becomes MY_RENDERER_H.
+# (tr, not ${PROJECT_NAME^^}, which macOS's bash 3.2 doesn't have.)
+GUARD="$(printf '%s' "$PROJECT_NAME" | tr '[:lower:]' '[:upper:]' | tr -c 'A-Z0-9' '_')_H"
+cat > "$PROJECT_DIR/include/${PROJECT_NAME}.h" << EOF
+#ifndef $GUARD
+#define $GUARD
 
 // Add your headers here
 
-#endif // PROJECT_NAME_H
+#endif // $GUARD
 EOF
-sed -i "s/PROJECT_NAME/${PROJECT_NAME^^}/g" "$PROJECT_DIR/include/${PROJECT_NAME}.h"
 info "  ✓ include/${PROJECT_NAME}.h"
 
 # Create README
@@ -154,6 +157,11 @@ info "  ✓ .gitignore"
 
 # Initialize git repository
 cd "$PROJECT_DIR"
+# The global pre-commit hook refuses C++ that clang-format would change, so
+# format the generated files to the user's style before the first commit.
+if command -v clang-format >/dev/null 2>&1; then
+    clang-format -i src/main.cpp "include/${PROJECT_NAME}.h"
+fi
 git init
 git add .
 git commit -m "Initial commit: Bootstrap $PROJECT_NAME
