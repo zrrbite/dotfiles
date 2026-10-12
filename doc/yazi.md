@@ -31,7 +31,8 @@ a mark, and `x` turns files red without deleting anything.
 | Every key | `F1` (`fn+F1` on a laptop), or `~` |
 
 yazi works well in its own Ghostty window, outside tmux: put that window on a
-workspace of its own (`⌃⌥⇧ 5`) and reach it with `⌃⌥ 5`.
+workspace of its own (`⌃⌥⇧ 4`) and reach it with `⌃⌥ 4`. The layout in
+use: terminal and tmux on 1, browser on 2, chat on 3, yazi on 4.
 
 ## Get around
 
