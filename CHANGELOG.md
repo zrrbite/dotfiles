@@ -23,6 +23,33 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: OrbStack replaces Docker Desktop (same docker commands)
+
+### On other machines
+- **macOS:** `./install_darwin.sh` (or `brew install --cask orbstack`), then
+  open OrbStack once: allow its helper (password; it links
+  `/usr/local/bin/docker`), and it adds a line to `~/.zprofile`, a real file,
+  not the repo. Migrating from Docker Desktop is optional: images can be
+  pulled or rebuilt (devbox: its own build). Check: `docker context show`
+  says `orbstack`, `scripts/test-in-docker.sh debian:12` passes.
+- **Then, when you're sure:** quit Docker Desktop and remove it,
+  `brew uninstall --cask docker-desktop`, and its data,
+  `~/Library/Containers/com.docker.docker` (14 GB on Martin's MacBook). Not
+  before: that folder holds everything Docker Desktop had.
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `orbstack` cask in `install_darwin.sh`; row in `doc/tools.md`.
+- `scripts/test-in-docker.sh`: OrbStack's `docker exec` runs with umask 0000
+  (Docker Desktop's had 022), which made the test's sudoers file world
+  writable; it sets 022 now. devbox is unaffected (`docker compose run`).
+
+### What the repo can't do
+- OrbStack is free for personal use only; a work Mac needs a licence, or
+  keep Docker Desktop there.
+
+---
+
 ## 2026-10-12: git: upstream on first push, the diff in the commit editor, version-sorted tags
 
 ### On other machines

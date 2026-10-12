@@ -225,6 +225,12 @@ BREW_CASKS=(
     # password.
     fuse-t
     macos-fuse-t/cask/fuse-t-sshfs
+    # Docker (docker, docker compose) for devbox and scripts/test-in-docker.sh.
+    # Replaced Docker Desktop on 2026-10-12: same commands, a lighter VM.
+    # Free for personal use; work use needs a licence. Its first start asks
+    # for the password (a helper links /usr/local/bin/docker) and adds a line
+    # to ~/.zprofile.
+    orbstack
 )
 
 # `brew install <already-installed-but-outdated>` upgrades it. That makes a
