@@ -1,6 +1,6 @@
 ---
 name: remote-machine
-description: Use when working with files, builds or tests on another machine over SSH (such as the offline work Mac), when the user names a remote host alias, or with paths under ~/remote/. Covers the `remote` command, the ~/remote/<host> mount, and what needs the user's approval. macOS and Linux only.
+description: Use when working with files, builds or tests on another machine over SSH (such as the offline work Mac), when the user names a remote host alias, or with paths under ~/remote/. Covers the `remote` command, the ~/remote/<host> mount, and what needs the user's approval. macOS only: `remote` is installed only there.
 ---
 
 # Working on a remote machine

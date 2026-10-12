@@ -23,6 +23,31 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: `remote`: the review's seven leftovers
+
+### On other machines
+- **macOS:** `git pull`. `./install_darwin.sh` adds `jq` (macOS 14 and
+  older have none).
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `remote`'s privacy hint fired whenever output contained "Operation not
+  permitted", including a file that merely said so. It now reads only the
+  remote's error stream (stdout and stderr still show as they arrive).
+- `scripts/claude-remote-permissions.sh` left a temp file next to
+  `settings.json` when `jq` failed; it's removed on any exit now.
+- `scripts/remote-test-host.sh down` left the blank line `up` had written, one
+  more per cycle; it removes it now (an up/down cycle restores the file
+  exactly). Its functions can be sourced for tests.
+- `scripts/test-remote.sh`'s build group left `hello.cpp` edited and the
+  mount up when interrupted; it starts from the committed file and cleans up
+  on Ctrl+C or a kill.
+- `jq` is in the macOS installer; the skill says "macOS only" (it said Linux
+  too); `REMOTE_SSH_CONFIG` is explained where it's used.
+- `scripts/test-remote.sh`: 97 checks, all pass.
+
+---
+
 ## 2026-10-12: scripts/update.sh, the upgrade checklist as one command
 
 ### On other machines

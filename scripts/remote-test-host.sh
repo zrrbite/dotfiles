@@ -41,6 +41,21 @@ run() {
 }
 remote_login_on() { launchctl print system/com.openssh.sshd >/dev/null 2>&1; }
 
+# Remove the workmac-test block from an ssh config, and the blank line `up`
+# put before it, so an up/down cycle leaves the file as it was.
+remove_ssh_block() { # $1: the ssh config file
+    local tmp
+    tmp="$(mktemp)"
+    awk -v b="$BEGIN_MARK" -v e="$END_MARK" '
+        $0 == b { skip = 1; if (held && prev == "") held = 0; next }
+        $0 == e { skip = 0; next }
+        skip { next }
+        { if (held) print prev; prev = $0; held = 1 }
+        END { if (held) print prev }' "$1" > "$tmp"
+    cat "$tmp" > "$1"   # keeps the file's owner and mode
+    rm -f "$tmp"
+}
+
 write_project() { # $1: an empty folder to fill
     local d="$1/src/hello"
     mkdir -p "$d" "$1/Documents"
@@ -167,22 +182,18 @@ down() {
     if grep -qF "$BEGIN_MARK" "$SSH_CONFIG" 2>/dev/null; then
         if [ "$DRY_RUN" = true ]; then echo "[dry] remove the workmac-test block from $SSH_CONFIG"
         else
-            local tmp
-            tmp="$(mktemp)"
-            awk -v b="$BEGIN_MARK" -v e="$END_MARK" '
-                $0 == b { skip = 1; next }
-                $0 == e { skip = 0; next }
-                !skip' "$SSH_CONFIG" > "$tmp"
-            cat "$tmp" > "$SSH_CONFIG"   # keeps the file's owner and mode
-            rm -f "$tmp"
+            remove_ssh_block "$SSH_CONFIG"
         fi
     fi
     run rm -f "$KEY" "$KEY.pub" "$HOME/.ssh/known_hosts_remote_test"
     echo "Done. Remote Login is off."
 }
 
-case "$ACTION" in
-up) up ;;
-down) down ;;
-*) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
-esac
+# Run only when executed, so a test can source the functions above.
+if [ "${BASH_SOURCE[0]}" = "$0" ]; then
+    case "$ACTION" in
+    up) up ;;
+    down) down ;;
+    *) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 2 ;;
+    esac
+fi

@@ -139,6 +139,13 @@ t_hint() {
         return
     fi
     expect_has "privacy hint" "$out" "Allow full disk access for remote users"
+    # The hint is about errors: a file that merely contains the words, read
+    # successfully, mustn't trigger it.
+    ssh -n $H 'printf "log: Operation not permitted (from an old run)\n" > src/hello/oplog.txt'
+    out="$(R $H cat src/hello/oplog.txt 2>&1)"
+    expect_has "a file mentioning the error: its text shows" "$out" "log: Operation not permitted"
+    expect_lacks "a file mentioning the error: no privacy hint" "$out" "Allow full disk access"
+    ssh -n $H 'rm -f src/hello/oplog.txt'
 }
 
 t_mount() {
@@ -220,6 +227,11 @@ PY
 
 t_build() {
     local out mp="$HOME/remote/$H"
+    # The tests below edit hello.cpp through the mount. Start from the
+    # committed file, in case an earlier run was cut short, and put it back
+    # (and unmount) if this one is: Ctrl+C, or a kill.
+    ssh -n $H 'git -C src/hello checkout -- hello.cpp' 2>/dev/null
+    trap 'ssh -n $H "git -C src/hello checkout -- hello.cpp" >/dev/null 2>&1; R $H unmount >/dev/null 2>&1; exit 130' INT TERM
     out="$(ssh -n $H 'command -v cmake || echo NO-CMAKE' 2>&1)"
     expect_has "bare PATH has no cmake (the problem the prelude fixes)" "$out" "NO-CMAKE"
     expect_rc "build with presets" 0 R $H build src/hello
@@ -247,6 +259,7 @@ t_build() {
     expect_rc "restored: build passes again" 0 R $H build src/hello
     expect_rc "restored: test passes again" 0 R $H test src/hello
     R $H unmount >/dev/null
+    trap - INT TERM
     out="$(ssh -n $H 'ls -a src/hello' 2>&1)"
     expect_lacks "unmount after the build: no ._hello.cpp left" "$out" "._hello.cpp"
 }

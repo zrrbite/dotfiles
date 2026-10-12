@@ -19,8 +19,8 @@ if ! jq -e 'type == "object"' "$FILE" >/dev/null 2>&1; then
     exit 1
 fi
 tmp="$(mktemp "$FILE.XXXXXX")"
+trap 'rm -f "$tmp"' EXIT   # also when jq fails, which set -e turns into an exit
 jq '(.permissions.allow // []) as $have
     | .permissions.allow = $have + (["Bash(remote:*)", "Read(~/remote/**)"]
         | map(select(. as $r | ($have | index([$r])) == null)))' "$FILE" > "$tmp"
 cat "$tmp" > "$FILE"   # keeps the file's owner and mode
-rm -f "$tmp"

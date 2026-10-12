@@ -173,6 +173,7 @@ BREW_PACKAGES=(
     fastfetch
     tree
     wget
+    jq         # scripts/claude-remote-permissions.sh and verify.sh; macOS 15+ ships one, older ones don't
 
     # Development
     neovim

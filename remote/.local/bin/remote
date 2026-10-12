@@ -30,6 +30,9 @@ MOUNT_ROOT="${REMOTE_MOUNT_ROOT:-$HOME/remote}"
 TIMEOUT="${REMOTE_TIMEOUT:-5}"
 SSH=(ssh -n -o BatchMode=yes -o ConnectTimeout=5)
 SSHFS_CFG=()
+# REMOTE_SSH_CONFIG swaps in another ssh config: scripts/test-remote.sh uses
+# it for hosts that are unreachable or reached through a relay it can kill,
+# without touching ~/.ssh/config.
 if [ -n "${REMOTE_SSH_CONFIG:-}" ]; then
     SSH+=(-F "$REMOTE_SSH_CONFIG")
     SSHFS_CFG=(-F "$REMOTE_SSH_CONFIG")
@@ -61,19 +64,21 @@ check_path() {
 # shellcheck disable=SC2016  # expanded on the remote
 PRELUDE='for d in /usr/local/bin /opt/homebrew/bin; do [ -d "$d" ] && PATH="$d:$PATH"; done; export PATH;'
 
-# Run a command on the host. Output (stdout and stderr together) shows as it
-# arrives and is kept, so a failure can be explained afterwards.
+# Run a command on the host. Both output streams show as they arrive; the
+# error stream is also kept, so a failure can be explained afterwards. Only
+# errors count: a file that merely mentions "Operation not permitted" is text.
+# (fd 3 carries stdout around the pipe, which takes stderr alone.)
 run_remote() {
-    local out rc
-    out="$(mktemp)"
-    "${SSH[@]}" "$HOST" "$PRELUDE $1" 2>&1 | tee "$out"
-    rc=${PIPESTATUS[0]}
+    local err rc
+    err="$(mktemp)"
+    { "${SSH[@]}" "$HOST" "$PRELUDE $1" 2>&1 1>&3 3>&- | tee "$err" >&2 3>&-
+      rc=${PIPESTATUS[0]}; } 3>&1
     if [ "$rc" -eq 255 ]; then
         echo "remote: could not reach $HOST over ssh (is it on and connected?)" >&2
-    elif grep -q 'Operation not permitted' "$out"; then
+    elif grep -q 'Operation not permitted' "$err"; then
         echo "remote: \"Operation not permitted\" on a Mac remote is usually its privacy protection of ~/Documents, ~/Desktop and ~/Downloads over SSH. On the remote: System Settings > General > Sharing > Remote Login (i) > Allow full disk access for remote users." >&2
     fi
-    rm -f "$out"
+    rm -f "$err"
     return "$rc"
 }
 
