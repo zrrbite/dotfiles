@@ -169,6 +169,17 @@ lineNumber = true
 
 [push]
 default = current
+# The first push of a new branch also sets its upstream, so it needs no
+# --set-upstream, and `git status` shows ahead/behind from then on.
+autoSetupRemote = true
+
+[commit]
+# The editor shows the diff being committed, below the message.
+verbose = true
+
+[tag]
+# v1.10 after v1.9, not between v1.1 and v1.2.
+sort = version:refname
 
 [rebase]
 autosquash = true
@@ -188,6 +199,13 @@ rebase = true
 [rerere]
 enabled = true
 autoupdate = true
+
+# Deliberately not set (2026-10-12):
+# - rebase.updateRefs: a rebase would also move backup/<branch>, made before
+#   rewriting history (claude/.claude/CLAUDE.md), so the backup stops being one.
+# - core.fsmonitor / core.untrackedCache: they only pay off in big repos, and
+#   on the sshfs mounts in ~/remote every git command then warns. Turn them on
+#   per repo where git status is slow: git config core.fsmonitor true
 
 [gc]
 auto = 256

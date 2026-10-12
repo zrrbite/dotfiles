@@ -23,6 +23,23 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: git: upstream on first push, the diff in the commit editor, version-sorted tags
+
+### On other machines
+- **Every machine with the stowed `~/.gitconfig`:** `git pull`; nothing else.
+  The settings apply at once.
+
+### What changed
+`git/.gitconfig`: `push.autoSetupRemote` (a new branch's first push sets its
+upstream), `commit.verbose` (the editor shows the diff), `tag.sort =
+version:refname`. Two settings are written down as deliberately left out:
+`rebase.updateRefs` (it would move the `backup/<branch>` the history rules
+make before a rebase) and `core.fsmonitor`/`core.untrackedCache` (only worth
+it in big repos, and they warn on every git command inside the `~/remote`
+sshfs mounts).
+
+---
+
 ## 2026-10-08: Clipboard history on ⌃⌥⇧V, lazygit on trial (`Ctrl+a g` in tmux, `Space gg` in nvim, `doc/lazygit.md`)
 
 ### On other machines
