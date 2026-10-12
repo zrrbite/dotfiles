@@ -23,6 +23,30 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: C++ projects get CMake presets and ccache; the bootstrap script works on macOS again
+
+### On other machines
+- **macOS:** `brew install ccache`, or re-run `./install_darwin.sh`. Nothing
+  else: existing projects are untouched, new ones get the presets.
+- **Arch, Debian, Windows:** nothing. Their installers have no cmake or ninja
+  either, so ccache alone would do nothing there.
+
+### What changed
+- `templates/cpp-project/`: a `CMakePresets.json` (`debug` into `build/`,
+  `release`, `asan` with AddressSanitizer and UBSan); its `CMakeLists.txt`
+  uses ccache when installed, and a preset's configure links
+  `./compile_commands.json` to its build (the manual `ln -s` step is gone).
+  The project `CLAUDE.md` template shows the preset commands.
+- `scripts/bootstrap-cpp-project.sh` **failed on macOS** at its first `sed -i`
+  (GNU syntax), and its header guard needed bash 4 and broke on a hyphenated
+  name. It now writes names directly, makes `my-demo` → `MY_DEMO_H`,
+  clang-formats the generated files so the first commit passes the hook, and
+  prints the preset commands.
+- `ccache` in `install_darwin.sh`. The same setup went into bullet-ble first
+  (its `50a8b27`): a from-scratch rebuild went from 17 s to 3 s.
+
+---
+
 ## 2026-10-12: OrbStack replaces Docker Desktop (same docker commands)
 
 ### On other machines

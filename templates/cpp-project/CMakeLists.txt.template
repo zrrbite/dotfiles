@@ -9,6 +9,23 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Export compile_commands.json for clangd/LSP
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# clangd (nvim) and the pre-push hook's clang-tidy read compile_commands.json
+# at the project root. The presets (CMakePresets.json) turn this on, so
+# configuring one points that link at its build.
+option(LINK_COMPILE_COMMANDS "Link ./compile_commands.json to this build's" OFF)
+if(LINK_COMPILE_COMMANDS)
+    file(CREATE_LINK "${CMAKE_BINARY_DIR}/compile_commands.json"
+        "${CMAKE_SOURCE_DIR}/compile_commands.json" SYMBOLIC)
+endif()
+
+# Compile through ccache when it's installed: a rebuild after a clean or a
+# branch switch reuses what was compiled before. A launcher given on the
+# command line wins.
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM AND NOT CMAKE_CXX_COMPILER_LAUNCHER)
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+endif()
+
 # Build type defaults
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)

@@ -59,7 +59,7 @@ and Raspberry Pi.
 | OrbStack | Docker on macOS (`docker`, `docker compose`) for devbox and `scripts/test-in-docker.sh`; replaced Docker Desktop 2026-10-12 | ✓ | – | – | – |
 | lazygit | Terminal UI for git: stage lines, fixup, reorder, reword; `Ctrl+a g` in tmux, `Space gg` in nvim (`doc/lazygit.md`; on trial since 2026-10-08) | ✓ | – | – | – |
 | remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
-| cmake + ninja | C++ builds (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
+| cmake + ninja + ccache | C++ builds with presets (`cmake --preset debug`) and a compiler cache (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |
 | gdb (+ dashboard) / lldb | Debuggers (lldb on macOS, via llvm) | lldb | gdb | gdb | – |
 | node | TypeScript language server for nvim | ✓ | – | – | – |

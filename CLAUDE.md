@@ -340,7 +340,8 @@ Use the bootstrap script to create new projects with optimal Claude Code workflo
 **What it creates:**
 - **CLAUDE.md** - Project context for Claude Code (architecture, build commands, common tasks)
 - **.clangd** - LSP configuration for IDE features
-- **CMakeLists.txt** - With `CMAKE_EXPORT_COMPILE_COMMANDS=ON` for LSP
+- **CMakeLists.txt** - With `CMAKE_EXPORT_COMPILE_COMMANDS=ON` for LSP, and ccache when installed
+- **CMakePresets.json** - `debug` (into `build/`), `release`, `asan` (AddressSanitizer + UBSan); configuring one links `./compile_commands.json` to its build
 - **.nvim.lua** - Project-specific debug configurations (DAP)
 - **Directory structure** - src/, include/, tests/, doc/, build/
 - **Git repository** - Initialized with first commit
@@ -350,10 +351,9 @@ Use the bootstrap script to create new projects with optimal Claude Code workflo
 **After creating a project:**
 1. `cd ~/dev/my-project`
 2. Edit `CLAUDE.md` with your project specifics
-3. `cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON`
-4. `cmake --build build`
-5. `ln -s build/compile_commands.json .` (for LSP)
-6. `nvim .` (opens with debug configs ready)
+3. `cmake --preset debug` (also links `compile_commands.json` for LSP)
+4. `cmake --build --preset debug && ctest --preset debug`
+5. `nvim .` (opens with debug configs ready)
 
 **Templates are located at:** `~/dotfiles/templates/cpp-project/`
 - Customize templates to match your preferred project structure

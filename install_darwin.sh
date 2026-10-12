@@ -183,6 +183,9 @@ BREW_PACKAGES=(
     # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
     cmake
     ninja
+    # Compiler cache: CMake projects use it when present (the bootstrap
+    # template and bullet-ble do), so a rebuild after a clean takes seconds.
+    ccache
     clang-format
     # lldb ships inside the llvm formula; there is no `lldb` formula, and naming
     # one makes the whole `brew install` below fail under `set -e`.

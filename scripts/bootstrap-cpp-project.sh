@@ -67,6 +67,12 @@ if [ -f "$TEMPLATE_DIR/CMakeLists.txt.template" ]; then
     info "  ✓ CMakeLists.txt"
 fi
 
+# Copy CMakePresets.json: debug (build/), release, asan
+if [ -f "$TEMPLATE_DIR/CMakePresets.json" ]; then
+    cp "$TEMPLATE_DIR/CMakePresets.json" "$PROJECT_DIR/CMakePresets.json"
+    info "  ✓ CMakePresets.json"
+fi
+
 # Copy .nvim.lua template
 if [ -f "$TEMPLATE_DIR/.nvim.lua.template" ]; then
     sed "s/PROJECT_NAME/$PROJECT_NAME/g" "$TEMPLATE_DIR/.nvim.lua.template" > "$PROJECT_DIR/.nvim.lua"
@@ -107,8 +113,9 @@ cat > "$PROJECT_DIR/README.md" << EOF
 ## Build
 
 \`\`\`bash
-cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-cmake --build build -j8
+cmake --preset debug            # or release, or asan (sanitizers)
+cmake --build --preset debug
+ctest --preset debug
 \`\`\`
 
 ## Run
@@ -125,8 +132,10 @@ info "  ✓ README.md"
 
 # Create .gitignore
 cat > "$PROJECT_DIR/.gitignore" << 'EOF'
-# Build artifacts
+# Build artifacts (the presets' build folders)
 build/
+build-release/
+build-asan/
 *.o
 *.a
 *.so
@@ -176,14 +185,15 @@ info ""
 echo "Next steps:"
 echo "  1. cd $PROJECT_DIR"
 echo "  2. Edit CLAUDE.md with project details"
-echo "  3. cmake -B build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
-echo "  4. cmake --build build"
+echo "  3. cmake --preset debug          # also points ./compile_commands.json at build/"
+echo "  4. cmake --build --preset debug && ctest --preset debug"
 echo "  5. nvim .  # Opens project with debug configs ready"
 echo ""
 echo "The project includes:"
 echo "  - CLAUDE.md for Claude Code context"
 echo "  - .clangd for LSP configuration"
 echo "  - .nvim.lua for debug configurations"
-echo "  - CMakeLists.txt with compile_commands.json export"
+echo "  - CMakeLists.txt with compile_commands.json export, and ccache when installed"
+echo "  - CMakePresets.json: debug (build/), release, asan (AddressSanitizer + UBSan)"
 echo "  - Git repository initialized"
 echo ""

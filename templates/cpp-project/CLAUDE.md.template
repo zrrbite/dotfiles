@@ -28,11 +28,13 @@ Example: "A lightweight tile-based map renderer using Skia. Converts OpenStreetM
 ## Build Commands
 
 ```bash
-# Configure
-cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-
-# Build
-cmake --build build -j8
+# Configure and build with the presets (CMakePresets.json). debug builds
+# into build/; release into build-release/; asan into build-asan/, with
+# AddressSanitizer and UBSan. Configuring also points ./compile_commands.json
+# at that build, for clangd and clang-tidy.
+cmake --preset debug
+cmake --build --preset debug
+ctest --preset debug
 
 # Install (optional)
 cmake --install build --prefix ~/.local
