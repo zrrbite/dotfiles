@@ -77,8 +77,6 @@ app settings outside stow, and manual installs.
   says `orbstack`, `scripts/test-in-docker.sh debian:12` passes.
 - **Then, when you're sure:** quit Docker Desktop and remove it (done on
   Martin's MacBook 2026-10-12):
-  0. Afterwards `scripts/verify.sh` names a dangling zsh completion it
-     leaves (`_docker_compose`); `rm` it.
   1. `brew uninstall --cask docker-desktop`. **It also deletes
      `/usr/local/bin/docker` and `docker-credential-osxkeychain`, which
      OrbStack had taken over.** Quit and reopen OrbStack; it puts them back.
@@ -88,6 +86,9 @@ app settings outside stow, and manual installs.
   3. `rm -rf ~/Library/Containers/com.docker.docker` (its data, 14 GB here;
      macOS keeps an empty folder with one protected file, which is harmless).
      Not before you're sure: it holds everything Docker Desktop had.
+  4. `scripts/verify.sh` names a zsh completion the uninstall left dangling
+     (`_docker_compose`, which makes new shells print a compinit error);
+     `rm` it.
 - **Arch, Debian, Windows:** nothing.
 
 ### What changed
