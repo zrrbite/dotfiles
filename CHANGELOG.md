@@ -23,6 +23,25 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-12: Versions and upgrading (doc/tools.md); verify.sh finds dangling zsh completions
+
+### On other machines
+- **Nothing to do.** `scripts/verify.sh` now warns when Homebrew's zsh
+  completion folder holds links to something removed; if it does, run the
+  `rm` lines it prints. (Removing Docker Desktop left
+  `/opt/homebrew/share/zsh/site-functions/_docker_compose`, and every new
+  shell printed a `compinit` error.)
+
+### What changed
+- `doc/tools.md`, "Versions and upgrading": the version each config was last
+  checked against, what to re-check after a big upgrade (AeroSpace needs a
+  restart, AutoRaise may lose Accessibility, yazi renames keys, clang-format
+  reformats, TypeScript stays on 6, Hyprland 0.57), and an upgrade checklist
+  for a Mac.
+- `scripts/verify.sh`: the dangling-completion check (macOS).
+
+---
+
 ## 2026-10-12: C++ projects get CMake presets and ccache; the bootstrap script works on macOS again
 
 ### On other machines
@@ -58,6 +77,8 @@ app settings outside stow, and manual installs.
   says `orbstack`, `scripts/test-in-docker.sh debian:12` passes.
 - **Then, when you're sure:** quit Docker Desktop and remove it (done on
   Martin's MacBook 2026-10-12):
+  0. Afterwards `scripts/verify.sh` names a dangling zsh completion it
+     leaves (`_docker_compose`); `rm` it.
   1. `brew uninstall --cask docker-desktop`. **It also deletes
      `/usr/local/bin/docker` and `docker-credential-osxkeychain`, which
      OrbStack had taken over.** Quit and reopen OrbStack; it puts them back.

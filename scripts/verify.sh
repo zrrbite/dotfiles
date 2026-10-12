@@ -277,6 +277,17 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     else
         pass "Karabiner-Elements runs with its driver (Caps Lock: Escape / Control)"
     fi
+    # A cask that's removed (Docker Desktop, 2026-10-12) can leave its zsh
+    # completion linked into Homebrew's folder; every new shell then prints
+    # "compinit: no such file or directory". WARN, and name the links.
+    site="$(brew --prefix 2>/dev/null)/share/zsh/site-functions"
+    dangling="$(find "$site" -maxdepth 1 -type l ! -exec test -e {} \; -print 2>/dev/null)"
+    if [ -z "$dangling" ]; then
+        pass "no dangling zsh completions in $site"
+    else
+        warn "dangling zsh completions (new shells print a compinit error); remove them:"
+        while IFS= read -r link; do echo "       rm $link"; done <<< "$dangling"
+    fi
     # WARN: setting it up needs the password, which a check can't ask for.
     if "$DOTFILES_DIR/scripts/touch-id-sudo.sh" --check >/dev/null; then
         pass "Touch ID for sudo is configured, also for tmux (/etc/pam.d/sudo_local)"
