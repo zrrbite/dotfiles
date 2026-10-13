@@ -409,6 +409,13 @@ cd ~/dotfiles && git pull --ff-only
 For config-only changes, with no new tools, `./reload.sh` is enough: pull,
 re-stow and reload the desktop.
 
+**macOS set up before 2026-10-12: upgrade AeroSpace first.** The pulled
+`aerospace.toml` uses keys AeroSpace only knows from 0.21 (`config-version =
+2`, `focus-follows-mouse`); an older one rejects the whole file at its next
+reload or restart, and every key binding with it. The installer doesn't
+upgrade what's installed, so: `brew upgrade --cask aerospace`, then
+`killall AeroSpace && open -a AeroSpace`. `verify.sh` fails until it's done.
+
 **3. Check, and fix anything folded into the repo.** Run
 `scripts/verify.sh`. Older installers could leave `~/.claude` or
 `~/.config/fastfetch` as a symlink into the repo; `verify.sh` reports that as
@@ -426,6 +433,51 @@ column).
 - Open a new shell.
 - In Ghostty, reload with `⌘⇧,`.
 - `aerospace reload-config` and `sketchybar --reload`, or let `reload.sh` do it.
+
+### Handing a Mac to an agent
+
+To bring another of Martin's Macs up to date with an AI agent (Claude Code
+on that Mac, started in its dotfiles folder), paste:
+
+```
+This is my second Mac. Sync it with my dotfiles (github.com/zrrbite/dotfiles)
+so it matches my main MacBook. Read AGENTS.md, then "Handing a Mac to an
+agent" and "Updating a machine that already has it" in
+doc/applying-the-setup.md, and follow them. If there's no clone yet, follow
+Path A instead. Ask me before anything the doc says to ask about.
+```
+
+For the agent:
+
+1. **Find the starting point:** `scripts/verify.sh` says when this Mac was
+   last synced. No record: every `CHANGELOG.md` entry since 2026-10-05
+   ("the big one") is new.
+2. **Read all of those entries before doing any of them.** Later entries
+   undo earlier ones; skip the steps for what was removed since: AutoRaise
+   (AeroSpace does focus-follows-mouse itself since 0.21), Alacritty on macOS
+   (Ghostty is the terminal), Docker Desktop (OrbStack replaced it). Then do
+   the remaining "On other machines" steps, oldest first.
+3. **Steps 1 and 1b above happen before `git pull`.** Right after pulling,
+   AeroSpace to 0.21+ (the paragraph under step 2).
+4. **Ask Martin before:** desktop settings (`scripts/macos-defaults.sh`,
+   `scripts/finder-defaults.sh`, `--with-desktop`), removing Docker Desktop
+   or anything else that deletes data, and `scripts/update.sh` (it upgrades
+   everything; save tmux first with `Ctrl+a Ctrl+s`).
+5. **Collect what only Martin can do** ("Human-only, after the installer
+   (macOS)": passwords, Accessibility, Karabiner's driver, a fingerprint,
+   OrbStack's first start, Raycast) into one list, and give it to him as you
+   reach it.
+6. **Outside this repo:** clone `github.com/zrrbite/todo` to
+   `~/Development/todo` and register its todo-brief hook ("Claude Code"
+   below). Ask which other repos under `~/Development` he wants pulled.
+7. **Done** is `scripts/verify.sh` exiting 0, plus Martin confirming: tapping
+   Caps Lock is Escape; `sudo -k; sudo true` in a tmux pane asks for a
+   fingerprint; focus follows the mouse; `⌃⌥⇧V` opens clipboard history.
+   Log the sync in the todo repo.
+
+What doesn't travel: Claude's memory notes on the other Mac
+(`~/.claude/projects/<project>/memory/`, per machine; the rules that matter
+are in CLAUDE.md), and per-machine choices such as the `remote` test host.
 
 **Windows:** do step 1 the same way in Git Bash or PowerShell, then
 `git pull`, then `.\stow_windows.ps1 -DryRun <packages>` and

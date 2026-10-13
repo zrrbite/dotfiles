@@ -254,6 +254,19 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
             warn "$proc is not running (AeroSpace starts it at login; launch AeroSpace once)"
         fi
     done
+    # aerospace.toml uses config-version 2 and focus-follows-mouse, which
+    # AeroSpace before 0.21 doesn't know: it would refuse the whole file at the
+    # next reload or restart, and every binding with it. The installer doesn't
+    # upgrade what's installed, so a Mac set up earlier must do it by hand.
+    # (AEROSPACE_APP is for the tests.)
+    aero_app="${AEROSPACE_APP:-/Applications/AeroSpace.app}"
+    if aero_ver="$(defaults read "$aero_app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null)"; then
+        if [ "$(printf '0.21\n%s\n' "${aero_ver%%-*}" | sort -V | head -1)" = 0.21 ]; then
+            pass "AeroSpace $aero_ver (the config needs 0.21+)"
+        else
+            fail "AeroSpace $aero_ver is older than the config needs (0.21): brew upgrade --cask aerospace, then killall AeroSpace && open -a AeroSpace"
+        fi
+    fi
     # AeroSpace keeps the bindings it loaded until reload-config. Since
     # 2026-10-07 they are ctrl-alt: plain alt took [ ] { } | \ from the Danish
     # layout, in every app. `aerospace config` asks the running instance.

@@ -23,6 +23,28 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-13: Handing a Mac to an agent; verify.sh fails on an AeroSpace older than 0.21
+
+### On other machines
+- **macOS:** if `verify.sh` now fails on AeroSpace's version:
+  `brew upgrade --cask aerospace`, then `killall AeroSpace && open -a
+  AeroSpace`. Do it right after pulling, before anything reloads AeroSpace:
+  the config uses keys only 0.21 knows, and an older AeroSpace drops every
+  binding when it rejects the file.
+- **Arch, Debian, Windows:** nothing.
+
+### What changed
+- `doc/applying-the-setup.md`, "Handing a Mac to an agent": the prompt to
+  paste into Claude Code on another Mac, and for the agent the order, the
+  steps to skip because a later entry undid them (AutoRaise, Alacritty,
+  Docker Desktop), when to ask Martin, what's outside the repo and what
+  "done" means. The update procedure warns about AeroSpace at its pull step;
+  `AGENTS.md` points at the section.
+- `verify.sh` FAILs when AeroSpace is older than 0.21 (tested with a fake
+  0.19 app bundle, the real 0.21.3, and exactly 0.21.0).
+
+---
+
 ## 2026-10-12: `remote`: the review's seven leftovers
 
 ### On other machines
