@@ -76,6 +76,10 @@ make clean
   person) applying this repo to a new machine, especially a work one: what to
   check first, which packages are safe, and why `git` and `claude/CLAUDE.md`
   must not be applied as-is.
+- **[handover-2026-10.md](handover-2026-10.md)** — everything improved
+  between 2026-10-05 and 2026-10-13, by topic: the keys worth knowing, what
+  was removed, what each Mac needs by hand, and what's still open. A
+  snapshot; `CHANGELOG.md` has what came after.
 - **[Arch + Hyprland install guide](https://github.com/zrrbite/archinstall/blob/main/doc/arch-hyprland-guide.md)** (archinstall repo) — see above.
 
 ### Editors and workflow

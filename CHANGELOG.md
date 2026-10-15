@@ -23,6 +23,27 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-15: doc/handover-2026-10.md, an overview of the October improvements
+
+### On other machines
+- **Nothing to run.**
+
+### What changed
+- `doc/handover-2026-10.md` covers everything improved between 2026-10-05
+  and 2026-10-13, by topic:
+  - the keys worth knowing;
+  - what each change gives and where it's documented;
+  - what was removed or tried and dropped;
+  - what each Mac needs by hand;
+  - what's still open.
+
+  It points at the entries below for the steps instead of repeating them. It's
+  a snapshot and won't be kept up to date.
+- The prompt in "Handing a Mac to an agent" (`doc/applying-the-setup.md`)
+  has the agent read it first; `doc/README.md` lists it.
+
+---
+
 ## 2026-10-13: Handing a Mac to an agent; verify.sh fails on an AeroSpace older than 0.21
 
 ### On other machines

@@ -441,10 +441,11 @@ on that Mac, started in its dotfiles folder), paste:
 
 ```
 This is my second Mac. Sync it with my dotfiles (github.com/zrrbite/dotfiles)
-so it matches my main MacBook. Read AGENTS.md, then "Handing a Mac to an
-agent" and "Updating a machine that already has it" in
-doc/applying-the-setup.md, and follow them. If there's no clone yet, follow
-Path A instead. Ask me before anything the doc says to ask about.
+so it matches my main MacBook. Read AGENTS.md and doc/handover-2026-10.md
+(the overview), then "Handing a Mac to an agent" and "Updating a machine
+that already has it" in doc/applying-the-setup.md, and follow them. If
+there's no clone yet, follow Path A instead. Ask me before anything the doc
+says to ask about.
 ```
 
 For the agent:
