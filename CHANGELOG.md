@@ -23,6 +23,22 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-16: update.sh says how to restart tmux when it upgraded tmux
+
+### On other machines
+- **Nothing to do.** After `scripts/update.sh` upgrades tmux, follow its
+  note when nothing in tmux needs to keep running.
+
+### What changed
+- A running tmux server keeps the version it started with, so after an
+  upgrade the new tmux isn't in use until the server restarts. Restarting it
+  ends what runs in the panes, so `update.sh` doesn't do it; when tmux moved
+  and a server runs, it ends with the steps: `Ctrl+a Ctrl+s`,
+  `tmux kill-server`, `t` (continuum restores the save). `doc/tools.md`'s
+  versions table says the same.
+
+---
+
 ## 2026-10-16: ⌃⌥Enter opens the window in the Ghostty that's running
 
 ### On other machines

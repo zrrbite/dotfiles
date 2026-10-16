@@ -100,7 +100,7 @@ re-check it.
 | lazygit | 0.66.0 | The keys in `doc/lazygit.md`: `lazygit --config` prints the new defaults |
 | Ghostty | 1.3.1 | `ghostty +validate-config` |
 | Neovim | 0.12.5 | `:Lazy sync`, then `:checkhealth`. `Space gg` needs 0.11+ (`jobstart` with `term = true`) |
-| tmux, its plugins | 3.7c; tmux-resurrect v4.0.0, tmux-continuum v3.1.0 | The plugins are **pinned** by tag in the installers; they move only when the tag does |
+| tmux, its plugins | 3.7c; tmux-resurrect v4.0.0, tmux-continuum v3.1.0 | The running server keeps its old version until it restarts: `Ctrl+a Ctrl+s`, `tmux kill-server`, `t` (continuum restores the save; most programs in the panes don't come back). The plugins are **pinned** by tag in the installers; they move only when the tag does |
 | clang-format (LLVM) | 23.1.2 | A new major version can reformat code you didn't touch, and the pre-commit hook then refuses those files. That's why `install_darwin.sh` doesn't upgrade by default |
 | TypeScript, for nvim's `ts_ls` | typescript 6.0.3, typescript-language-server 6.0.1 | **Pinned to 6**: TypeScript 7 has no `tsserver`, which `ts_ls` needs |
 | Karabiner-Elements | 16.3.0 | It rewrites `karabiner.json` when its settings change: read the `git diff`. `verify.sh` checks its driver is approved |
@@ -113,8 +113,8 @@ re-check it.
 
 `scripts/update.sh` does all of this: it records the versions, saves and
 restores the window layout around an AeroSpace upgrade, updates nvim's and
-yazi's plugins, lists what moved (flagging this table's tools) and ends with
-`verify.sh`. `--dry-run` shows what's outdated first. Afterwards, commit the
+yazi's plugins, lists what moved (flagging this table's tools), says how to
+restart tmux if it moved, and ends with `verify.sh`. `--dry-run` shows what's outdated first. Afterwards, commit the
 plugin lockfiles it reports once nvim and yazi still work. By hand:
 
 ```bash

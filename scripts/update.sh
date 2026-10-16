@@ -18,7 +18,9 @@
 #   5. reloads sketchybar; updates nvim's plugins (:Lazy sync) and yazi's
 #      (ya pkg upgrade)
 #   6. lists every version that moved, flagging the tools whose config was
-#      checked against a version (doc/tools.md), and ends with verify.sh
+#      checked against a version (doc/tools.md), says how to restart tmux if
+#      it moved (the running server keeps its old version; restarting it is
+#      yours to do), and ends with verify.sh
 #
 # Not upgraded on purpose: global npm packages (TypeScript stays on 6 for
 # nvim's ts_ls), the tmux plugins (pinned by tag in the installers).
@@ -78,6 +80,19 @@ wait_for_aerospace() {
 diff_versions() {
     awk 'NR == FNR { old[$1] = $2; next }
          ($1 in old) && old[$1] != $2 { print $1 ": " old[$1] " -> " $2 }' "$1" "$2"
+}
+
+# The tmux server keeps the version it started with. Restarting it ends what
+# runs in its panes, so this only says how, when tmux moved and one is running.
+tmux_note() {
+    local line
+    line="$(printf '%s\n' "$1" | grep '^tmux: ')" || return 0
+    pgrep -x tmux >/dev/null 2>&1 || return 0
+    echo
+    note "tmux was upgraded (${line#tmux: }); the tmux already running stays on the old version until it restarts. When nothing in it needs to keep running:"
+    echo "    Ctrl+a Ctrl+s to save, then: tmux kill-server; t"
+    echo "    continuum brings back the sessions, windows, folders and a few programs such as nvim;"
+    echo "    the rest of what ran in the panes doesn't."
 }
 
 main() {
@@ -171,6 +186,7 @@ main() {
             fi
         done
     fi
+    tmux_note "$changed"
 
     local locks
     locks="$(git -C "$DOTFILES_DIR" status --short -- nvim/.config/nvim/lazy-lock.json yazi/.config/yazi/package.toml)"
