@@ -76,7 +76,7 @@ that.
 
 | Key | Action |
 |---|---|
-| `ctrl-alt-enter` | New Ghostty window (`open -na`, so it really is a new one) |
+| `ctrl-alt-enter` | New Ghostty window, in the Ghostty that's running (AppleScript; the first press asks to let AeroSpace control Ghostty). Starts Ghostty if it isn't running, or a separate copy if that was refused |
 | `ctrl-alt-shift-q` | Close the focused window |
 | `ctrl-alt-shift-r` | Reload the config |
 | `ctrl-alt-shift-v` | Clipboard history (Raycast's), like `Super+Shift+V` on Hyprland |

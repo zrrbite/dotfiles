@@ -116,10 +116,14 @@ ctrl-alt-f = 'fullscreen'
 ctrl-alt-shift-q = 'close'
 
 # Launch the terminal (matches alt+enter in GlazeWM → terminal): Ghostty.
-# `open -na` is what its own help recommends on macOS, since its
-# `+new-window` action is Linux-only. (Alacritty was on ctrl-alt-shift-enter
-# until it was dropped on 2026-10-12.)
-ctrl-alt-enter = 'exec-and-forget open -na Ghostty'
+# When it's running, ask it for a new window over AppleScript (Ghostty 1.3+),
+# so every window lives in one Ghostty: one Dock icon, less memory. The first
+# press asks to let AeroSpace control Ghostty. When it isn't running, or that
+# was refused, `open -na` starts a copy, as its own help recommends on macOS
+# (its `+new-window` action is Linux-only). The window starts in ~, as a new
+# copy does. (Alacritty was on ctrl-alt-shift-enter until it was dropped on
+# 2026-10-12.)
+ctrl-alt-enter = '''exec-and-forget pgrep -xq ghostty && osascript -e "tell application \"Ghostty\" to new window with configuration {initial working directory:\"$HOME\"}" || open -na Ghostty'''
 
 # Reload config (matches alt+shift+r in GlazeWM)
 ctrl-alt-shift-r = 'reload-config'

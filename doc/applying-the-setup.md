@@ -180,6 +180,8 @@ Afterwards:
   `scripts/macos-defaults.sh` and `scripts/finder-defaults.sh`) change the
   Dock, menu bar, Finder and text input. Ask before running them on a Mac
   that's already set up the way its owner likes.
+- **Ghostty:** the first `⌃⌥Enter` while Ghostty runs asks to let AeroSpace
+  control Ghostty; allow it, or every press starts a separate copy.
 - First-launch prompts: Ghostty asks about notifications, and oh-my-zsh may
   offer an update. These are the human's calls.
 

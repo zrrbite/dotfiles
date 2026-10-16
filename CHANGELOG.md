@@ -23,6 +23,28 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-16: ⌃⌥Enter opens the window in the Ghostty that's running
+
+### On other machines
+- **macOS:** `./reload.sh` (or `git pull`, then `aerospace reload-config`).
+  The first `⌃⌥Enter` while Ghostty runs asks to let AeroSpace control
+  Ghostty: allow it. Refused, or a Ghostty older than 1.3 (no AppleScript),
+  and the key starts a separate copy, as before.
+- Copies of Ghostty already running stay until you quit them or restart.
+
+### What changed
+- `ctrl-alt-enter` ran `open -na Ghostty`, which starts a new copy of the app
+  for every window (three were running on 2026-10-16). It now asks a running
+  Ghostty for a new window over AppleScript, starting in `~` as a new copy
+  did: one Dock icon, less memory, and the quick terminal stays possible
+  (every copy would register its global key). Not running: `open -na`
+  starts it. `doc/aerospace-macos.md` and the human-only steps in
+  `doc/applying-the-setup.md` say so.
+- Tested on the MacBook through `aerospace trigger-binding`: the window
+  opened in the running Ghostty, no new process, in `~`.
+
+---
+
 ## 2026-10-15: doc/handover-2026-10.md, an overview of the October improvements
 
 ### On other machines
