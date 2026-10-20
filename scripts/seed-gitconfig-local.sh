@@ -42,14 +42,33 @@ fi
 # A ~/.gitconfig that already resolves into this repo has nothing per-machine
 # to offer: the repo file carries no identity any more.
 keys=""
+linked=false
 if [ -f "$SOURCE" ]; then
     case "$(realpath "$SOURCE")" in
-        "$DOTFILES_DIR"/*) ;;
+        "$DOTFILES_DIR"/*) linked=true ;;
         *)
             keys="$(git config -f "$SOURCE" --get-regexp \
                 '^(user\.|credential\.|gpg\.|commit\.gpgsign$|tag\.gpgsign$|http\.|https\.|includeif\.|url\.|core\.autocrlf$|core\.sshcommand$|core\.hookspath$|core\.excludesfile$)' || true)"
             ;;
     esac
+fi
+
+# Until 2026-10-05 the tracked file carried Martin's identity itself. A machine
+# linked to it that pulled before making ~/.gitconfig.local lost it with that
+# pull; take it from the last version of the file that had it. (-G finds the
+# commit that removed [user]; the file still has it one commit earlier.)
+if [ -z "$keys" ] && [ "$linked" = true ]; then
+    rev="$(git -C "$DOTFILES_DIR" log -1 --format=%H -G'^\[user\]' -- git/.gitconfig 2>/dev/null || true)"
+    if [ -n "$rev" ]; then
+        old="$(mktemp)"
+        for r in "$rev" "$rev^"; do
+            git -C "$DOTFILES_DIR" show "$r:git/.gitconfig" > "$old" 2>/dev/null || continue
+            keys="$(git config -f "$old" --get-regexp '^(user\.(name|email)|credential\.helper)$' || true)"
+            [ -n "$keys" ] && break
+        done
+        rm -f "$old"
+        [ -n "$keys" ] && info "This ~/.gitconfig links to the repo's file, which no longer has the identity; taking it from the repo's history ($(git -C "$DOTFILES_DIR" rev-parse --short "$r"))"
+    fi
 fi
 
 if [ -z "$keys" ]; then
@@ -76,3 +95,15 @@ while IFS= read -r line; do
         git config -f "$LOCAL" --add "$key" "$value"
     fi
 done <<< "$keys"
+
+# The shared config's diff and merge tool is meld, which isn't installed on
+# macOS; nvim is.
+if [ "$(uname -s)" = Darwin ]; then
+    for key in diff.tool merge.tool; do
+        if [ "$DRY_RUN" = true ]; then
+            echo -e "${BLUE}[DRY]${NC} git config -f ~/.gitconfig.local $key nvimdiff"
+        else
+            git config -f "$LOCAL" "$key" nvimdiff
+        fi
+    done
+fi

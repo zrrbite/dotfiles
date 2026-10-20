@@ -185,11 +185,24 @@ for key in user.name user.email; do
     fi
     origin="${line%%	*}"
     origin="${origin#file:}"
+    # Set but empty: what saving the identity after the pull wrote, on a Mac
+    # whose old tracked ~/.gitconfig had carried it. Commits then fail.
+    if [ -z "${line#*	}" ]; then
+        fail "git $key is empty (in $origin) -- set it: git config -f ~/.gitconfig.local $key \"...\""
+        continue
+    fi
     case "$(realpath "${origin/#\~/$HOME}" 2>/dev/null)" in
         "$REPO_REAL"/*) fail "git $key comes from the tracked repo file -- it belongs in ~/.gitconfig.local" ;;
         *) pass "git $key = ${line#*	} (from $origin)" ;;
     esac
 done
+
+# meld is the shared config's diff and merge tool, and macOS has no meld;
+# ~/.gitconfig.local names nvimdiff there (scripts/seed-gitconfig-local.sh).
+if [ "$OS" = darwin ] && [ "$(git config --global --includes diff.tool 2>/dev/null)" = meld ] &&
+    ! command -v meld >/dev/null 2>&1; then
+    warn "git difftool and mergetool use meld, which isn't installed: git config -f ~/.gitconfig.local diff.tool nvimdiff && git config -f ~/.gitconfig.local merge.tool nvimdiff"
+fi
 
 # The shared gitconfig calls these; a missing one breaks diff/log/commit.
 if [ "$(realpath "$HOME/.gitconfig" 2>/dev/null)" = "$REPO_REAL/git/.gitconfig" ]; then
