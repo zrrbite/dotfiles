@@ -9,7 +9,10 @@
 # says how far behind master this machine is, and CHANGELOG.md says what to
 # do about it. The record is outside the repo, per machine.
 #
-# Usage: scripts/verify.sh [package ...]
+# Usage: scripts/verify.sh [--no-record] [package ...]
+#   --no-record  check, but don't record the commit as this machine's sync
+#   point. The installers pass it: the steps after them (permissions, a
+#   CHANGELOG entry's manual steps) aren't done yet when they finish.
 #   With no arguments, checks the packages the installer for this OS stows.
 #   Pass a list to check only those -- e.g. on a work machine that applied a
 #   subset:  scripts/verify.sh nvim starship tmux ghostty
@@ -51,6 +54,11 @@ case "$OS" in
     arch)   DEFAULT=("${PACKAGES_ARCH[@]}") ;;
     debian) DEFAULT=("${PACKAGES_DEBIAN[@]}") ;;
 esac
+RECORD=true
+if [ "${1:-}" = --no-record ]; then
+    RECORD=false
+    shift
+fi
 if [ $# -gt 0 ]; then PACKAGES=("$@"); else PACKAGES=("${DEFAULT[@]}"); fi
 
 echo "Checking $OS against $DOTFILES_DIR"
@@ -383,6 +391,10 @@ if [ "$FAILS" -gt 0 ]; then
 fi
 
 # Everything passed: record this commit as the one this machine is synced to.
+if [ "$RECORD" = false ]; then
+    echo -e "${GREEN}All checks passed${NC}, $WARNS warning(s). Not recorded as this machine's sync point (--no-record): run scripts/verify.sh once the remaining steps are done."
+    exit 0
+fi
 if [ -n "$HEAD_SHA" ]; then
     mkdir -p "$(dirname "$STATE")"
     {

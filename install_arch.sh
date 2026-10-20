@@ -336,7 +336,7 @@ systemctl --user enable --now pipewire pipewire-pulse wireplumber 2>/dev/null ||
 
 echo ""
 info "Verifying..."
-"$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")
+"$DOTFILES_DIR/scripts/verify.sh" --no-record || FAILURES+=("scripts/verify.sh reported failures (see above)")
 echo ""
 if [ "${#FAILURES[@]}" -gt 0 ]; then
     warn "Finished with ${#FAILURES[@]} problem(s):"

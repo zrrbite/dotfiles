@@ -583,7 +583,7 @@ fi
 if [ "$DRY_RUN" != true ]; then
     echo ""
     info "Verifying..."
-    "$DOTFILES_DIR/scripts/verify.sh" || FAILURES+=("scripts/verify.sh reported failures (see above)")
+    "$DOTFILES_DIR/scripts/verify.sh" --no-record || FAILURES+=("scripts/verify.sh reported failures (see above)")
 fi
 
 echo ""
