@@ -19,8 +19,10 @@ other agent at the same material rather than repeating it.
   changed?"): run `scripts/verify.sh` first. It says which commit this machine
   was last synced at. Then read [`CHANGELOG.md`](CHANGELOG.md) from that date
   and do each entry's "On other machines" steps. Some must happen *before*
-  `git pull`. For a Mac, "Handing a Mac to an agent" in
-  `doc/applying-the-setup.md` has the order, the traps and when to ask.
+  `git pull`. In a clone too old to have these files, `git fetch` and read
+  them with `git show origin/master:<path>` before pulling. For a Mac,
+  "Handing a Mac to an agent" in `doc/applying-the-setup.md` has the order,
+  the traps and when to ask.
 
 Three rules matter enough to repeat here:
 

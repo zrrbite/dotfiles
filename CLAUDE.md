@@ -40,7 +40,9 @@ start reading.
 **Git identity is per-machine.** `git/.gitconfig` has no `[user]` and no
 credential helper; it includes `~/.gitconfig.local` last, which holds both.
 `scripts/seed-gitconfig-local.sh` creates that file from an existing
-`~/.gitconfig`, and every installer runs it before replacing `~/.gitconfig`.
+`~/.gitconfig` (or, on a machine still linked to the old tracked file that
+carried it, from the repo's history), and every installer runs it before
+replacing `~/.gitconfig`.
 Never put identity or credentials back into the tracked file.
 
 ## Commands
@@ -76,6 +78,7 @@ scripts/finder-defaults.sh  # macOS: Finder settings (--dry-run, --undo); part o
 scripts/macos-defaults.sh   # macOS: Dock, menu bar, Mission Control, text input (--dry-run, --check, --undo); part of --with-desktop
 scripts/touch-id-sudo.sh    # macOS: Touch ID for sudo, also in tmux (--dry-run, --check, --undo); the installer runs it
 scripts/macos-permissions.sh # macOS: walks a person through the permissions and first starts (--check, --list); the installer runs it
+scripts/unfold.sh DIR...    # Make a folder stow linked into the repo real again, moving back what apps wrote there; the installers run it
 scripts/update.sh           # macOS: brew upgrade + AeroSpace restart and layout, plugin updates, verify (--dry-run)
 ```
 Which packages each OS gets is defined once, in `scripts/packages.sh`. The

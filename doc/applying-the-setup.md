@@ -355,10 +355,13 @@ For a machine set up from an older version of this repo.
 
 **0. Find out what's new for this machine.** Run `scripts/verify.sh`. Its
 first line says which commit the machine was last synced at, and how many
-commits behind it is. No record means it predates 2026-10-05. Then read
-`CHANGELOG.md` from that date. Each entry lists what changed and its **On
-other machines** steps, including manual ones the installer can't do (e.g.
-Raycast's script folder). The steps below are the common core.
+commits behind it is. No record (or no `verify.sh` yet, in a clone from
+before 2026-10-05) means it predates 2026-10-05. Then read `CHANGELOG.md`
+from that date. Each entry lists what changed and its **On other machines**
+steps, including manual ones the installer can't do (e.g. Raycast's script
+folder). The steps below are the common core. In a clone older than these
+files, read them with `git fetch` and `git show origin/master:<path>`
+before pulling.
 
 **1. Save git identity first, before pulling.** If `~/.gitconfig` is a
 symlink into the repo, an older version carried the identity inside the
@@ -368,24 +371,32 @@ they still exist:
 
 ```bash
 if [ ! -e ~/.gitconfig.local ]; then
-    git config -f ~/.gitconfig.local user.name  "$(git config --global user.name)"
-    git config -f ~/.gitconfig.local user.email "$(git config --global user.email)"
-    h="$(git config --global credential.helper)"
-    [ -n "$h" ] && git config -f ~/.gitconfig.local credential.helper "$h"   # an empty value would reset helpers
+    n="$(git config --global user.name)"; e="$(git config --global user.email)"
+    if [ -n "$n" ] && [ -n "$e" ]; then
+        git config -f ~/.gitconfig.local user.name  "$n"
+        git config -f ~/.gitconfig.local user.email "$e"
+        h="$(git config --global credential.helper)"
+        [ -n "$h" ] && git config -f ~/.gitconfig.local credential.helper "$h"   # an empty value would reset helpers
+    else
+        echo "No identity to save; leave ~/.gitconfig.local to the installer"
+    fi
 fi
 ```
 
-If `~/.gitconfig` is a plain file instead, skip this. The installers'
-seed step handles it.
+If `~/.gitconfig` is a plain file instead, skip this. The installers' seed
+step handles it. Already pulled? Don't create the file by hand: the seed
+step finds the identity in the repo's history, and `verify.sh` fails on an
+empty one.
 
 **1b. Repair anything an older installer wrote into the repo.** Before
 2026-10-05, the macOS installer could make `~/.config/fastfetch` (and
-`~/.claude`) a symlink into the repo. It then wrote the macOS fastfetch config
-*over* the tracked `fastfetch/.config/fastfetch/config.jsonc`. Check before
-pulling, because a pull over a modified tracked file can fail:
+`~/.claude`) a symlink into the repo, and then replaced the tracked
+`fastfetch/.config/fastfetch/config.jsonc` with a link to the macOS config.
+The pull goes through regardless, but the link keeps writing into the repo,
+so undo it first:
 
 ```bash
-cd ~/dotfiles && git status --short      # anything you didn't change yourself?
+cd <dotfiles> && git status --short      # anything you didn't change yourself?
 ls -ld ~/.config/fastfetch ~/.claude     # an `l` in the first column = symlink
 if [ -L ~/.config/fastfetch ]; then
     git checkout -- fastfetch/.config/fastfetch/config.jsonc   # restore the tracked file
@@ -393,39 +404,44 @@ if [ -L ~/.config/fastfetch ]; then
 fi
 ```
 
-For a `~/.claude` symlink, see step 3. The installer re-creates both as real
-directories.
+Other changed files: nvim's `lazy-lock.json` is a lockfile, discard it
+(`git checkout -- nvim/.config/nvim/lazy-lock.json`); `karabiner.json` was
+rewritten by Karabiner on that machine, discard it too unless the human
+changed a setting on purpose. Anything else: ask. For a `~/.claude` symlink,
+see step 3; the installer also repairs both now (`scripts/unfold.sh`).
 
 **2. Pull and re-run the installer** (macOS / Linux). It's re-run safe,
-installs only what's missing (new tools, fonts, casks), and re-links:
+installs only what's missing (new tools, fonts, casks), and re-links. One run
+at the newest commit covers every older entry that says to re-run it or to
+re-stow. It asks for the password (the `.pkg` casks, Touch ID for sudo), so
+the human runs it, in a terminal; an agent's shell can't pass a password on.
 
 ```bash
-cd ~/dotfiles && git pull --ff-only
+cd <dotfiles> && git pull --ff-only
 ./install_darwin.sh        # or ./install_arch.sh, ./install_debian.sh
 ```
 
 For config-only changes, with no new tools, `./reload.sh` is enough: pull,
 re-stow and reload the desktop.
 
-**macOS set up before 2026-10-12: upgrade AeroSpace first.** The pulled
-`aerospace.toml` uses keys AeroSpace only knows from 0.21 (`config-version =
-2`, `focus-follows-mouse`); an older one rejects the whole file at its next
-reload or restart, and every key binding with it. The installer doesn't
-upgrade what's installed, so: `brew upgrade --cask aerospace`, then
-`killall AeroSpace && open -a AeroSpace`. `verify.sh` fails until it's done.
+**macOS set up before 2026-10-12: AeroSpace must be 0.21 before it loads the
+pulled config.** The config uses keys AeroSpace only knows from 0.21
+(`config-version = 2`, `focus-follows-mouse`); an older one rejects the whole
+file at its next reload or restart, and every key binding with it. Upgrade
+it *before* pulling and restart it right after, so neither version reads the
+other's config: steps 3 and 4 of "Handing a Mac to an agent" below.
+`verify.sh` fails until it's done.
 
 **3. Check, and fix anything folded into the repo.** Run
-`scripts/verify.sh`. Older installers could leave `~/.claude` or
-`~/.config/fastfetch` as a symlink into the repo; `verify.sh` reports that as
-FAIL. To fix one:
+`scripts/verify.sh`. Older installers could leave `~/.claude`,
+`~/.claude/skills` or `~/.config/fastfetch` as a symlink into the repo, so
+apps wrote into the working tree; `verify.sh` reports that as FAIL. To fix
+one, name it (quit Claude Code first for `~/.claude`: it writes there):
 
 ```bash
-stow -D -t ~ claude && rm ~/.claude && mkdir ~/.claude && stow -t ~ claude
+scripts/unfold.sh ~/.claude      # real folder again; moves what apps wrote back out
+stow -R -t ~ claude              # or re-run the installer
 ```
-
-This works because `rm` on a symlink removes only the link. Check with
-`ls -ld ~/.claude` first that it really is a symlink (`l` in the first
-column).
 
 **4. Pick up the changes in running apps.**
 - Open a new shell.
@@ -439,45 +455,84 @@ on that Mac, started in its dotfiles folder), paste:
 
 ```
 This is my second Mac. Sync it with my dotfiles (github.com/zrrbite/dotfiles)
-so it matches my main MacBook. Read AGENTS.md and doc/handover-2026-10.md
+so it matches my main MacBook. The clone here may be older than the docs
+below: run `git fetch`, read them with `git show origin/master:<path>`, and
+don't pull until they say so. Read AGENTS.md and doc/handover-2026-10.md
 (the overview), then "Handing a Mac to an agent" and "Updating a machine
 that already has it" in doc/applying-the-setup.md, and follow them. If
 there's no clone yet, follow Path A instead. Ask me before anything the doc
 says to ask about.
 ```
 
-For the agent:
+For the agent. This order overrides the order inside the CHANGELOG entries.
 
-1. **Find the starting point:** `scripts/verify.sh` says when this Mac was
-   last synced. No record: every `CHANGELOG.md` entry since 2026-10-05
-   ("the big one") is new.
+1. **Find the starting point:** `scripts/verify.sh`, if the clone has it,
+   says when this Mac was last synced. No `verify.sh` or no record: every
+   `CHANGELOG.md` entry since 2026-10-05 ("the big one") is new.
 2. **Read all of those entries before doing any of them.** Later entries
-   undo earlier ones; skip the steps for what was removed since: AutoRaise
-   (AeroSpace does focus-follows-mouse itself since 0.21), Alacritty on macOS
-   (Ghostty is the terminal), Docker Desktop (OrbStack replaced it). Then do
-   the remaining "On other machines" steps, oldest first.
-3. **Steps 1 and 1b above happen before `git pull`.** Right after pulling,
-   AeroSpace to 0.21+ (the paragraph under step 2).
-4. **Ask Martin before:** desktop settings (`scripts/macos-defaults.sh`,
-   `scripts/finder-defaults.sh`, `--with-desktop`), removing Docker Desktop
-   or anything else that deletes data, and `scripts/update.sh` (it upgrades
-   everything; save tmux first with `Ctrl+a Ctrl+s`).
-5. **What only Martin can do:** passwords as the installer asks, then
-   permissions and first starts. For those, ask him to run
-   `scripts/macos-permissions.sh` in a terminal; it opens each page, waits
-   and checks. `--check` shows you what's left. ("Human-only, after the
-   installer (macOS)".)
-6. **Outside this repo:** clone `github.com/zrrbite/todo` to
-   `~/Development/todo` and register its todo-brief hook ("Claude Code"
-   below). Ask which other repos under `~/Development` he wants pulled.
-7. **Done** is `scripts/verify.sh` exiting 0, plus Martin confirming: tapping
-   Caps Lock is Escape; `sudo -k; sudo true` in a tmux pane asks for a
-   fingerprint; focus follows the mouse; `⌃⌥⇧V` opens clipboard history.
-   Log the sync in the todo repo.
+   undo earlier ones: don't install or set up what a later entry removes
+   (AutoRaise, Alacritty on macOS, Docker Desktop), but do do the removal
+   steps. Every "re-run the installer" and "re-stow" is covered by the one
+   installer run in step 5.
+3. **Before `git pull`, in this order:**
+   - "Updating" steps 1 and 1b: save the git identity, repair what an old
+     installer wrote into the repo.
+   - AutoRaise running? `brew services stop dimentium/autoraise/autoraise`.
+   - AeroSpace older than 0.21 (`aerospace --version`)? Save the window
+     layout, `aerospace list-windows --all --format '%{window-id}
+     %{workspace}' > ~/aerospace-layout.txt`, then `brew upgrade --cask
+     aerospace` **without restarting it**: the old one keeps running on the
+     old config until step 4.
+4. **Pull, then restart AeroSpace:** `git pull --ff-only`, then `killall
+   AeroSpace && open -a AeroSpace`, which loads the new config with the new
+   version. Put the windows back with the loop in `doc/aerospace-macos.md`
+   ("Restarting loses your window placement"). If the ⌃⌥ keys don't work,
+   Accessibility needs granting again (step 5's walk checks it).
+5. **The installer, by Martin:** run `./install_darwin.sh --dry-run`, show
+   him what it would do, then ask him to run `./install_darwin.sh` in a
+   terminal. It asks for his password, and ends with
+   `scripts/macos-permissions.sh`, which walks him through the permissions
+   and first starts. `scripts/macos-permissions.sh --check` shows you what's
+   left.
+6. **The remaining "On other machines" steps**, oldest first: the removals
+   (`verify.sh` warns on AutoRaise's and Alacritty's leftovers), reloads,
+   manual steps. Then `scripts/verify.sh`.
+7. **Ask Martin before:** desktop settings (`scripts/macos-defaults.sh`,
+   `scripts/finder-defaults.sh`, `--with-desktop`); removing Docker Desktop
+   or anything else that deletes data (`brew list --cask | grep -i docker`
+   gives the cask's name, `docker-desktop` or the older `docker`; none means
+   it was installed by hand); Alfred and Rectangle (the MacBook has neither:
+   Raycast and AeroSpace replaced them); uninstalling Alacritty (once he
+   works in Ghostty); `scripts/update.sh`.
+8. **Don't saw off the branch you sit on.** You run in a terminal, maybe in
+   tmux. Leave `tmux kill-server`, quitting or uninstalling the terminal you
+   run in (Alacritty, on a Mac set up in September) and restarts to Martin,
+   at the end, and tell him which. Saving tmux first (`Ctrl+a Ctrl+s`) only
+   works once its config with resurrect is loaded.
+9. **What the repo doesn't carry** (below): ask Martin which he wants.
+10. **Outside this repo:** clone `github.com/zrrbite/todo` to
+    `~/Development/todo` and register its todo-brief hook ("Claude Code"
+    below). Ask which other repos under `~/Development` he wants pulled.
+11. **Done** is `scripts/verify.sh` exiting 0, plus Martin confirming: tapping
+    Caps Lock is Escape; `sudo -k; sudo true` in a tmux pane asks for a
+    fingerprint; focus follows the mouse; `⌃⌥⇧V` opens clipboard history.
+    Log the sync in the todo repo.
 
-What doesn't travel: Claude's memory notes on the other Mac
-(`~/.claude/projects/<project>/memory/`, per machine; the rules that matter
-are in CLAUDE.md), and per-machine choices such as the `remote` test host.
+**What the MacBook has that the repo doesn't carry** (2026-10-20; a
+snapshot, so ask):
+
+- **Claude Code plugins**, all from `claude-plugins-official` (install with
+  `/plugin` in Claude Code): superpowers, context7, and the language servers
+  clangd-lsp, typescript-lsp, pyright-lsp, rust-analyzer-lsp, swift-lsp.
+- **Claude Code's status line:** `~/.claude/statusline.sh`, outside the repo,
+  set as `statusLine` in `~/.claude/settings.json`. Copy it over if wanted.
+- **Homebrew installed by hand for projects** (`brew leaves` on the
+  MacBook): among others actionlint, ast-grep, bazel, dotnet, doxygen,
+  flyctl, gcc, graphviz, lua, mono, probe-rs-tools, protobuf, pyright,
+  rbenv, yt-dlp; casks gcc-arm-embedded, ilspy, logitech-g-hub.
+- Claude's memory notes (`~/.claude/projects/<project>/memory/`, per
+  machine; the rules that matter are in CLAUDE.md), and per-machine choices
+  such as the `remote` test host.
 
 **Windows:** do step 1 the same way in Git Bash or PowerShell, then
 `git pull`, then `.\stow_windows.ps1 -DryRun <packages>` and

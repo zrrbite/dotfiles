@@ -23,6 +23,56 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-20: the second Mac's sync, rehearsed and fixed
+
+### On other machines
+- **The second Mac:** paste the prompt in "Handing a Mac to an agent"
+  (`doc/applying-the-setup.md`) again; it changed. It now copes with a clone
+  older than the docs, and the section has one order for the whole sync.
+- **Alfred** (no entry said this before): Raycast replaced it on the
+  MacBook on 2026-10-12, where it's uninstalled. On a Mac that has it, ask
+  Martin, then quit it, take it out of the login items and move it to the
+  Trash; keep `~/Library/Application Support/Alfred` (the Powerpack
+  licence).
+- **Any machine:** nothing to run; `scripts/verify.sh` reports the new
+  checks below.
+
+### What changed
+- A fresh agent rehearsed the sync read-only, as the second Mac's agent
+  would, and put its chance of success at about 45%. Fixed:
+  - **The prompt sent it to files a September clone doesn't have**, which
+    invited a pull before the pre-pull steps. The prompt and `AGENTS.md` now
+    say to read them with `git show origin/master:<path>` first.
+  - **An early pull lost the git identity for good** (`1597b7d`): the
+    snippet then wrote empty values and `verify.sh` passed them. The
+    snippet refuses empty values, `seed-gitconfig-local.sh` recovers the
+    identity from the repo's history, and `verify.sh` fails on an empty
+    one. On macOS the seed also sets nvimdiff as the diff and merge tool.
+  - **A folded `~/.claude` couldn't be fixed as documented** (`afbf623`):
+    the recipe's `rm` failed after `stow -D`, and Claude's files stayed in
+    the repo. `scripts/unfold.sh` makes such a folder real again and moves
+    what apps wrote back out; the installers run it, and the macOS one
+    restores the fastfetch config the September installer replaced with a
+    link (it also re-damaged it before).
+  - **Contradictions:** before or after the pull for AeroSpace (now: upgrade
+    before, restart right after); "skip the steps for what was removed",
+    read as skipping the removals; Alfred "paused" here, "uninstalled"
+    elsewhere; tmux "not on the macOS list" (it was).
+  - **Gaps** (`ee15c81`): nobody said the human runs the installer (an
+    agent can't answer its password prompts; it now warns without a
+    terminal); `verify.sh` didn't notice AutoRaise's and Alacritty's
+    leftovers; nothing warned the agent off killing its own terminal or
+    tmux; nothing listed what the MacBook has outside the repo (Claude
+    Code's plugins and status line, project Homebrew packages); shellcheck,
+    which `lint.sh` needs, wasn't installed.
+- Tested: `scripts/test-unfold.sh` (12), `scripts/test-macos-permissions.sh`
+  (28), identity recovery in scratch homes, `install_darwin.sh --dry-run`
+  against a September-shaped clone and home, and `scripts/test-in-docker.sh
+  debian:12 --upgrade-from 71bd12e`, where the installer log shows the old
+  folded `~/.claude/skills` made real again.
+
+---
+
 ## 2026-10-20: scripts/macos-permissions.sh walks you through the permissions
 
 ### On other machines
@@ -58,17 +108,9 @@ app settings outside stow, and manual installs.
 - **Run `scripts/verify.sh` after pulling.** If it fails with
   "`~/.claude/skills` is a symlink into the repo" (likely on a Linux box
   installed before Claude Code was), Claude has been writing its synced
-  skills into the dotfiles folder. Move what isn't the repo's back out, then
-  re-link:
-  ```bash
-  cd <dotfiles>
-  git status --short claude/        # untracked entries there are Claude's
-  rm ~/.claude/skills && mkdir ~/.claude/skills
-  mv claude/.claude/skills/synced ~/.claude/skills/   # each untracked entry
-  stow -R -t ~ claude
-  ```
-  Re-running the installer does the `rm`, `mkdir` and `stow` itself, but
-  leaves the moving to you.
+  skills into the dotfiles folder. Re-run the installer, or
+  `scripts/unfold.sh ~/.claude/skills && stow -R -t ~ claude`: it makes the
+  folder real again and moves Claude's files back out (entry above).
 - **Before this, don't run `install_darwin.sh` or `install_arch.sh` on a
   machine with Claude Code:** they moved `~/.claude/skills` (synced skills,
   links from other repos) into the backup folder.
@@ -154,9 +196,10 @@ app settings outside stow, and manual installs.
 ### On other machines
 - **macOS:** if `verify.sh` now fails on AeroSpace's version:
   `brew upgrade --cask aerospace`, then `killall AeroSpace && open -a
-  AeroSpace`. Do it right after pulling, before anything reloads AeroSpace:
-  the config uses keys only 0.21 knows, and an older AeroSpace drops every
-  binding when it rejects the file.
+  AeroSpace`. The config uses keys only 0.21 knows, and an older AeroSpace
+  drops every binding when it rejects the file. On a Mac that hasn't pulled
+  yet, upgrade before pulling and restart right after ("Handing a Mac to an
+  agent", steps 3 and 4, has the order).
 - **Arch, Debian, Windows:** nothing.
 
 ### What changed
@@ -251,8 +294,9 @@ app settings outside stow, and manual installs.
 ## 2026-10-12: AeroSpace's own focus-follows-mouse replaces AutoRaise
 
 ### On other machines
-- **macOS:** upgrade AeroSpace to 0.21 first (the setting is new there; see
-  the config-version entry below). Then:
+- **macOS. Do first, before `git pull`:** upgrade AeroSpace to 0.21 (the
+  setting is new there; see the config-version entry below, and "Handing a
+  Mac to an agent" for the order). Then:
   1. `brew services stop dimentium/autoraise/autoraise`
   2. `git pull`, then `rm ~/.config/AutoRaise` (the `autoraise` package is
      gone, so that link now points nowhere; `rm` removes only the link).
@@ -285,8 +329,9 @@ app settings outside stow, and manual installs.
 ### On other machines
 - **macOS, after upgrading AeroSpace to 0.21:** pull and
   `aerospace reload-config`. The config is written for 0.21 and wasn't
-  tried on 0.20, so upgrade first (`brew upgrade --cask aerospace`, then
-  restart it; see `doc/tools.md`, "Versions and upgrading").
+  tried on 0.20, so upgrade first (`brew upgrade --cask aerospace`), and
+  restart it once the new config is pulled ("Handing a Mac to an agent",
+  steps 3 and 4).
 - **Arch, Debian, Windows:** nothing.
 
 ### What changed
@@ -858,9 +903,9 @@ and `ffunc` are new. `~/.zprofile` is untouched.
   which also overwrites the Dock and Finder settings. To change just the
   wallpaper:
   ```bash
-  osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$HOME/Development/dotfiles/hypr/.local/share/wallpapers/arch-blue-lowlight.png\""
+  osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$PWD/hypr/.local/share/wallpapers/arch-blue-lowlight.png\""
   ```
-  (adjust the path if the repo lives elsewhere). The lock screen follows at
+  (run it from the dotfiles folder). The lock screen follows at
   once. With FileVault on, the screen after a restart is a separate copy:
   run `sudo diskutil apfs updatePreboot /`, or log out and back in.
 - **Arch, Windows:** nothing. Arch already uses this image (hyprpaper);
@@ -1088,8 +1133,8 @@ Then:
    - **macOS:** `ghostty`, `font-sketchybar-app-font`, `yazi`, `chafa`,
      `ffmpeg`, `poppler`, `sevenzip`, `tmux`; oh-my-zsh (a git clone).
    - **All OSes:** tmux-resurrect, cloned into `~/.tmux/plugins/`.
-   - **New stow packages:** `ghostty`, `yazi` and `tmux` on macOS (tmux's
-     config existed but wasn't on the macOS list); `yazi` on Arch.
+   - **New stow packages:** `ghostty` and `yazi` on macOS (`tmux` was
+     already stowed there); `yazi` on Arch.
    - The installer also creates `~/.config`, `~/.config/fastfetch` and
      `~/.claude` before stowing (see the Installers section below).
 2. **`scripts/verify.sh`.** Fix any FAIL. When everything passes, it records
