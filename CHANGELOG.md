@@ -10,8 +10,10 @@ syncing.
    machine was last verified at (stored in `~/.local/state/dotfiles/applied`),
    and how far behind `master` that is. No record means it was set up before
    2026-10-05: treat every entry below as new.
-2. **Read every entry newer than that.** Do its **On other machines** steps in
-   order. "Do first" steps must happen *before* `git pull`.
+2. **Read every entry newer than that.** Do their **On other machines** steps
+   oldest first (the file is newest first). "Do first" steps must happen
+   *before* `git pull`. For a Mac, "Handing a Mac to an agent" in
+   `doc/applying-the-setup.md` gives the whole order.
 3. **Finish with `scripts/verify.sh`.** When it passes, it records the current
    commit, so the next sync starts from here.
 
@@ -20,6 +22,43 @@ it" in `doc/applying-the-setup.md`.
 
 Each entry also lists what the repo **can't** do for you: per-machine state,
 app settings outside stow, and manual installs.
+
+---
+
+## 2026-10-20: the second Mac's sync, rehearsed again
+
+### On other machines
+- **The second Mac:** the prompt is the same as in the entry below; the
+  steps in "Handing a Mac to an agent" changed. Follow them as they are now.
+- **Any machine:** nothing to run. The installers no longer record the sync
+  point; the `scripts/verify.sh` run at the end of a sync does.
+
+### What changed
+- A second fresh agent rehearsed the sync against the fixed docs: about 70%,
+  up from 45%. Fixed from its findings:
+  - **`unfold.sh` leaves `~/.claude` alone while Claude Code runs**
+    (`260bbde`): the agent doing the sync is Claude Code, and the installer
+    unfolds `~/.claude`. If it's linked, the agent now hands over: Martin
+    quits Claude Code, runs the installer, and resumes with
+    `claude --continue`.
+  - **The installers check without recording** (`2bae8c6`,
+    `verify.sh --no-record`): an interrupted sync looked finished.
+  - **Versions** (`141f411`): nothing brought a second Mac in line with the
+    MacBook. `scripts/update.sh --follow-lockfiles` upgrades Homebrew and
+    puts nvim's and yazi's plugins at the repo's lockfiles instead of moving
+    them on; the handing steps recommend it.
+  - **Order:** ask about Alfred and Docker Desktop before the installer,
+    whose permissions walk starts Raycast and OrbStack; trust AeroSpace's
+    tap before upgrading it (Homebrew 7); after the restart, check
+    AeroSpace sees windows (Accessibility) before putting them back, with
+    the loop reading the file step 3 wrote; restart borders too; reload
+    tmux's config before saving it; Alacritty's unlink moves to Martin's
+    end-of-session list.
+  - **Wording:** the CHANGELOG's preamble said to do the steps "in order"
+    in a newest-first file (now: oldest first); two Alfred lines still said
+    "paused"; nvimdiff was set only by a fresh seed (the snippet sets it
+    too now); "What done means" and the installer's step list overstated
+    what verify checks and listed services it doesn't start.
 
 ---
 
@@ -47,7 +86,8 @@ app settings outside stow, and manual installs.
     snippet then wrote empty values and `verify.sh` passed them. The
     snippet refuses empty values, `seed-gitconfig-local.sh` recovers the
     identity from the repo's history, and `verify.sh` fails on an empty
-    one. On macOS the seed also sets nvimdiff as the diff and merge tool.
+    one. On macOS the seed (when it creates the file) and the snippet set
+    nvimdiff as the diff and merge tool.
   - **A folded `~/.claude` couldn't be fixed as documented** (`afbf623`):
     the recipe's `rm` failed after `stow -D`, and Claude's files stayed in
     the repo. `scripts/unfold.sh` makes such a folder real again and moves
@@ -723,8 +763,9 @@ runtime. `~/Development/unity/pantheon` targets `net6.0`; it builds with SDK 10,
 - The installer's tap-trust comment now covers Homebrew 7's casks.
 
 ### What the repo can't do
-- Raycast's settings and hotkey live in its own database. Alfred is still
-  installed on the main Mac (paused), not removed by the repo.
+- Raycast's settings and hotkey live in its own database. Alfred was still
+  installed on the main Mac then (paused); it was uninstalled on 2026-10-12
+  (see 2026-10-20, "the second Mac's sync").
 - Package versions aren't pinned: each Mac is as current as its last
   `brew upgrade`.
 
@@ -1158,8 +1199,9 @@ Then:
 - **Launcher and window-manager conflicts.** If the Mac has **Alfred**, it
   clashes with Raycast on ⌥ Space. If it has **Rectangle** or **Rectangle
   Pro**, it fights AeroSpace. On Martin's main Mac, Alfred was paused (quit,
-  out of login items) and Rectangle Pro uninstalled. Those were machine
-  changes, not repo changes, so repeat them by hand where relevant.
+  out of login items; uninstalled later, on 2026-10-12) and Rectangle Pro
+  uninstalled. Those were machine changes, not repo changes, so repeat them
+  by hand where relevant.
 
 **Windows:**
 - Save identity first, then `git pull`.

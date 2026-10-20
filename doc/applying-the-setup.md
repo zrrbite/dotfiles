@@ -28,12 +28,13 @@ and every stow command here passes `-t ~`. The examples use `~/dotfiles`.
 ## What "done" means
 
 On macOS and Linux, **`scripts/verify.sh` exits 0**. Its only write is a
-record of the commit it passed at (`~/.local/state/dotfiles/applied`). It
-checks that each package is linked (stow has nothing left to do), that no
-app-state directory is a symlink into the repo, that the repo is clean, that
-git identity is set and doesn't come from the tracked file, and, on macOS,
-that the desktop services are running. It ends by listing what only a person
-can confirm, such as Accessibility permissions. On Path B, pass the packages
+record of the commit it passed at (`~/.local/state/dotfiles/applied`; the
+installers pass `--no-record`, since steps remain after them). It fails when
+a package isn't linked (stow has something left to do), an app-state
+directory is a symlink into the repo, or git identity is missing, empty or
+from the tracked file. It warns, without failing, about a dirty repo, desktop
+services that aren't running on macOS, permissions, and leftovers of removed
+tools. It ends by listing what only a person can confirm. On Path B, pass the packages
 you applied: `scripts/verify.sh nvim starship tmux`. If you linked
 `claude` without `CLAUDE.md`, name it `claude-skills` there.
 
@@ -139,17 +140,21 @@ macOS flags:
 is this, step by step, including what comes before the installer (git, an
 NVIDIA driver, the Hyprland version) and what to check after.
 
-What the installer does, in order:
+What the macOS installer does, in order:
 1. Packages. A failed brew install is recorded, not fatal.
 2. Carries git identity into `~/.gitconfig.local`.
-3. Backs up the configs it will replace to `~/.config-backup-<timestamp>/`
-   (the `CONFIGS_TO_BACKUP` list in the script), deleting an original only
-   once its copy succeeded.
-4. Creates `~/.config`, `~/.config/fastfetch` and `~/.claude` as real
-   directories.
+3. Makes folders an older run linked into the repo real again
+   (`scripts/unfold.sh`), then backs up the configs it will replace to
+   `~/.config-backup-<timestamp>/` (the `CONFIGS_TO_BACKUP` list), deleting
+   an original only once its copy succeeded.
+4. Creates `~/.config`, `~/.config/fastfetch`, `~/.claude`,
+   `~/.claude/skills` and `~/.local/bin` as real directories.
 5. Stows the packages in `scripts/packages.sh`.
-6. Starts services.
-7. Runs `scripts/verify.sh` and ends with a problem summary.
+6. Extras: yazi's plugins, btop's theme, Claude's permission for `remote`,
+   Touch ID for sudo, the tmux plugins, oh-my-zsh; the desktop settings only
+   with `--with-desktop`.
+7. With someone at the terminal, `scripts/macos-permissions.sh`.
+8. `scripts/verify.sh --no-record`, and a problem summary.
 
 ### Human-only, after the installer (macOS)
 
@@ -377,6 +382,10 @@ if [ ! -e ~/.gitconfig.local ]; then
         git config -f ~/.gitconfig.local user.email "$e"
         h="$(git config --global credential.helper)"
         [ -n "$h" ] && git config -f ~/.gitconfig.local credential.helper "$h"   # an empty value would reset helpers
+        if [ "$(uname -s)" = Darwin ]; then   # no meld on macOS
+            git config -f ~/.gitconfig.local diff.tool nvimdiff
+            git config -f ~/.gitconfig.local merge.tool nvimdiff
+        fi
     else
         echo "No identity to save; leave ~/.gitconfig.local to the installer"
     fi
@@ -477,43 +486,67 @@ For the agent. This order overrides the order inside the CHANGELOG entries.
 3. **Before `git pull`, in this order:**
    - "Updating" steps 1 and 1b: save the git identity, repair what an old
      installer wrote into the repo.
+   - **Ask Martin about Alfred and Docker Desktop now** (the MacBook has
+     neither; Raycast and OrbStack replaced them): step 5's walk starts
+     Raycast and OrbStack, and OrbStack takes over `docker`.
+     `brew list --cask | grep -i docker` gives Docker Desktop's cask name,
+     `docker-desktop` or the older `docker`; none means it was installed by
+     hand.
    - AutoRaise running? `brew services stop dimentium/autoraise/autoraise`.
    - AeroSpace older than 0.21 (`aerospace --version`)? Save the window
-     layout, `aerospace list-windows --all --format '%{window-id}
-     %{workspace}' > ~/aerospace-layout.txt`, then `brew upgrade --cask
+     layout with `aerospace list-windows --all --format '%{window-id}
+     %{workspace}' > ~/aerospace-layout.txt`. Then `brew update`, and
+     `brew trust nikitabobko/tap` if `brew trust --help` works (Homebrew 7
+     won't upgrade a cask from an untrusted tap), then `brew upgrade --cask
      aerospace` **without restarting it**: the old one keeps running on the
      old config until step 4.
-4. **Pull, then restart AeroSpace:** `git pull --ff-only`, then `killall
-   AeroSpace && open -a AeroSpace`, which loads the new config with the new
-   version. Put the windows back with the loop in `doc/aerospace-macos.md`
-   ("Restarting loses your window placement"). If the ⌃⌥ keys don't work,
-   Accessibility needs granting again (step 5's walk checks it).
-5. **The installer, by Martin:** run `./install_darwin.sh --dry-run`, show
-   him what it would do, then ask him to run `./install_darwin.sh` in a
-   terminal. It asks for his password, and ends with
-   `scripts/macos-permissions.sh`, which walks him through the permissions
-   and first starts. `scripts/macos-permissions.sh --check` shows you what's
-   left.
-6. **The remaining "On other machines" steps**, oldest first: the removals
-   (`verify.sh` warns on AutoRaise's and Alacritty's leftovers), reloads,
-   manual steps. Then `scripts/verify.sh`.
-7. **Ask Martin before:** desktop settings (`scripts/macos-defaults.sh`,
-   `scripts/finder-defaults.sh`, `--with-desktop`); removing Docker Desktop
-   or anything else that deletes data (`brew list --cask | grep -i docker`
-   gives the cask's name, `docker-desktop` or the older `docker`; none means
-   it was installed by hand); Alfred and Rectangle (the MacBook has neither:
-   Raycast and AeroSpace replaced them); uninstalling Alacritty (once he
-   works in Ghostty); `scripts/update.sh`.
-8. **Don't saw off the branch you sit on.** You run in a terminal, maybe in
-   tmux. Leave `tmux kill-server`, quitting or uninstalling the terminal you
-   run in (Alacritty, on a Mac set up in September) and restarts to Martin,
-   at the end, and tell him which. Saving tmux first (`Ctrl+a Ctrl+s`) only
-   works once its config with resurrect is loaded.
-9. **What the repo doesn't carry** (below): ask Martin which he wants.
-10. **Outside this repo:** clone `github.com/zrrbite/todo` to
+4. **Pull, then restart AeroSpace:** `git pull --ff-only`, then
+   `killall borders; killall AeroSpace && open -a AeroSpace`. That loads the
+   new config with the new version, and AeroSpace starts borders again with
+   the new settings (a running one would be kept). Check
+   `aerospace list-windows --all --count` is above 0; at 0 AeroSpace can't
+   see windows, so Martin turns it on in System Settings → Privacy &
+   Security → Accessibility, and you restart it again. Then put the windows
+   back and tidy:
+   ```bash
+   while read -r id ws; do aerospace move-node-to-workspace --window-id "$id" "$ws"; done < ~/aerospace-layout.txt
+   aerospace flatten-workspace-tree
+   ```
+5. **The installer, by Martin.** First `ls -ld ~/.claude`: if it's a
+   symlink into the repo, Claude Code must be closed while it's fixed, so
+   hand over: Martin quits Claude Code (every window), runs the installer,
+   and starts you again with `claude --continue` in the dotfiles folder.
+   Either way: run `./install_darwin.sh --dry-run`, show Martin what it
+   would do, then ask him to run `./install_darwin.sh` in a terminal. It
+   asks for his password, and ends with `scripts/macos-permissions.sh`, which
+   walks him through the permissions and first starts.
+   `scripts/macos-permissions.sh --check` shows you what's left.
+6. **Versions, so they match the MacBook** (recommended; it upgrades
+   everything, so ask): Martin runs `scripts/update.sh --follow-lockfiles` in
+   a terminal. It brings Homebrew current and puts nvim's and yazi's plugins
+   at the repo's lockfiles; never commit lockfile changes from this Mac. The
+   MacBook is only as current as its last `update.sh`; the 2026-10-07 entry
+   explains a Mac that's far behind.
+7. **The remaining "On other machines" steps**, oldest first: the removals
+   (`verify.sh` warns on AutoRaise's and Alacritty's leftovers; leave
+   Alacritty's own to step 9), reloads, manual steps.
+8. **Ask Martin before:** desktop settings (`scripts/macos-defaults.sh`,
+   `scripts/finder-defaults.sh`, `--with-desktop`), and anything else that
+   deletes data.
+9. **At the end, by Martin: what would cut off your own session.** You run
+   in a terminal, maybe in tmux. Hand him this list and stop:
+   - tmux: `Ctrl+a r` (loads the new config with resurrect), `Ctrl+a
+     Ctrl+s` (saves), then `tmux kill-server` and `t` for the new version;
+   - on a Mac set up in September, Alacritty is the terminal you run in:
+     once he works in Ghostty, `stow -D -t ~ alacritty` and
+     `brew uninstall --cask alacritty`;
+   - a restart or log-out, if an entry asked for one.
+10. **What the repo doesn't carry** (below): ask Martin which he wants.
+11. **Outside this repo:** clone `github.com/zrrbite/todo` to
     `~/Development/todo` and register its todo-brief hook ("Claude Code"
     below). Ask which other repos under `~/Development` he wants pulled.
-11. **Done** is `scripts/verify.sh` exiting 0, plus Martin confirming: tapping
+12. **Done** is `scripts/verify.sh` exiting 0, run last: that run records
+    the sync point (the installer's doesn't). Plus Martin confirming: tapping
     Caps Lock is Escape; `sudo -k; sudo true` in a tmux pane asks for a
     fingerprint; focus follows the mouse; `⌃⌥⇧V` opens clipboard history.
     Log the sync in the todo repo.

@@ -115,8 +115,11 @@ re-check it.
 `scripts/update.sh` does all of this: it records the versions, saves and
 restores the window layout around an AeroSpace upgrade, updates nvim's and
 yazi's plugins, lists what moved (flagging this table's tools), says how to
-restart tmux if it moved, and ends with `verify.sh`. `--dry-run` shows what's outdated first. Afterwards, commit the
-plugin lockfiles it reports once nvim and yazi still work. By hand:
+restart tmux if it moved, and ends with `verify.sh`. `--dry-run` shows
+what's outdated first. Afterwards, commit the plugin lockfiles it reports
+once nvim and yazi still work, from the MacBook. A second Mac runs it with
+`--follow-lockfiles`, which puts the plugins at the lockfiles' versions
+instead of upgrading them. By hand:
 
 ```bash
 mkdir -p ~/.local/state/dotfiles
