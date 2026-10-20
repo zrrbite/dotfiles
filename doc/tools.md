@@ -58,6 +58,7 @@ and Raspberry Pi.
 | gh | GitHub from the terminal: PRs, issues, Actions runs | ✓ | – | – | – |
 | OrbStack | Docker on macOS (`docker`, `docker compose`) for devbox and `scripts/test-in-docker.sh`; replaced Docker Desktop 2026-10-12 | ✓ | – | – | – |
 | lazygit | Terminal UI for git: looking around a repo, staging lines, tidying commits; `Ctrl+a g` in tmux, `Space gg` in nvim (`doc/lazygit.md`) | ✓ | – | – | – |
+| shellcheck | Lints shell scripts; `scripts/lint.sh` runs it | ✓ | – | – | – |
 | remote + FUSE-T sshfs | Work on another machine over SSH: mount, read, search, build, test (`doc/remote-machine.md`) | ✓ | – | – | – |
 | cmake + ninja + ccache | C++ builds with presets (`cmake --preset debug`) and a compiler cache (`scripts/bootstrap-cpp-project.sh`) | ✓ | – | – | cmake |
 | clang-format, clang-tidy, clangd | C++ formatting, linting, LSP | ✓ | ✓ | ✓ | ✓ |

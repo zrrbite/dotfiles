@@ -33,6 +33,7 @@ cat > "$TMP/bin/aerospace" <<'EOF'
 case "$1" in
     list-workspaces) echo 1 ;;
     list-windows) echo "${FAKE_WINDOWS:-5}" ;;
+    config) printf '%s\n' alt-enter ctrl-alt-q "${FAKE_ENTER_KEY:-ctrl-alt-enter}" ;;
     trigger-binding)
         # A refused Automation prompt makes the binding start a new copy.
         if [ "${FAKE_REFUSED:-0}" = 1 ]; then
@@ -84,7 +85,7 @@ reset() {
     echo 1 > "$FAKE_STATE/ghostty"
     : > "$FAKE_STATE/opened"
     export PERMISSIONS_DOCKER_LINK="$TMP/docker-orbstack"
-    unset FAKE_AERO FAKE_WINDOWS FAKE_DRIVER FAKE_CORE FAKE_FINGERS FAKE_REFUSED
+    unset FAKE_AERO FAKE_WINDOWS FAKE_DRIVER FAKE_CORE FAKE_FINGERS FAKE_REFUSED FAKE_ENTER_KEY
 }
 
 # The interactive walk, fed $1 as keyboard input.
@@ -172,6 +173,16 @@ has "$FAKE_STATE/out" "second copy of Ghostty" && ok "walk: Ghostty, a refused p
 reset
 walk 'd\nd\n\n\n'
 [ "$(cat "$FAKE_STATE/rc")" = 0 ] && ok "walk: Ghostty, allowed: done" || bad "walk: Ghostty allowed: exit $(cat "$FAKE_STATE/rc"): $(cat "$FAKE_STATE/out")"
+
+# AeroSpace still on an old config (no ctrl-alt-enter): say so, press nothing.
+reset; export FAKE_ENTER_KEY=none FAKE_REFUSED=1
+walk 'd\nd\n\n\ns\n'
+if has "$FAKE_STATE/out" "reload-config" && [ "$(cat "$FAKE_STATE/ghostty")" = 1 ] &&
+    ! has "$FAKE_STATE/out" "second copy"; then
+    ok "walk: Ghostty, old AeroSpace config: says reload, presses nothing"
+else
+    bad "walk: Ghostty, old config: $(cat "$FAKE_STATE/out")"
+fi
 
 # q stops the walk.
 reset; export FAKE_FINGERS=0

@@ -124,9 +124,17 @@ how_ghostty()   {
 }
 GHOSTTY_TRIES=0
 GHOSTTY_BEFORE=0
+GHOSTTY_PRESSED=false
 open_ghostty() {
+    GHOSTTY_PRESSED=false
     if ! aerospace list-workspaces --focused >/dev/null 2>&1; then
         echo "  AeroSpace isn't running; start it first (step 1)."
+        return
+    fi
+    # Synced from an older config, AeroSpace has no ctrl-alt-enter until it
+    # reloads, and pressing it would do nothing.
+    if ! aerospace config --get mode.main.binding --keys 2>/dev/null | grep -qx ctrl-alt-enter; then
+        echo "  AeroSpace hasn't loaded this repo's config yet: run aerospace reload-config, then Enter."
         return
     fi
     if [ "$GHOSTTY_TRIES" -gt 0 ]; then
@@ -142,9 +150,14 @@ open_ghostty() {
     GHOSTTY_BEFORE="$(pgrep -x ghostty | wc -l | tr -d ' ')"
     GHOSTTY_TRIES=$((GHOSTTY_TRIES + 1))
     aerospace trigger-binding --mode main ctrl-alt-enter
+    GHOSTTY_PRESSED=true
 }
 after_ghostty() {
     local now
+    if [ "$GHOSTTY_PRESSED" != true ]; then
+        echo "⌃⌥Enter wasn't pressed yet"
+        return 1
+    fi
     now="$(pgrep -x ghostty | wc -l | tr -d ' ')"
     if [ "$now" -gt "$GHOSTTY_BEFORE" ]; then
         echo "a second copy of Ghostty started, so AeroSpace may not control Ghostty yet"

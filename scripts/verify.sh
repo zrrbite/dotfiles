@@ -299,6 +299,26 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     else
         pass "no AutoRaise (AeroSpace does focus-follows-mouse itself)"
     fi
+    # What the 2026-10-12 removals leave on a Mac synced from before them.
+    # Re-stowing doesn't remove a link for a package that's off the list.
+    leftovers=0
+    if [ -L "$HOME/.config/alacritty" ]; then
+        warn "Alacritty's config is still linked (Ghostty replaced it on macOS): stow -D -t ~ alacritty"
+        leftovers=$((leftovers + 1))
+    fi
+    if [ -d /Applications/Alacritty.app ]; then
+        warn "Alacritty is still installed: brew uninstall --cask alacritty, once you work in Ghostty"
+        leftovers=$((leftovers + 1))
+    fi
+    if [ -L "$HOME/.config/AutoRaise" ]; then
+        warn "AutoRaise's config link is left over: rm ~/.config/AutoRaise (removes only the link)"
+        leftovers=$((leftovers + 1))
+    fi
+    if [ -d "$(brew --prefix 2>/dev/null)/Cellar/autoraise" ]; then
+        warn "AutoRaise is still installed: brew uninstall autoraise && brew untap dimentium/autoraise"
+        leftovers=$((leftovers + 1))
+    fi
+    [ "$leftovers" = 0 ] && pass "no leftovers of AutoRaise or Alacritty"
     # WARN, not FAIL: the installer applies these only with --with-desktop.
     if differ="$("$DOTFILES_DIR/scripts/macos-defaults.sh" --check)"; then
         pass "macOS settings match scripts/macos-defaults.sh"

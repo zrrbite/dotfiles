@@ -79,6 +79,15 @@ fi
 
 info "Starting macOS dotfiles installation..."
 
+# The .pkg casks (FUSE-T and its sshfs, Karabiner-Elements) and Touch ID for
+# sudo ask for the password, which needs a terminal. An agent's shell has
+# none, so those steps would fail there; a re-run with nothing new to install
+# works anywhere.
+if [ "$DRY_RUN" != true ] && [ ! -t 0 ]; then
+    warn "Not run from a terminal: steps that ask for your password (the .pkg casks, Touch ID for sudo) will fail."
+    warn "Better: run this yourself in a terminal. An agent runs --dry-run and reads the result."
+fi
+
 # Command Line Tools provide git and the compilers Homebrew needs. Installing
 # them pops up a GUI dialog that a script (or an agent) cannot click through,
 # so stop and say so rather than failing halfway.
@@ -180,6 +189,7 @@ BREW_PACKAGES=(
     git
     gh         # GitHub from the terminal: PRs, issues, Actions runs
     lazygit    # terminal UI for git, mostly for looking around a repo
+    shellcheck # scripts/lint.sh, which AGENTS.md says to run after changing this repo
     # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
     cmake
     ninja
