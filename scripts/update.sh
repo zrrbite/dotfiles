@@ -4,9 +4,12 @@
 # as one command. Run it yourself, in a terminal: .pkg casks ask for the
 # password (Touch ID works).
 #
-# Usage: scripts/update.sh [--dry-run]
-#   --dry-run  fetch Homebrew's package lists and show what would be
-#              upgraded; change nothing else
+# Usage: scripts/update.sh [--dry-run] [--follow-lockfiles]
+#   --dry-run           fetch Homebrew's package lists and show what would be
+#                       upgraded; change nothing else
+#   --follow-lockfiles  put nvim's and yazi's plugins at the versions in the
+#                       repo's lockfiles instead of upgrading them: for a Mac
+#                       that follows the MacBook, where the lockfiles move
 #
 # What it does:
 #   1. records `brew list --versions` (formulae and casks) in
@@ -16,7 +19,8 @@
 #   4. restarts AeroSpace if it was upgraded (until then its old version keeps
 #      running and every `aerospace` command fails), and puts the windows back
 #   5. reloads sketchybar; updates nvim's plugins (:Lazy sync) and yazi's
-#      (ya pkg upgrade)
+#      (ya pkg upgrade), or with --follow-lockfiles restores them to the
+#      lockfiles (:Lazy restore, ya pkg install)
 #   6. lists every version that moved, flagging the tools whose config was
 #      checked against a version (doc/tools.md), says how to restart tmux if
 #      it moved (the running server keeps its old version; restarting it is
@@ -26,7 +30,7 @@
 # nvim's ts_ls), the tmux plugins (pinned by tag in the installers).
 #
 # The plugin lockfiles (nvim's lazy-lock.json, yazi's package.toml) live in
-# this repo; once nvim and yazi still work, commit them.
+# this repo; once nvim and yazi still work, commit them, from the MacBook only.
 
 set -uo pipefail
 
@@ -95,13 +99,38 @@ tmux_note() {
     echo "    the rest of what ran in the panes doesn't."
 }
 
+# nvim's and yazi's plugins: "upgrade" moves them and the lockfiles on;
+# "follow" puts them at the versions the lockfiles name.
+update_plugins() {
+    if command -v nvim >/dev/null 2>&1; then
+        if [ "$1" = follow ]; then
+            info "Putting nvim's plugins at the lockfile (:Lazy restore)..."
+            nvim --headless "+Lazy! restore" +qa >/dev/null 2>&1 || note "nvim's plugin restore failed; run :Lazy restore inside nvim"
+        else
+            info "Updating nvim's plugins (:Lazy sync)..."
+            nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 || note "nvim's plugin update failed; run :Lazy sync inside nvim"
+        fi
+    fi
+    if command -v ya >/dev/null 2>&1; then
+        if [ "$1" = follow ]; then
+            info "Putting yazi's plugins at package.toml (ya pkg install)..."
+            ya pkg install >/dev/null 2>&1 || note "ya pkg install failed; run it by hand"
+        else
+            info "Updating yazi's plugins..."
+            ya pkg upgrade >/dev/null 2>&1 || note "ya pkg upgrade failed; run it by hand"
+        fi
+    fi
+}
+
 main() {
-    local dry=false
-    case "${1:-}" in
-        --dry-run) dry=true ;;
-        "") ;;
-        *) echo "Usage: $0 [--dry-run]" >&2; exit 2 ;;
-    esac
+    local dry=false plugins=upgrade arg
+    for arg in "$@"; do
+        case "$arg" in
+            --dry-run) dry=true ;;
+            --follow-lockfiles) plugins=follow ;;
+            *) echo "Usage: $0 [--dry-run] [--follow-lockfiles]" >&2; exit 2 ;;
+        esac
+    done
     if [ "$(uname -s)" != Darwin ]; then
         echo "update.sh is for macOS. On Arch: sudo pacman -Syu; on Debian: sudo apt update && sudo apt upgrade" >&2
         exit 2
@@ -159,14 +188,7 @@ main() {
     if pgrep -x sketchybar >/dev/null 2>&1; then
         sketchybar --reload && info "sketchybar reloaded"
     fi
-    if command -v nvim >/dev/null 2>&1; then
-        info "Updating nvim's plugins (:Lazy sync)..."
-        nvim --headless "+Lazy! sync" +qa >/dev/null 2>&1 || note "nvim's plugin update failed; run :Lazy sync inside nvim"
-    fi
-    if command -v ya >/dev/null 2>&1; then
-        info "Updating yazi's plugins..."
-        ya pkg upgrade >/dev/null 2>&1 || note "ya pkg upgrade failed; run it by hand"
-    fi
+    update_plugins "$plugins"
 
     after="$STATE/brew-after-$STAMP.txt"
     { brew list --versions; brew list --cask --versions; } > "$after"
@@ -190,7 +212,12 @@ main() {
 
     local locks
     locks="$(git -C "$DOTFILES_DIR" status --short -- nvim/.config/nvim/lazy-lock.json yazi/.config/yazi/package.toml)"
-    if [ -n "$locks" ]; then
+    if [ -n "$locks" ] && [ "$plugins" = follow ]; then
+        echo
+        note "Plugin lockfiles changed in the repo, though this Mac follows them; don't commit them from here:"
+        printf '%s\n' "$locks" | sed 's/^/    /'
+        echo "    git -C $DOTFILES_DIR checkout -- nvim/.config/nvim/lazy-lock.json yazi/.config/yazi/package.toml"
+    elif [ -n "$locks" ]; then
         echo
         note "Plugin lockfiles changed in the repo; commit them once nvim and yazi still work:"
         printf '%s\n' "$locks" | sed 's/^/    /'
