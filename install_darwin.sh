@@ -335,12 +335,18 @@ CONFIGS_TO_BACKUP=(
     ~/.clang-tidy
     ~/.git-hooks
     ~/.gitignore-global
-    # Claude Code creates ~/.claude itself; an existing skills/ or CLAUDE.md
-    # would otherwise make `stow claude` conflict.
+    # Claude Code creates ~/.claude itself; an existing CLAUDE.md would
+    # otherwise make `stow claude` conflict.
     ~/.claude/CLAUDE.md
-    ~/.claude/skills
     ~/.claude/hooks
 )
+# Never ~/.claude/skills as a whole: besides this repo's skills it holds
+# Claude Code's synced skills and links from other repos. It is created before
+# stow (below), so stow links the skills one by one; only a skill named like
+# one of the repo's is in the way.
+for skill in "$DOTFILES_DIR"/claude/.claude/skills/*/; do
+    CONFIGS_TO_BACKUP+=("$HOME/.claude/skills/$(basename "$skill")")
+done
 
 # `[ ! -L ]` only tests the final path component, so a path that reaches a real
 # file *through* a stow symlink looks like an ordinary file and would be backed
@@ -359,6 +365,13 @@ is_in_repo() {
 needs_backup() {
     [ -e "$1" ] && [ ! -L "$1" ] && ! is_in_repo "$1"
 }
+
+# An earlier run may have let stow link ~/.claude/skills as a whole into the
+# repo, where Claude Code then writes its synced skills. Undo it; the folder is
+# created again before stow, which then links the skills one by one.
+if [ -L "$HOME/.claude/skills" ] && is_in_repo "$HOME/.claude/skills"; then
+    run rm "$HOME/.claude/skills"
+fi
 
 # git/.gitconfig carries no identity or credential helper; those live in
 # ~/.gitconfig.local, which it includes last. Carry the existing ones over
@@ -416,11 +429,12 @@ info "Stowing packages..."
 # missing, stow "folds" it: it links the whole directory into the repo instead
 # of the files inside it. On a fresh Mac that turns ~/.config into a symlink
 # into this repo, so every app writing its config would write into the working
-# tree. The same goes for ~/.claude (Claude Code's history and settings), and
-# for ~/.config/fastfetch, where the macOS config is linked in below, and
-# ~/.local/bin, where the `remote` package links its command.
+# tree. The same goes for ~/.claude (Claude Code's history and settings),
+# ~/.claude/skills (Claude Code's synced skills), ~/.config/fastfetch, where
+# the macOS config is linked in below, and ~/.local/bin, where the `remote`
+# package links its command.
 # scripts/verify.sh checks that none of these ended up as a symlink.
-run mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.local/bin"
+run mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.claude/skills" "$HOME/.local/bin"
 
 # shellcheck source=scripts/packages.sh
 source "$DOTFILES_DIR/scripts/packages.sh"

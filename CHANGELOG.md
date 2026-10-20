@@ -23,6 +23,44 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-20: the installers no longer move `~/.claude/skills` or link it into the repo
+
+### On other machines
+- **Run `scripts/verify.sh` after pulling.** If it fails with
+  "`~/.claude/skills` is a symlink into the repo" (likely on a Linux box
+  installed before Claude Code was), Claude has been writing its synced
+  skills into the dotfiles folder. Move what isn't the repo's back out, then
+  re-link:
+  ```bash
+  cd <dotfiles>
+  git status --short claude/        # untracked entries there are Claude's
+  rm ~/.claude/skills && mkdir ~/.claude/skills
+  mv claude/.claude/skills/synced ~/.claude/skills/   # each untracked entry
+  stow -R -t ~ claude
+  ```
+  Re-running the installer does the `rm`, `mkdir` and `stow` itself, but
+  leaves the moving to you.
+- **Before this, don't run `install_darwin.sh` or `install_arch.sh` on a
+  machine with Claude Code:** they moved `~/.claude/skills` (synced skills,
+  links from other repos) into the backup folder.
+
+### What changed
+- `install_darwin.sh` and `install_arch.sh` backed up and deleted
+  `~/.claude/skills` whenever it was a real folder. After that, and in
+  `install_debian.sh` whenever the folder didn't exist yet, stow linked the
+  whole folder into the repo, where Claude Code then writes its synced
+  skills. Found in a dry run on 2026-10-20; the real path had never run.
+- All three now create `~/.claude/skills` before stowing (stow then links
+  the skills one by one), undo an earlier link into the repo, and back up
+  only a skill named like one of the repo's. `verify.sh` fails when the
+  folder links into the repo.
+- Tested: `install_darwin.sh --dry-run` in scratch home folders shaped like
+  the MacBook's (10 checks) and against the real one; `scripts/test-in-docker.sh
+  debian:12`, fresh and `--upgrade-from 71bd12e`. `install_arch.sh` has the
+  same lines, not run.
+
+---
+
 ## 2026-10-16: update.sh says how to restart tmux when it upgraded tmux
 
 ### On other machines

@@ -251,12 +251,21 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
         rm "$config"
     fi
 done
+# An earlier run may have let stow link ~/.claude/skills as a whole into the
+# repo, where Claude Code then writes its synced skills. Undo it; the folder is
+# created again before stow, which then links the skills one by one.
+if [ -L "$HOME/.claude/skills" ]; then
+    case "$(realpath "$HOME/.claude/skills")" in
+        "$(realpath "$DOTFILES_DIR")"/*) rm "$HOME/.claude/skills" ;;
+    esac
+fi
 
 # Stow universal packages (no GUI/Wayland stuff)
 # Created before stow runs: a missing target directory gets "folded" into one
 # symlink into the repo, and then Claude Code (~/.claude) or any app writing
 # under ~/.config writes into the working tree. scripts/verify.sh checks this.
-mkdir -p "$HOME/.config" "$HOME/.claude"
+# The same for ~/.claude/skills, where Claude Code writes its synced skills.
+mkdir -p "$HOME/.config" "$HOME/.claude" "$HOME/.claude/skills"
 info "Stowing packages..."
 # shellcheck source=scripts/packages.sh
 source "$DOTFILES_DIR/scripts/packages.sh"

@@ -216,10 +216,24 @@ CONFIGS_TO_BACKUP=(
     ~/.git-hooks
     ~/.gitignore-global
     ~/.claude/CLAUDE.md
-    ~/.claude/skills
     ~/.claude/hooks
     ~/.local/share/wallpapers
 )
+# An earlier run may have let stow link ~/.claude/skills as a whole into the
+# repo, where Claude Code then writes its synced skills. Undo it; the folder is
+# created again before stow, which then links the skills one by one.
+if [ -L "$HOME/.claude/skills" ]; then
+    case "$(realpath "$HOME/.claude/skills")" in
+        "$(realpath "$DOTFILES_DIR")"/*) rm "$HOME/.claude/skills" ;;
+    esac
+fi
+# Never ~/.claude/skills as a whole: besides this repo's skills it holds
+# Claude Code's synced skills and links from other repos. Only a skill named
+# like one of the repo's is in the way. (Unlinked above, so these paths can't
+# lead into the repo.)
+for skill in "$DOTFILES_DIR"/claude/.claude/skills/*/; do
+    CONFIGS_TO_BACKUP+=("$HOME/.claude/skills/$(basename "$skill")")
+done
 
 # git/.gitconfig carries no identity or credential helper; those live in
 # ~/.gitconfig.local, which it includes last. Carry the existing ones over
@@ -262,8 +276,9 @@ done
 # Created before stow runs: a missing target directory gets "folded" into one
 # symlink into the repo, and then Claude Code (~/.claude) or any app writing
 # under ~/.config writes into the working tree. scripts/verify.sh checks this.
-# fastfetch too: it is in the backup list above, so it is gone by now.
-mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude"
+# fastfetch too: it is in the backup list above, so it is gone by now. And
+# ~/.claude/skills, where Claude Code writes its synced skills.
+mkdir -p "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.claude/skills"
 
 # An explicit list rather than every directory: the repo also holds macOS
 # packages (aerospace, sketchybar, ghostty) and Windows ones

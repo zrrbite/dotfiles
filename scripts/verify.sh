@@ -152,9 +152,10 @@ fi
 
 # -- Directories that must never be a symlink into the repo --------------------
 # If stow "folds" one of these into a single symlink, anything that later writes
-# there -- apps writing config, Claude Code writing its history, the installer
-# linking fastfetch's macOS config -- writes inside the repo instead.
-for d in "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.local/bin"; do
+# there -- apps writing config, Claude Code writing its history or its synced
+# skills, the installer linking fastfetch's macOS config -- writes inside the
+# repo instead. The installers undo a folded ~/.claude/skills on their next run.
+for d in "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.claude/skills" "$HOME/.local/bin"; do
     if [ -L "$d" ]; then
         case "$(realpath "$d")" in
             "$REPO_REAL"/*) fail "$d is a symlink into the repo; apps will write into the working tree" ;;
