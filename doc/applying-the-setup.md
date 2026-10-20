@@ -155,38 +155,33 @@ What the installer does, in order:
 
 During the run, the `.pkg` casks (FUSE-T and its sshfs, Karabiner-Elements)
 and `scripts/touch-id-sudo.sh` ask for the password; the human types it.
-Afterwards:
 
-- Grant **Accessibility** to **AeroSpace**: System Settings → Privacy &
-  Security → Accessibility. It also does focus-follows-mouse (AutoRaise did
-  that until 2026-10-12).
-- Launch AeroSpace once (it starts at login after that). It starts sketchybar
-  and borders.
-- **Karabiner-Elements** (Caps Lock: Escape when tapped, Control when held):
-  open it once and allow Input Monitoring, then its **driver**, which is a
-  separate switch: System Settings → General → Login Items & Extensions →
-  Driver Extensions. Pick ISO if it asks for the keyboard type. Until the
-  driver is on, Caps Lock is plain Caps Lock; `verify.sh` warns.
-- **Touch ID for sudo** needs a fingerprint enrolled for this user (System
-  Settings → Touch ID & Password); without one, sudo asks for the password
-  and `verify.sh` warns. Test in a tmux pane: `sudo -k; sudo true`.
-- **OrbStack** (Docker): open it once, choose Docker, allow its helper
-  (password). Migrating from Docker Desktop is optional; see `CHANGELOG.md`
+Afterwards, **`scripts/macos-permissions.sh`** walks the human through what
+macOS lets only a person grant, one step at a time: it says what each is for,
+opens the right System Settings page or app, waits, and checks what a script
+can. The installer runs it at the end when someone is at the terminal. An
+agent can't do these steps: ask the human to run it in a terminal, and use
+`scripts/macos-permissions.sh --check` to see what's left (`--list` prints the
+steps). They are Accessibility for AeroSpace (which also starts it, and it
+starts sketchybar and borders); Karabiner-Elements' driver and Input
+Monitoring; a Touch ID fingerprint; OrbStack's and Raycast's first starts;
+and letting AeroSpace control Ghostty.
+
+Also the human's calls:
+
+- **Docker Desktop:** migrating to OrbStack is optional; see `CHANGELOG.md`
   2026-10-12 before removing Docker Desktop, whose uninstall takes
   OrbStack's `docker` link with it.
-- **Raycast:** the first `⌃⌥⇧V` (clipboard history) asks to allow the link;
-  tick "always". Add `scripts/raycast/` in its Settings → Extensions.
 - **Desktop settings** (`--with-desktop` on a fresh Mac; on an existing one
   `scripts/macos-defaults.sh` and `scripts/finder-defaults.sh`) change the
   Dock, menu bar, Finder and text input. Ask before running them on a Mac
   that's already set up the way its owner likes.
-- **Ghostty:** the first `⌃⌥Enter` while Ghostty runs asks to let AeroSpace
-  control Ghostty; allow it, or every press starts a separate copy.
 - First-launch prompts: Ghostty asks about notifications, and oh-my-zsh may
-  offer an update. These are the human's calls.
+  offer an update.
 
-Then run `scripts/verify.sh` again; done is exit 0. Its "confirm by hand"
-list at the end covers what a script can't see.
+Then run `scripts/verify.sh` again; done is exit 0. It reports the
+permissions too, and its "confirm by hand" list at the end covers what a
+script can't see.
 
 ## Path B: work, or someone else's machine
 
@@ -275,7 +270,8 @@ JankyBorders (`borders`) work together:
   the vendored `sketchybar/.config/sketchybar/plugins/icon_map.sh` must come
   from the same release. See `doc/status-bar-theming.md`.
 - **Human-only:** grant Accessibility to AeroSpace in System
-  Settings → Privacy & Security. On a managed Mac this may need IT.
+  Settings → Privacy & Security (`scripts/macos-permissions.sh` walks
+  through it and the others). On a managed Mac this may need IT.
 
 Layout fact that breaks silently if changed: the bar is 32pt tall, and
 `gaps.outer.top = 44` in `aerospace.toml` is that height plus a 12pt gap.
@@ -466,10 +462,11 @@ For the agent:
    `scripts/finder-defaults.sh`, `--with-desktop`), removing Docker Desktop
    or anything else that deletes data, and `scripts/update.sh` (it upgrades
    everything; save tmux first with `Ctrl+a Ctrl+s`).
-5. **Collect what only Martin can do** ("Human-only, after the installer
-   (macOS)": passwords, Accessibility, Karabiner's driver, a fingerprint,
-   OrbStack's first start, Raycast) into one list, and give it to him as you
-   reach it.
+5. **What only Martin can do:** passwords as the installer asks, then
+   permissions and first starts. For those, ask him to run
+   `scripts/macos-permissions.sh` in a terminal; it opens each page, waits
+   and checks. `--check` shows you what's left. ("Human-only, after the
+   installer (macOS)".)
 6. **Outside this repo:** clone `github.com/zrrbite/todo` to
    `~/Development/todo` and register its todo-brief hook ("Claude Code"
    below). Ask which other repos under `~/Development` he wants pulled.

@@ -547,6 +547,19 @@ else
     info "Skipping desktop settings (pass --with-desktop to apply them)"
 fi
 
+# What only a person can grant: Accessibility, Karabiner's driver, a
+# fingerprint, first starts. The walk opens each System Settings page and waits,
+# so it runs only with someone at the terminal; when an agent runs this, the
+# steps below tell the person to run it.
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${BLUE}[DRY]${NC} scripts/macos-permissions.sh"
+elif [ -t 0 ] && [ -t 1 ]; then
+    echo ""
+    info "Permissions and first starts..."
+    "$DOTFILES_DIR/scripts/macos-permissions.sh" ||
+        warn "Some are left: run scripts/macos-permissions.sh again when you can"
+fi
+
 # The same read-only check an agent or person would run afterwards. Its
 # failures (an unlinked package, no git identity, a folder folded into the
 # repo) count as installer failures.
@@ -569,10 +582,9 @@ echo ""
 echo "Next steps:"
 echo "  1. Open a new terminal (zsh is the login shell; ~/.zshrc is linked)"
 echo "  2. ctrl-alt-enter opens Ghostty once AeroSpace is running"
-echo "  3. Grant Accessibility to AeroSpace:"
-echo "     System Settings > Privacy & Security > Accessibility"
-echo "  4. Open Karabiner-Elements once: allow its driver and Input Monitoring"
-echo "  5. Check the result: $DOTFILES_DIR/scripts/verify.sh"
+echo "  3. Permissions and first starts (Accessibility, Karabiner, Touch ID, ...):"
+echo "     $DOTFILES_DIR/scripts/macos-permissions.sh walks you through what's left"
+echo "  4. Check the result: $DOTFILES_DIR/scripts/verify.sh"
 echo ""
 echo "Installed tools:"
 echo "  - fzf, bat, ripgrep, fd, eza, zoxide, fastfetch"
@@ -601,9 +613,6 @@ echo "    ctrl-alt-enter Ghostty, ctrl-alt-shift-q close, ctrl-alt-f fullscreen"
 echo "    ctrl-alt-tab cycle windows, ctrl-alt-v toggle split direction"
 echo "    ctrl-alt-r resize mode, ctrl-alt-shift-r reload config"
 echo "  - Chrome opens on workspace 2, chat apps on 3 (doc/aerospace-macos.md)"
-echo "  - Grant Accessibility permission when prompted"
-echo ""
-echo "Note: You may need to grant terminal permissions in System Preferences"
 echo ""
 
 # Non-zero exit when something failed, so a caller (a person's shell history,

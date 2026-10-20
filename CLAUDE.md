@@ -75,6 +75,7 @@ scripts/verify.sh           # Read-only: is everything applied? Exit 0 = yes
 scripts/finder-defaults.sh  # macOS: Finder settings (--dry-run, --undo); part of --with-desktop
 scripts/macos-defaults.sh   # macOS: Dock, menu bar, Mission Control, text input (--dry-run, --check, --undo); part of --with-desktop
 scripts/touch-id-sudo.sh    # macOS: Touch ID for sudo, also in tmux (--dry-run, --check, --undo); the installer runs it
+scripts/macos-permissions.sh # macOS: walks a person through the permissions and first starts (--check, --list); the installer runs it
 scripts/update.sh           # macOS: brew upgrade + AeroSpace restart and layout, plugin updates, verify (--dry-run)
 ```
 Which packages each OS gets is defined once, in `scripts/packages.sh`. The

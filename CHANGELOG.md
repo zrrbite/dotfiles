@@ -23,6 +23,35 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-20: scripts/macos-permissions.sh walks you through the permissions
+
+### On other machines
+- **macOS:** after pulling, run `scripts/macos-permissions.sh` in a terminal,
+  yourself (an agent can't click System Settings). Steps already done are
+  passed over; on a Mac that's set up, expect Ghostty's (new on 2026-10-16)
+  and the three only you can confirm. `scripts/verify.sh` now lists any
+  that are missing.
+
+### What changed
+- What macOS lets only a person grant was spread over a doc section and
+  `verify.sh`; the installer's closing message named two of the seven. Now
+  one script holds the list: Accessibility for AeroSpace, Karabiner's driver
+  and Input Monitoring, a Touch ID fingerprint, OrbStack's and Raycast's
+  first starts, and AeroSpace controlling Ghostty. For each it says what
+  it's for, opens the System Settings page or app, waits and re-checks.
+- A script can check four: AeroSpace lists windows (it can only with
+  Accessibility), Karabiner's driver is enabled, a fingerprint is enrolled,
+  `docker` is OrbStack's. For Ghostty, the walk presses `⌃⌥Enter` itself and
+  catches a refusal by a second Ghostty starting. The other three are your
+  word, each with how to tell.
+- `install_darwin.sh` runs it at the end when someone is at the terminal;
+  `verify.sh` reports `--check` (its Karabiner and fingerprint checks moved
+  there) and builds its "confirm by hand" list from it.
+- Tests: `scripts/test-macos-permissions.sh` (27, fake commands, opens
+  nothing; also under macOS's bash 3.2). Not yet walked for real.
+
+---
+
 ## 2026-10-20: the installers no longer move `~/.claude/skills` or link it into the repo
 
 ### On other machines

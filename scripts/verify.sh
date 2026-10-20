@@ -293,19 +293,18 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
         warn "macOS settings differ from scripts/macos-defaults.sh (run it to apply):"
         echo "$differ"
     fi
-    # The karabiner package above only proves the config is linked. Karabiner
-    # remaps nothing until it runs and its driver is approved by hand; until
-    # then Caps Lock is still Caps Lock.
-    if [ ! -d /Applications/Karabiner-Elements.app ]; then
-        warn "Karabiner-Elements is not installed: brew install --cask karabiner-elements"
-    elif ! pgrep -x Karabiner-Core-Service >/dev/null 2>&1; then
-        warn "Karabiner-Elements isn't running: open it once and allow what it asks for"
-    elif ! systemextensionsctl list 2>/dev/null |
-        grep 'org.pqrs.Karabiner-DriverKit-VirtualHIDDevice' | grep -q 'activated enabled'; then
-        warn "Karabiner's driver isn't approved, so Caps Lock isn't remapped: System Settings > General > Login Items & Extensions > Driver Extensions"
-    else
-        pass "Karabiner-Elements runs with its driver (Caps Lock: Escape / Control)"
-    fi
+    # What only a person can grant (Accessibility, Karabiner's driver, a
+    # fingerprint, ...): scripts/macos-permissions.sh holds the list, checks
+    # what a script can, and walks a person through the rest. WARN, not FAIL:
+    # nothing here can grant them.
+    by_hand=()
+    while IFS= read -r line; do
+        case "$line" in
+            "ok: "*)      pass "${line#ok: }" ;;
+            "missing: "*) warn "${line#missing: } -- scripts/macos-permissions.sh walks you through it" ;;
+            "by hand: "*) by_hand+=("${line#by hand: }") ;;
+        esac
+    done < <("$DOTFILES_DIR/scripts/macos-permissions.sh" --check)
     # A cask that's removed (Docker Desktop, 2026-10-12) can leave its zsh
     # completion linked into Homebrew's folder; every new shell then prints
     # "compinit: no such file or directory". WARN, and name the links.
@@ -323,14 +322,6 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     else
         warn "Touch ID for sudo is not set up: scripts/touch-id-sudo.sh"
     fi
-    # Configured isn't working: with no fingerprint enrolled, pam_tid fails
-    # with "Biometry is not enrolled" and sudo asks for the password.
-    fingers="$(bioutil -c 2>/dev/null | sed -n 's/^User [0-9]*:[[:space:]]*\([0-9]*\) biometric.*/\1/p')"
-    if [ "${fingers:-0}" -gt 0 ]; then
-        pass "Touch ID has $fingers fingerprint(s) enrolled"
-    else
-        warn "No fingerprint enrolled for Touch ID, so sudo asks for the password: System Settings > Touch ID & Password > Add Fingerprint"
-    fi
     if command -v sshfs >/dev/null 2>&1; then
         pass "sshfs is installed (remote <host> mount)"
     else
@@ -344,11 +335,12 @@ if [ "$OS" = darwin ] && [ $# -eq 0 ]; then
     fi
     echo
     echo "Cannot be checked from a script -- confirm by hand:"
-    echo "  - Accessibility is granted to AeroSpace"
-    echo "    (System Settings > Privacy & Security > Accessibility)"
     echo "  - a new terminal shows the Nord starship prompt"
-    echo "  - Karabiner has Input Monitoring, and tapping Caps Lock is Escape"
-    echo "    (Karabiner-EventViewer shows it)"
+    # The +form: bash 3.2 (a fresh Mac's) calls an empty array unbound.
+    for item in ${by_hand[@]+"${by_hand[@]}"}; do
+        echo "  - $item"
+    done
+    echo "  (scripts/macos-permissions.sh walks you through each)"
 fi
 
 echo
