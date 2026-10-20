@@ -25,6 +25,8 @@ git clone -q "$DOTFILES_DIR" "$TMP/repo"
 cp "$DOTFILES_DIR/scripts/unfold.sh" "$TMP/repo/scripts/unfold.sh"
 REPO="$TMP/repo"
 H="$TMP/home"
+# Claude Code runs right now (this may be it): unfold.sh would refuse ~/.claude.
+export UNFOLD_CLAUDE_RUNNING=no
 
 # ~/.claude linked into the repo, and what Claude Code wrote through the link.
 setup() {
@@ -57,6 +59,17 @@ left="$(git -C "$REPO" status --porcelain --ignored -- claude/)"
 [ -f "$REPO/claude/.claude/CLAUDE.md" ] && ok "the repo's own files stay" || bad "a tracked file went missing"
 stow -d "$REPO" -t "$H" claude 2>"$TMP/stow.err" && [ -L "$H/.claude/CLAUDE.md" ] && [ -L "$H/.claude/skills/review" ] &&
     ok "stow then links the files one by one" || bad "stow afterwards: $(cat "$TMP/stow.err")"
+
+# -- Claude Code running: ~/.claude is left alone, and it says why -------------
+setup
+out="$(UNFOLD_CLAUDE_RUNNING=yes "$REPO/scripts/unfold.sh" "$H/.claude" 2>&1)"; rc=$?
+if [ "$rc" = 1 ] && [ -L "$H/.claude" ] && printf '%s\n' "$out" | grep -q 'Quit Claude Code'; then
+    ok "Claude Code running: refuses ~/.claude, exit 1"
+else
+    bad "Claude Code running (exit $rc): $out"
+fi
+out="$(UNFOLD_CLAUDE_RUNNING=yes "$REPO/scripts/unfold.sh" --dry-run "$H/.claude" 2>&1)"
+printf '%s\n' "$out" | grep -q 'Quit Claude Code' && ok "Claude Code running: a dry run says so" || bad "dry run, Claude running: $out"
 
 # -- Left alone ----------------------------------------------------------------
 mkdir -p "$TMP/elsewhere" && rm -rf "$H" && mkdir -p "$H" && ln -s "$TMP/elsewhere" "$H/.claude"
