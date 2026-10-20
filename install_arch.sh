@@ -219,14 +219,11 @@ CONFIGS_TO_BACKUP=(
     ~/.claude/hooks
     ~/.local/share/wallpapers
 )
-# An earlier run may have let stow link ~/.claude/skills as a whole into the
-# repo, where Claude Code then writes its synced skills. Undo it; the folder is
-# created again before stow, which then links the skills one by one.
-if [ -L "$HOME/.claude/skills" ]; then
-    case "$(realpath "$HOME/.claude/skills")" in
-        "$(realpath "$DOTFILES_DIR")"/*) rm "$HOME/.claude/skills" ;;
-    esac
-fi
+# Folders an older run let stow link into the repo as a whole, so that apps
+# wrote into the working tree (Claude Code's history, its synced skills): make
+# them real folders again and move what the apps wrote back out.
+"$DOTFILES_DIR/scripts/unfold.sh" "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.claude/skills" ||
+    FAILURES+=("scripts/unfold.sh couldn't move everything back out of the repo (see above)")
 # Never ~/.claude/skills as a whole: besides this repo's skills it holds
 # Claude Code's synced skills and links from other repos. Only a skill named
 # like one of the repo's is in the way. (Unlinked above, so these paths can't

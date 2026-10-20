@@ -158,7 +158,7 @@ fi
 for d in "$HOME/.config" "$HOME/.config/fastfetch" "$HOME/.claude" "$HOME/.claude/skills" "$HOME/.local/bin"; do
     if [ -L "$d" ]; then
         case "$(realpath "$d")" in
-            "$REPO_REAL"/*) fail "$d is a symlink into the repo; apps will write into the working tree" ;;
+            "$REPO_REAL"/*) fail "$d is a symlink into the repo; apps write into the working tree -- fix: scripts/unfold.sh $d (quit Claude Code first if it's ~/.claude), then re-run the installer" ;;
             *) pass "$d is not linked into the repo" ;;
         esac
     elif [ -d "$d" ]; then

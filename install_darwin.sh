@@ -366,11 +366,18 @@ needs_backup() {
     [ -e "$1" ] && [ ! -L "$1" ] && ! is_in_repo "$1"
 }
 
-# An earlier run may have let stow link ~/.claude/skills as a whole into the
-# repo, where Claude Code then writes its synced skills. Undo it; the folder is
-# created again before stow, which then links the skills one by one.
-if [ -L "$HOME/.claude/skills" ] && is_in_repo "$HOME/.claude/skills"; then
-    run rm "$HOME/.claude/skills"
+# Folders an older run let stow link into the repo as a whole, so that apps
+# wrote into the working tree (Claude Code's history, its synced skills): make
+# them real folders again and move what the apps wrote back out. This also
+# keeps the backup list below from reaching into the repo through such a link.
+DRY_RUN="$DRY_RUN" "$DOTFILES_DIR/scripts/unfold.sh" "$HOME/.config" "$HOME/.config/fastfetch" \
+    "$HOME/.claude" "$HOME/.claude/skills" "$HOME/.local/bin" ||
+    FAILURES+=("scripts/unfold.sh couldn't move everything back out of the repo (see above)")
+
+# What the September installer did through a linked ~/.config/fastfetch:
+# replaced the tracked config.jsonc with a link to the macOS one.
+if [ -L "$DOTFILES_DIR/fastfetch/.config/fastfetch/config.jsonc" ]; then
+    run git -C "$DOTFILES_DIR" checkout -- fastfetch/.config/fastfetch/config.jsonc
 fi
 
 # git/.gitconfig carries no identity or credential helper; those live in

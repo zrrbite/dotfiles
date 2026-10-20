@@ -251,14 +251,11 @@ for config in "${CONFIGS_TO_BACKUP[@]}"; do
         rm "$config"
     fi
 done
-# An earlier run may have let stow link ~/.claude/skills as a whole into the
-# repo, where Claude Code then writes its synced skills. Undo it; the folder is
-# created again before stow, which then links the skills one by one.
-if [ -L "$HOME/.claude/skills" ]; then
-    case "$(realpath "$HOME/.claude/skills")" in
-        "$(realpath "$DOTFILES_DIR")"/*) rm "$HOME/.claude/skills" ;;
-    esac
-fi
+# Folders an older run let stow link into the repo as a whole, so that apps
+# wrote into the working tree (Claude Code's history, its synced skills): make
+# them real folders again and move what the apps wrote back out.
+"$DOTFILES_DIR/scripts/unfold.sh" "$HOME/.config" "$HOME/.claude" "$HOME/.claude/skills" ||
+    FAILURES+=("scripts/unfold.sh couldn't move everything back out of the repo (see above)")
 
 # Stow universal packages (no GUI/Wayland stuff)
 # Created before stow runs: a missing target directory gets "folded" into one
