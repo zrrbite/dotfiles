@@ -25,6 +25,31 @@ app settings outside stow, and manual installs.
 
 ---
 
+## 2026-10-29: a beamer-decks skill, and Tectonic on macOS
+
+### On other machines
+- **Mac:** `brew install tectonic` (or rerun `install_darwin.sh`), then link
+  the new skill: `stow -n -t ~ claude` to preview, `stow -t ~ claude` to apply.
+  It adds `~/.claude/skills/beamer-decks`.
+- **Linux:** the Arch and Debian installers don't install Tectonic yet; install
+  it by hand on a machine that will build decks. The skill links the same way.
+
+### What changed
+- **New skill, `beamer-decks`**: how to build LaTeX Beamer decks the way the
+  `sourdough-science` decks were built. Metropolis with a 2 pt progress bar,
+  Fira Sans from Tectonic's bundle, one idea per slide with an assertion
+  title, a takeaway box, a source line on every slide, filled flag tags for
+  uncertain claims, and bulleted source lists that continue onto "(cont.)"
+  slides. It bundles the preamble, a deck template, a Makefile,
+  `scripts/build-check.sh` (errors and box warnings only) and
+  `scripts/contact-sheet.sh` (25 slides per image for a visual pass), and
+  lists the LaTeX traps that each cost a rebuild. It is model-invoked, the
+  second skill after `remote-machine`, so a request for slides in any project
+  picks it up.
+- **`install_darwin.sh` installs `tectonic`**, which the skill builds with.
+
+---
+
 ## 2026-10-20: the second Mac's sync, rehearsed again
 
 ### On other machines

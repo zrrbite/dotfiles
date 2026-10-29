@@ -1,0 +1,88 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+\input{preamble}
+% Deck-local additions go here, after the preamble, never inside it.
+
+\title[Short title]{Long Title: What the Deck Is About}
+\subtitle{One line on what the audience will be able to do or decide}
+\author{Author or project}
+\institute{repo or source}
+
+\begin{document}
+
+\begin{frame}[plain]\titlepage\end{frame}
+
+\begin{frame}{What this deck covers}
+  \begin{enumerate}
+    \item \textbf{First section} --- the practical question it answers
+    \item \textbf{Second section} --- the practical question it answers
+  \end{enumerate}
+  \medskip
+  {\small Flags carried over from the sources: \hypothesis\ \contested\ \untested; results from
+  our own runs are marked \ownresult.\par}
+\end{frame}
+
+\section{First section}
+
+% The title states the point (an assertion), not the topic.
+\begin{frame}{Feeding at peak keeps the acid below what the yeast tolerates}
+  \begin{itemize}
+    \item One idea per slide, at most about five short bullets
+    \item Numbers exactly as the source gives them: 150\,mmol/L, 24--27°C
+    \item Keep the source's uncertainty: a proposed mechanism \hypothesis
+  \end{itemize}
+  \takeaway{The one thing to do differently because of this slide.}
+  \source{Author et al.\ (2020); chapter or file it came from}
+\end{frame}
+
+\begin{frame}{A table, wrapped so it survives}
+  \begin{tablebox}[\footnotesize]
+  \begin{tabularx}{\linewidth}{@{}l l Y@{}}
+    \toprule
+    Option & Range & Best for, and the catch \\
+    \midrule
+    First & 21--35°C & what it is good at; what to watch \\
+    Second & 5--50°C & what it is good at; what to watch \\
+    \bottomrule
+  \end{tabularx}
+  \end{tablebox}
+  \takeaway{Tables when the source compares things; bullets when it argues.}
+  \source{Where the figures come from}
+\end{frame}
+
+\begin{frame}{A flowchart redrawn in TikZ}
+  \begin{center}
+  \begin{tikzpicture}[node distance=6mm and 8mm]
+    \node[box] (a) {First step};
+    \node[box, right=of a] (b) {Second step};
+    \node[box, right=of b] (c) {Outcome};
+    \draw[arrow] (a) -- (b);
+    \draw[arrow] (b) -- (c);
+  \end{tikzpicture}
+  \end{center}
+  \takeaway{Diagrams for sequences and causes; keep labels outside boxes and lines.}
+  \source{Where the diagram comes from}
+\end{frame}
+
+\begin{frame}{Takeaways}
+  \begin{itemize}
+    \item Five to seven bullets, each one a point from the deck
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Open questions}
+  \begin{itemize}
+    \item What the sources leave open, and the test that would settle it \untested
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Sources}
+  \srcgroup{First section}
+  \begin{sourcelist}
+    \src{Author A, Author B (2020)}{Title of the paper. \emph{Journal} 12(3):45--67.}
+    \src{Author C et al.\ (2018)}{Title of the paper. \emph{Journal} 9:2137.}
+  \end{sourcelist}
+  \medskip
+  {\scriptsize\color{muted}Full list: where the complete references live.\par}
+\end{frame}
+
+\end{document}

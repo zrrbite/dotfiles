@@ -299,7 +299,11 @@ stow list.
   - `/review` - Code review current diff for bugs, security issues, style violations
   - `/fix-issue <number>` - Read a GitHub issue and implement a fix
   - `/bootstrap [name]` - Interactive project scaffolding (C++, TypeScript variants)
-  - All skills except `remote-machine` use `disable-model-invocation: true` (user-triggered only)
+  - `beamer-decks` - Beamer slide decks in the house style (Metropolis, progress bar,
+    takeaway and source lines, flags, bulleted sources), built with Tectonic and checked
+    page by page. Bundles the preamble, a deck template, a Makefile and two scripts
+  - All skills except `remote-machine` and `beamer-decks` use `disable-model-invocation: true`
+    (user-triggered only). `beamer-decks` is model-invoked so any request for slides picks it up
 
 ### Install Scripts
 

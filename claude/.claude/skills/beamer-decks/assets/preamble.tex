@@ -1,0 +1,104 @@
+% Shared look for every deck: Metropolis with a progress bar under each frame title.
+% Each deck starts with:
+%   \documentclass[aspectratio=169,11pt]{beamer}
+%   \input{preamble}
+% Build with Tectonic: `make` in this directory.
+
+\usetheme[progressbar=frametitle,numbering=fraction,sectionpage=progressbar,block=fill]{metropolis}
+
+% Metropolis looks Fira Sans up by system name, which Tectonic cannot see; load it from
+% the TeX bundle instead. Light body text as Metropolis intends, lining figures for data.
+\usepackage[sfdefault,light,lf]{FiraSans}
+\usepackage{booktabs,tabularx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+
+% Metropolis's palette, plus the names the macros below use. Change accent/accentbg
+% to re-theme a project; keep flag/own readable as white-on-colour tags.
+\definecolor{mDarkTeal}{HTML}{23373B}
+\definecolor{mDarkBrown}{HTML}{604C38}
+\definecolor{mLightBrown}{HTML}{EB811B}
+\colorlet{accent}{mDarkBrown}
+\definecolor{accentbg}{HTML}{FAEEE2}
+\colorlet{textdark}{mDarkTeal}
+\definecolor{flag}{HTML}{B03A2E}
+\definecolor{own}{HTML}{2E7D4F}
+\definecolor{muted}{HTML}{7A7F80}
+
+% Top-align frames, so the \vfill in \source puts the source line at the bottom.
+% A slimmer title bar and narrower margins than Metropolis's defaults leave room
+% for dense slides; a 2pt progress bar is visible, the default 0.4pt is not.
+\makeatletter
+\beamer@centeredfalse
+\setlength{\metropolis@frametitle@padding}{1.4ex}
+\setlength{\metropolis@progressinheadfoot@linewidth}{2pt}
+\setlength{\metropolis@progressonsectionpage@linewidth}{1.5pt}
+\setlength{\metropolis@titleseparator@linewidth}{1pt}
+% Metropolis's title page is \paperheight tall, which overflows a top-aligned frame.
+\setbeamertemplate{title page}{%
+  \begin{minipage}[b][\textheight]{\textwidth}
+    \vfill
+    \usebeamertemplate*{title}
+    \ifx\insertsubtitle\@empty\else\usebeamertemplate*{subtitle}\fi
+    \usebeamertemplate*{title separator}
+    \usebeamertemplate*{author}
+    \usebeamertemplate*{institute}
+    \vfill
+  \end{minipage}}
+\makeatother
+\setbeamersize{text margin left=1.2em,text margin right=1.2em}
+
+% Footer: short title left, n/N right, in a slim strip.
+\setbeamertemplate{frame footer}{\insertshorttitle}
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.6ex,dp=1.2ex,leftskip=1.2em,rightskip=1.2em]{footline}%
+    \usebeamerfont{page number in head/foot}%
+    \usebeamertemplate*{frame footer}\hfill\usebeamertemplate*{frame numbering}%
+  \end{beamercolorbox}}
+\setbeamerfont{page number in head/foot}{size=\tiny}
+\setbeamercolor{footline}{fg=muted}
+
+% The practical point of a slide. Rename the label per project
+% (\renewcommand{\takeawaylabel}{In the kitchen}).
+\newcommand{\takeawaylabel}{Takeaway}
+\newcommand{\takeaway}[1]{%
+  \par\medskip
+  \colorbox{accentbg}{\parbox{\dimexpr\linewidth-2\fboxsep}{\small\textbf{\color{accent}\takeawaylabel:} #1}}}
+
+% Small source line, pushed to the bottom of a frame. Put it last in the frame.
+\newcommand{\source}[1]{%
+  \vfill{\color{muted}\tiny Source: #1}}
+
+% Status flags: filled tags, so they read on the dark title bar as well as the body.
+\newcommand{\flagtag}[2]{\mbox{\setlength{\fboxsep}{1.2pt}\colorbox{#1}{\color{white}\scriptsize\bfseries\,#2\,}}}
+\newcommand{\hypothesis}{\flagtag{flag}{hypothesis}}
+\newcommand{\contested}{\flagtag{flag}{contested}}
+\newcommand{\ownresult}{\flagtag{own}{own result}}
+\newcommand{\untested}{\flagtag{flag}{not yet tested}}
+
+% Source lists: one source per bullet, author and year in bold, optional group
+% headings. Use in a [allowframebreaks] frame; long lists continue on "(cont.)" slides.
+% Beamer's itemize resets the font, so the size is set through beamer fonts too.
+\newenvironment{sourcelist}{%
+  \setbeamerfont{itemize/enumerate body}{size=\scriptsize}%
+  \setbeamerfont{itemize item}{size=\scriptsize}%
+  \scriptsize\begin{itemize}\setlength{\itemsep}{2pt}}{\end{itemize}}
+\newcommand{\src}[2]{\item\textbf{#1}\enspace #2}
+% \nobreak keeps a group heading on the same slide as its first source.
+\newcommand{\srcgroup}[1]{\par\smallskip{\small\bfseries\color{accent}#1}\par\nobreak\vspace{-2pt}\nobreak}
+\setbeamertemplate{frametitle continuation}[from second][(cont.)]
+
+% Tables: a font-size wrapper that does not eat the table. A plain {\small ...} group
+% right after a frame title is read as a frame subtitle and silently vanishes.
+\newenvironment{tablebox}[1][\footnotesize]{\par#1\renewcommand{\arraystretch}{1.05}}{\par}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+% Flowchart nodes for TikZ diagrams.
+\tikzset{
+  box/.style={draw=accent,fill=accentbg,rounded corners=2pt,align=center,
+    font=\scriptsize,inner sep=4pt,text width=#1},
+  box/.default=2.6cm,
+  arrow/.style={-{Stealth[length=5pt]},draw=accent,thick},
+}
+
+\date{}

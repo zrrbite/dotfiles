@@ -190,6 +190,7 @@ BREW_PACKAGES=(
     gh         # GitHub from the terminal: PRs, issues, Actions runs
     lazygit    # terminal UI for git, mostly for looking around a repo
     shellcheck # scripts/lint.sh, which AGENTS.md says to run after changing this repo
+    tectonic   # LaTeX engine for the beamer-decks skill; fetches only the packages a deck uses
     # C++ builds: scripts/bootstrap-cpp-project.sh generates a CMake project
     cmake
     ninja
