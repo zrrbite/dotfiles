@@ -23,6 +23,7 @@ alias fimg='fd -e png -e jpg -e jpeg -e gif -e webp -e bmp | fzf --preview "chaf
 alias fcpp='fd -e cpp -e hpp | fzf | xargs bat'           # Find and view C++ files
 alias ftodo='rg -l "TODO" | fzf | xargs nvim'              # Find and edit TODOs
 alias fmd='fd -e md | fzf'                                 # Find markdown files
+alias screenoff='hyprctl dispatch dpms off'
 alias ffunc='rg "^function" | fzf | cut -d: -f1 | xargs bat'  # Find function definitions
 
 # eza aliases (modern ls replacement)

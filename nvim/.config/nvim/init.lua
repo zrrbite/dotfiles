@@ -113,3 +113,15 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank()
   end,
 })
+
+-- Forge language server
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "forge",
+  callback = function()
+    vim.lsp.start({
+      name = "forge-lsp",
+      cmd = { "/home/zrrbite/dev/forge-compiler/target/release/forge-lsp" },
+      root_dir = vim.fn.getcwd(),
+    })
+  end,
+})

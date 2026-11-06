@@ -37,13 +37,16 @@ button:hover {
 }
 
 #workspaces button.active {
-    background-color: #5e81ac;
-    box-shadow: inset 0 -3px #88c0d0;
+    background-color: rgba(94, 129, 172, 0.2);
+    box-shadow: inset 0 -3px rgba(136, 192, 208, 0.5);
 }
 
 #workspaces button.urgent {
-    background-color: #bf616a;
+    background-color: rgba(191, 97, 106, 0.2);
+    color: #bf616a;
 }
+
+/* Tinted-pill style matching sketchybar: 20% accent bg, accent text */
 
 #clock,
 #battery,
@@ -57,7 +60,6 @@ button:hover {
 #idle_inhibitor,
 #language {
     padding: 0 10px;
-    color: #d8dee9;
 }
 
 #window,
@@ -65,54 +67,65 @@ button:hover {
     margin: 0 4px;
 }
 
+/* Clock: nord10 tint, nord8 text (cyan readable on dark bar) */
 #clock {
-    background-color: #5e81ac;
+    background-color: rgba(94, 129, 172, 0.2);
+    color: #88c0d0;
     border-radius: 4px;
 }
 
+/* CPU: nord14 green */
 #cpu {
-    background-color: #a3be8c;
-    color: #2e3440;
+    background-color: rgba(163, 190, 140, 0.2);
+    color: #a3be8c;
     border-radius: 4px;
 }
 
+/* Memory: nord15 purple */
 #memory {
-    background-color: #b48ead;
+    background-color: rgba(180, 142, 173, 0.2);
+    color: #b48ead;
     border-radius: 4px;
 }
 
+/* Network: nord9 blue */
 #network {
-    background-color: #81a1c1;
+    background-color: rgba(129, 161, 193, 0.2);
+    color: #81a1c1;
     border-radius: 4px;
 }
 
 #network.disconnected {
-    background-color: #bf616a;
+    background-color: rgba(191, 97, 106, 0.2);
+    color: #bf616a;
 }
 
+/* Pulseaudio: nord13 yellow */
 #pulseaudio {
-    background-color: #ebcb8b;
-    color: #2e3440;
+    background-color: rgba(235, 203, 139, 0.2);
+    color: #ebcb8b;
     border-radius: 4px;
 }
 
 #pulseaudio.muted {
-    background-color: #4c566a;
-    color: #d8dee9;
+    background-color: rgba(76, 86, 106, 0.2);
+    color: #4c566a;
 }
 
+/* Temperature: nord12 orange */
 #temperature {
-    background-color: #d08770;
-    color: #2e3440;
+    background-color: rgba(208, 135, 112, 0.2);
+    color: #d08770;
     border-radius: 4px;
 }
 
 #temperature.critical {
-    background-color: #bf616a;
+    background-color: rgba(191, 97, 106, 0.2);
+    color: #bf616a;
 }
 
 #tray {
-    background-color: #4c566a;
+    background-color: rgba(76, 86, 106, 0.2);
     border-radius: 4px;
 }
 
@@ -122,22 +135,23 @@ button:hover {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #bf616a;
+    background-color: rgba(191, 97, 106, 0.2);
 }
 
 #idle_inhibitor {
-    background-color: #4c566a;
+    background-color: rgba(76, 86, 106, 0.2);
     border-radius: 4px;
 }
 
 #idle_inhibitor.activated {
-    background-color: #d8dee9;
-    color: #2e3440;
+    background-color: rgba(216, 222, 233, 0.2);
+    color: #d8dee9;
 }
 
+/* Language: nord8 teal */
 #language {
-    background: #88c0d0;
-    color: #2e3440;
+    background: rgba(136, 192, 208, 0.2);
+    color: #88c0d0;
     padding: 0 8px;
     border-radius: 4px;
 }
